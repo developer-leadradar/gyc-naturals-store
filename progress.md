@@ -74,6 +74,25 @@
 - vercel.json: Updated runtime from @vercel/php → vercel-php@0.9.0
 - .gitignore: Added .vercel directory
 
+### DB Connection Fix (2026-06-09 — post-deploy session)
+**Root cause 1**: DB_DRIVER env var had empty value in Vercel → fixed to "pgsql"
+**Root cause 2**: Neon HTTP /query API returns HTTP 400 "query is not supported" on
+  c-8.us-east-1.aws.neon.tech cluster for ALL configurations (confirmed with 5-variant test).
+  vercel-php also cannot open TCP sockets (fsockopen fails for both hostname AND raw IP).
+
+**Solution**: Node.js SQL proxy within the same Vercel project.
+- api/db-proxy.js: Node.js serverless function using `pg` npm package over TCP.
+  Accepts POST { sql, params } with x-db-secret header, returns { rows, rowCount }.
+- package.json: Added pg ^8.13.0 dependency.
+- vercel.json: Added @vercel/node build for api/db-proxy.js + route before PHP /api/ catch-all.
+- includes/db.php: Replaced Neon HTTP path with proxy curl calls. Added curl handle reuse
+  (one TLS handshake per PHP process — reduced cold: 22s→7.5s, warm: 30s→3.2s).
+- config.php: Added DB_PROXY_SECRET constant.
+- DB_PROXY_SECRET env var added to Vercel Production.
+- Database seeded: 6 categories, 12 products, 9 gallery images, 4 blog posts,
+  7 testimonials, 3 bundles, 23 site settings (all ✅).
+- seed.php and test-db.php deleted post-seeding.
+
 ---
 
 ## File Inventory (87 PHP files, 0 syntax errors)
