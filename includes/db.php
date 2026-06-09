@@ -209,11 +209,17 @@ class Database {
 
         if ($this->driver === 'pgsql') {
             // ── Neon HTTP API path ─────────────────────────────────────────
-            $this->neonHost    = DB_HOST;
-            $this->neonIp      = self::resolveHostIp(DB_HOST);
+            // The HTTP query API works on the DIRECT endpoint, NOT the pooler.
+            // Pooler (PgBouncer) only speaks the PostgreSQL wire protocol.
+            // Strip "-pooler" from the hostname to get the direct endpoint.
+            $poolerHost       = DB_HOST;
+            $directHost       = preg_replace('/-pooler(?=\.)/', '', $poolerHost);
+            $this->neonHost   = $directHost;  // used for HTTP API queries
+            $this->neonIp     = self::resolveHostIp($directHost)
+                             ?? self::resolveHostIp($poolerHost); // fallback to pooler IP
             $this->neonConnStr = 'postgresql://'
                                . urlencode(DB_USER) . ':' . urlencode(DB_PASS)
-                               . '@' . DB_HOST . '/' . DB_NAME;
+                               . '@' . $directHost . '/' . DB_NAME;
 
             // Verify connectivity with a lightweight probe
             $check = $this->httpQuery('SELECT 1 AS ok', []);

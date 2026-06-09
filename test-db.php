@@ -58,69 +58,75 @@ if ($host !== '(not set)') {
     }
 }
 
-// 5. Neon HTTP Query API (primary test — uses curl on port 443)
-echo "--- Neon HTTP Query API ---\n";
-if ($host !== '(not set)' && function_exists('curl_init') && $pass !== '(not set)') {
-    $connStr = "postgresql://" . urlencode($user) . ":" . urlencode($pass)
-             . "@$host/$dbname";
-    $payload = json_encode(['query' => 'SELECT 1 AS ok', 'params' => []]);
+// 5. Neon HTTP Query API
+// The HTTP query API works on the DIRECT endpoint (not pooler).
+// Pooler only speaks the PostgreSQL wire protocol on port 5432/443.
+$directHost = preg_replace('/-pooler(?=\.)/', '', $host);  // strip -pooler
+$directIp   = null;
+$dirRecs    = @dns_get_record($directHost, DNS_A) ?: [];
+if (!empty($dirRecs)) { shuffle($dirRecs); $directIp = $dirRecs[0]['ip'] ?? null; }
 
-    // Attempt A: Neon-Connection-String header + CURLOPT_RESOLVE
-    $ch = curl_init("https://$host/query");
-    $opts = [
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_TIMEOUT        => 12,
-        CURLOPT_POST           => true,
-        CURLOPT_POSTFIELDS     => $payload,
-        CURLOPT_HTTPHEADER     => [
+echo "--- Neon HTTP Query API ---\n";
+echo "Direct host: $directHost (IP=$directIp)\n";
+if ($host !== '(not set)' && function_exists('curl_init') && $pass !== '(not set)') {
+
+    // Shared curl helper
+    $doQuery = function(string $url, string $ip, string $connStr, string $label)
+               use ($pass, $payload): void {
+        $payload = json_encode(['query' => 'SELECT 1 AS ok', 'params' => []]);
+        $host    = parse_url($url, PHP_URL_HOST);
+        $opts = [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT        => 12,
+            CURLOPT_POST           => true,
+            CURLOPT_POSTFIELDS     => $payload,
+            CURLOPT_HTTPHEADER     => [
+                'Content-Type: application/json',
+                "Neon-Connection-String: $connStr",
+            ],
+            CURLOPT_SSL_VERIFYPEER => true,
+        ];
+        if ($ip) $opts[CURLOPT_RESOLVE] = ["$host:443:$ip"];
+        $ch = curl_init($url);
+        curl_setopt_array($ch, $opts);
+        $resp = curl_exec($ch);
+        $err  = curl_error($ch);
+        $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        echo "$label: HTTP $code" . ($err ? " | $err" : "") . "\n";
+        if ($resp) echo "  response: " . substr($resp, 0, 300) . "\n";
+    };
+
+    $connStrPooler = "postgresql://" . urlencode($user) . ":" . urlencode($pass) . "@$host/$dbname";
+    $connStrDirect = "postgresql://" . urlencode($user) . ":" . urlencode($pass) . "@$directHost/$dbname";
+
+    // Test direct endpoint /query (primary — this is what HTTP API uses)
+    $doQuery("https://$directHost/query", $directIp ?? '', $connStrDirect,
+             "DIRECT /query  [conn-string, IP=$directIp]");
+
+    // Test direct endpoint /query with bearer auth too
+    $ch4 = curl_init("https://$directHost/query");
+    $opts4 = [
+        CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 12,
+        CURLOPT_POST => true,
+        CURLOPT_POSTFIELDS => json_encode(['query' => 'SELECT 1 AS ok', 'params' => []]),
+        CURLOPT_HTTPHEADER => [
             'Content-Type: application/json',
-            "Neon-Connection-String: $connStr",
+            "Authorization: Bearer $pass",
+            "Neon-Connection-String: $connStrDirect",
         ],
         CURLOPT_SSL_VERIFYPEER => true,
     ];
-    if ($resolvedIp) $opts[CURLOPT_RESOLVE] = ["$host:443:$resolvedIp"];
-    curl_setopt_array($ch, $opts);
-    $resp = curl_exec($ch);
-    $err  = curl_error($ch);
-    $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
-    echo "HTTP /query [conn-string, IP=" . ($resolvedIp ?? 'null') . "]: HTTP $code\n";
-    if ($err) echo "  curl error: $err\n";
-    if ($resp) echo "  response: " . substr($resp, 0, 300) . "\n";
+    if ($directIp) $opts4[CURLOPT_RESOLVE] = ["$directHost:443:$directIp"];
+    curl_setopt_array($ch4, $opts4);
+    $r4 = curl_exec($ch4); $e4 = curl_error($ch4); $c4 = curl_getinfo($ch4, CURLINFO_HTTP_CODE);
+    curl_close($ch4);
+    echo "DIRECT /query  [bearer+conn-str]:          HTTP $c4" . ($e4 ? " | $e4" : "") . "\n";
+    if ($r4) echo "  response: " . substr($r4, 0, 300) . "\n";
 
-    // Attempt B: Authorization: Bearer + Neon-Connection-String
-    $ch2 = curl_init("https://$host/query");
-    $opts2 = $opts;
-    $opts2[CURLOPT_HTTPHEADER] = [
-        'Content-Type: application/json',
-        "Authorization: Bearer $pass",
-        "Neon-Connection-String: $connStr",
-    ];
-    curl_setopt_array($ch2, $opts2);
-    $resp2 = curl_exec($ch2);
-    $err2  = curl_error($ch2);
-    $code2 = curl_getinfo($ch2, CURLINFO_HTTP_CODE);
-    curl_close($ch2);
-    echo "HTTP /query [bearer+conn-string]:        HTTP $code2\n";
-    if ($err2) echo "  curl error: $err2\n";
-    if ($resp2 && $code2 !== $code) echo "  response: " . substr($resp2, 0, 300) . "\n";
-
-    // Attempt C: Neon serverless /sql endpoint
-    $ch3 = curl_init("https://$host/sql/v1");
-    $opts3 = $opts;
-    $opts3[CURLOPT_HTTPHEADER] = [
-        'Content-Type: application/json',
-        "Neon-Connection-String: $connStr",
-    ];
-    if ($resolvedIp) $opts3[CURLOPT_RESOLVE] = ["$host:443:$resolvedIp"];
-    curl_setopt_array($ch3, $opts3);
-    $resp3 = curl_exec($ch3);
-    $err3  = curl_error($ch3);
-    $code3 = curl_getinfo($ch3, CURLINFO_HTTP_CODE);
-    curl_close($ch3);
-    echo "HTTP /sql/v1 [conn-string]:              HTTP $code3\n";
-    if ($err3) echo "  curl error: $err3\n";
-    if ($resp3) echo "  response: " . substr($resp3, 0, 300) . "\n";
+    // Still test pooler endpoint for comparison
+    $doQuery("https://$host/query", $resolvedIp ?? '', $connStrPooler,
+             "POOLER /query  [conn-string, IP=$resolvedIp]");
 
 } else {
     echo "curl unavailable or env vars missing\n";
