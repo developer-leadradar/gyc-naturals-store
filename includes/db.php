@@ -108,6 +108,7 @@ class NeonConnection {
  *               endpoints.  The Node.js function uses the pg npm package over
  *               TCP (which works in Node.js on Vercel) and exposes a simple
  *               authenticated JSON endpoint that PHP can reach over HTTPS.
+ * Updated: 2026-06-09 — proxy confirmed working; triggering env-var refresh.
  */
 class Database {
     private static ?Database $instance = null;
