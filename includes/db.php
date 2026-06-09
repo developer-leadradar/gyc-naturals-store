@@ -5,38 +5,26 @@ class Database {
     private string $driver;
 
     /**
-     * Resolve a hostname via DNS-over-HTTPS (Cloudflare) using curl.
-     * This bypasses PHP's getaddrinfo / system resolver, which can fail
-     * in certain serverless environments (e.g. Vercel + vercel-php).
+     * Resolve a hostname to an IPv4 address using PHP's dns_get_record().
      *
-     * Returns an IPv4 address string, or null on failure.
+     * In some serverless environments (Vercel + vercel-php), the system
+     * getaddrinfo / gethostbyname calls fail for long cloud hostnames,
+     * but PHP's own dns_get_record() works because it queries the DNS
+     * server directly via /etc/resolv.conf rather than through NSS.
+     *
+     * The resolved IP is passed as hostaddr= in the libpq DSN so libpq
+     * bypasses its own hostname→IP lookup entirely, while keeping host=
+     * for TLS SNI routing (critical for Neon's pooler).
+     *
+     * Returns an IPv4 string, or null on failure.
      */
-    private static function dohLookup(string $hostname): ?string {
-        if (!function_exists('curl_init')) return null;
-        // Try Cloudflare DoH first, then Google as fallback
-        $endpoints = [
-            'https://cloudflare-dns.com/dns-query?name=' . urlencode($hostname) . '&type=A',
-            'https://dns.google/resolve?name='            . urlencode($hostname) . '&type=A',
-        ];
-        foreach ($endpoints as $url) {
-            $ch = curl_init($url);
-            curl_setopt_array($ch, [
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_TIMEOUT        => 4,
-                CURLOPT_HTTPHEADER     => ['Accept: application/dns-json'],
-                CURLOPT_SSL_VERIFYPEER => false,
-            ]);
-            $resp = curl_exec($ch);
-            curl_close($ch);
-            if ($resp) {
-                $data = json_decode($resp, true);
-                foreach (($data['Answer'] ?? []) as $ans) {
-                    // type 1 = A record
-                    if (isset($ans['type']) && $ans['type'] === 1 && !empty($ans['data'])) {
-                        return $ans['data'];
-                    }
-                }
-            }
+    private static function resolveHostForPgsql(string $hostname): ?string {
+        if (!function_exists('dns_get_record')) return null;
+        $records = @dns_get_record($hostname, DNS_A);
+        if (is_array($records) && !empty($records)) {
+            // Shuffle to spread load across multiple IPs (Neon returns 3)
+            shuffle($records);
+            return $records[0]['ip'] ?? null;
         }
         return null;
     }
@@ -48,10 +36,13 @@ class Database {
 
             if ($this->driver === 'pgsql') {
                 $host = DB_HOST;
-                // In serverless environments (Vercel), PHP's getaddrinfo can fail with
-                // "System error". Use DoH to resolve the IP and pass it via hostaddr=
-                // so libpq bypasses the system resolver while keeping host= for TLS SNI.
-                $resolvedIp = self::dohLookup($host);
+                // In serverless environments (Vercel + vercel-php), PHP's getaddrinfo
+                // fails for long cloud hostnames (EAI_SYSTEM from broken NSS config).
+                // dns_get_record() queries DNS directly and does work — use its result
+                // as hostaddr= so libpq connects to the IP directly.
+                // host= is still set to the real hostname so TLS SNI routes correctly
+                // (Neon uses SNI-based routing; connecting via raw IP alone won't work).
+                $resolvedIp = self::resolveHostForPgsql($host);
                 $hostaddr   = $resolvedIp ? ";hostaddr=$resolvedIp" : '';
                 $dsn = "pgsql:host=$host;port=$port;dbname=" . DB_NAME . ";sslmode=require$hostaddr";
             } else {
