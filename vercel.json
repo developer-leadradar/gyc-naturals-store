@@ -4,16 +4,16 @@
   "builds": [
     {
       "src": "**/*.php",
-      "use": "@vercel/php"
+      "use": "vercel-php@0.6.0"
     }
   ],
   "routes": [
     {
-      "src": "/api/(.*)",
+      "src": "/api/(.*\\.php)",
       "dest": "/api/$1"
     },
     {
-      "src": "/admin/(.*)",
+      "src": "/admin/(.*\\.php)",
       "dest": "/admin/$1"
     },
     {
@@ -55,27 +55,5 @@
       "src": "/(.*)",
       "dest": "/$1"
     }
-  ],
-  "env": {
-    "DB_DRIVER": "mysql",
-    "DB_HOST": "@db_host",
-    "DB_PORT": "3306",
-    "DB_NAME": "@db_name",
-    "DB_USER": "@db_user",
-    "DB_PASS": "@db_pass",
-    "SITE_NAME": "GYC Naturals",
-    "SITE_URL": "https://gyc-naturals.vercel.app",
-    "SITE_EMAIL": "info@gycnaturals.com",
-    "ADMIN_EMAIL": "admin@gycnaturals.com",
-    "SITE_PHONE": "+234 800 000 0000",
-    "SITE_WHATSAPP": "+2348000000000",
-    "PAYSTACK_PUBLIC_KEY": "@paystack_public_key",
-    "PAYSTACK_SECRET_KEY": "@paystack_secret_key",
-    "PAYSTACK_CALLBACK_URL": "https://gyc-naturals.vercel.app/api/paystack-verify.php",
-    "RESEND_API_KEY": "@resend_api_key",
-    "SMTP_FROM_EMAIL": "info@gycnaturals.com",
-    "SMTP_FROM_NAME": "GYC Naturals",
-    "UPLOAD_PATH": "/tmp/uploads/",
-    "UPLOAD_URL": "https://gyc-naturals.vercel.app/uploads/"
-  }
+  ]
 }
