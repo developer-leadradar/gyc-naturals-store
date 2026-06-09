@@ -4,13 +4,56 @@ class Database {
     private $connection;
     private string $driver;
 
+    /**
+     * Resolve a hostname via DNS-over-HTTPS (Cloudflare) using curl.
+     * This bypasses PHP's getaddrinfo / system resolver, which can fail
+     * in certain serverless environments (e.g. Vercel + vercel-php).
+     *
+     * Returns an IPv4 address string, or null on failure.
+     */
+    private static function dohLookup(string $hostname): ?string {
+        if (!function_exists('curl_init')) return null;
+        // Try Cloudflare DoH first, then Google as fallback
+        $endpoints = [
+            'https://cloudflare-dns.com/dns-query?name=' . urlencode($hostname) . '&type=A',
+            'https://dns.google/resolve?name='            . urlencode($hostname) . '&type=A',
+        ];
+        foreach ($endpoints as $url) {
+            $ch = curl_init($url);
+            curl_setopt_array($ch, [
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_TIMEOUT        => 4,
+                CURLOPT_HTTPHEADER     => ['Accept: application/dns-json'],
+                CURLOPT_SSL_VERIFYPEER => false,
+            ]);
+            $resp = curl_exec($ch);
+            curl_close($ch);
+            if ($resp) {
+                $data = json_decode($resp, true);
+                foreach (($data['Answer'] ?? []) as $ans) {
+                    // type 1 = A record
+                    if (isset($ans['type']) && $ans['type'] === 1 && !empty($ans['data'])) {
+                        return $ans['data'];
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
     private function __construct() {
         try {
             $this->driver = defined('DB_DRIVER') ? DB_DRIVER : 'mysql';
             $port         = defined('DB_PORT') ? DB_PORT : ($this->driver === 'pgsql' ? '5432' : '3306');
 
             if ($this->driver === 'pgsql') {
-                $dsn = "pgsql:host=" . DB_HOST . ";port=" . $port . ";dbname=" . DB_NAME . ";sslmode=require";
+                $host = DB_HOST;
+                // In serverless environments (Vercel), PHP's getaddrinfo can fail with
+                // "System error". Use DoH to resolve the IP and pass it via hostaddr=
+                // so libpq bypasses the system resolver while keeping host= for TLS SNI.
+                $resolvedIp = self::dohLookup($host);
+                $hostaddr   = $resolvedIp ? ";hostaddr=$resolvedIp" : '';
+                $dsn = "pgsql:host=$host;port=$port;dbname=" . DB_NAME . ";sslmode=require$hostaddr";
             } else {
                 $dsn = "mysql:host=" . DB_HOST . ";port=" . $port . ";dbname=" . DB_NAME . ";charset=utf8mb4";
             }
