@@ -45,6 +45,7 @@ $waLink    = getWhatsAppFloat();
           <li><a href="<?= SITE_URL ?>/quiz.php">Hair Quiz</a></li>
           <li><a href="<?= SITE_URL ?>/moodboard.php">My Saved Looks</a></li>
           <li><a href="<?= SITE_URL ?>/blog.php">Hair Tips & Blog</a></li>
+          <li><a href="<?= SITE_URL ?>/clothing.php">Clothing Line</a></li>
         </ul>
       </div>
 

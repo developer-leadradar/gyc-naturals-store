@@ -2,10 +2,19 @@
 class Database {
     private static $instance = null;
     private $connection;
+    private string $driver;
 
     private function __construct() {
         try {
-            $dsn = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4";
+            $this->driver = defined('DB_DRIVER') ? DB_DRIVER : 'mysql';
+            $port         = defined('DB_PORT') ? DB_PORT : ($this->driver === 'pgsql' ? '5432' : '3306');
+
+            if ($this->driver === 'pgsql') {
+                $dsn = "pgsql:host=" . DB_HOST . ";port=" . $port . ";dbname=" . DB_NAME . ";sslmode=require";
+            } else {
+                $dsn = "mysql:host=" . DB_HOST . ";port=" . $port . ";dbname=" . DB_NAME . ";charset=utf8mb4";
+            }
+
             $this->connection = new PDO($dsn, DB_USER, DB_PASS, [
                 PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
@@ -24,6 +33,7 @@ class Database {
     }
 
     public function getConnection() { return $this->connection; }
+    public function getDriver()     { return $this->driver; }
 
     public function query($sql, $params = []) {
         try {
@@ -50,14 +60,24 @@ class Database {
         $keys         = array_keys($data);
         $fields       = implode(', ', $keys);
         $placeholders = ':' . implode(', :', $keys);
-        $sql          = "INSERT INTO `$table` ($fields) VALUES ($placeholders)";
-        $stmt         = $this->query($sql, $data);
+        // Use RETURNING id for PostgreSQL to get the inserted ID reliably
+        if ($this->driver === 'pgsql') {
+            $sql  = "INSERT INTO $table ($fields) VALUES ($placeholders) RETURNING id";
+            $stmt = $this->query($sql, $data);
+            if (!$stmt) return false;
+            $row = $stmt->fetch();
+            return $row ? $row['id'] : false;
+        }
+        $sql  = "INSERT INTO `$table` ($fields) VALUES ($placeholders)";
+        $stmt = $this->query($sql, $data);
         return $stmt ? $this->connection->lastInsertId() : false;
     }
 
     public function update($table, $data, $where, $whereParams = []) {
         $set = [];
-        foreach ($data as $key => $value) { $set[] = "`$key` = :$key"; }
+        foreach ($data as $key => $value) {
+            $set[] = $this->driver === 'pgsql' ? "$key = :$key" : "`$key` = :$key";
+        }
         $setString = implode(', ', $set);
 
         $namedWhereParams = [];
@@ -67,15 +87,20 @@ class Database {
             $namedWhereParams[$paramName] = $val;
         }
 
-        $sql = "UPDATE `$table` SET $setString WHERE $where";
+        $sql = $this->driver === 'pgsql'
+            ? "UPDATE $table SET $setString WHERE $where"
+            : "UPDATE `$table` SET $setString WHERE $where";
         return $this->query($sql, array_merge($data, $namedWhereParams));
     }
 
     public function delete($table, $where, $params = []) {
-        return $this->query("DELETE FROM `$table` WHERE $where", $params);
+        $sql = $this->driver === 'pgsql'
+            ? "DELETE FROM $table WHERE $where"
+            : "DELETE FROM `$table` WHERE $where";
+        return $this->query($sql, $params);
     }
 
-    public function lastInsertId() {
-        return $this->connection->lastInsertId();
+    public function lastInsertId($name = null) {
+        return $this->connection->lastInsertId($name);
     }
 }
