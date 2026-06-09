@@ -1,6 +1,6 @@
 # GYC Naturals — Build Progress
 
-## Status: ✅ ALL 35 PHASES COMPLETE
+## Status: ✅ ALL 35 PHASES COMPLETE + DEPLOYED TO PRODUCTION
 ## Last Updated: 2026-06-09
 ## PHP Syntax: 0 errors across 87 files
 
@@ -44,6 +44,35 @@
 - [x] Phase 33: Security hardening — ADMIN_EMAIL constant added to config.php; contact.php rate-limiting (3/hr/IP via ip_hash); .htaccess blocks install/seed/deploy scripts from non-localhost; install.php schema migration block for new columns
 - [x] Phase 34: QA cross-check — orders.billing_name computed in SQL; customer_email added to orders schema; emailOrderConfirmation accepts both shipping/shipping_cost keys; duplicate createAppointment() email removed; all 87 PHP files pass php -l
 - [x] Phase 35: Deployment — deploy-checklist.php (40-point auto-check + manual checklist + .env template); .env.example fully documented; .htaccess blocks checklist from public access
+
+---
+
+## Cloud Deployment (2026-06-09)
+
+### GitHub
+- Repo: https://github.com/developer-leadradar/gyc-naturals-store
+- Branch: master — 4 commits pushed
+
+### Neon PostgreSQL (Cloud DB)
+- Project: gyc-naturals (org: gyc-stores)
+- Host: ep-withered-queen-aq0iyxzp.c-8.us-east-1.aws.neon.tech
+- Database: neondb | User: neondb_owner
+- Region: AWS US East 1 (N. Virginia) | Free tier
+- Schema: 26 tables created via neon_setup.sql (82 SQL statements)
+- Admin user seeded: admin@gycnaturals.com / Admin@2025
+
+### Vercel
+- Project: isaac-morah-s-projects/gyc-naturals
+- Runtime: vercel-php@0.9.0 (PHP 8.5, AlmaLinux 9)
+- DB Env Vars: DB_DRIVER=pgsql, DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASS (all set)
+- URL: https://gyc-naturals.vercel.app
+
+### Code Changes (this session)
+- includes/db.php: Added pgsql DSN support, RETURNING id for PostgreSQL inserts
+- includes/footer.php: Added "Clothing Line" link to Quick Links
+- neon_setup.sql: Full PostgreSQL schema (26 tables, 6 ENUM types, indexes)
+- vercel.json: Updated runtime from @vercel/php → vercel-php@0.9.0
+- .gitignore: Added .vercel directory
 
 ---
 
