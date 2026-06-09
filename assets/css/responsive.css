@@ -1,0 +1,294 @@
+/* GYC Naturals — Responsive Styles */
+
+/* ═══════════════════════════════════════════════════
+   TABLET  768–1023px
+═══════════════════════════════════════════════════ */
+@media (max-width: 1023px) {
+  .nav-links { display: none; }
+  .nav-hamburger { display: flex; }
+
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
+
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .grid-3 { grid-template-columns: repeat(2, 1fr); }
+
+  .styles-grid { grid-template-columns: repeat(2, 1fr); }
+
+  .gallery-grid { columns: 2; }
+
+  .services-grid { grid-template-columns: 1fr 1fr; }
+
+  .about-strip { grid-template-columns: 1fr; gap: 2rem; }
+  .about-strip-img { max-height: 380px; aspect-ratio: 16/9; }
+
+  .product-detail { grid-template-columns: 1fr; }
+  .product-detail-img { max-width: 420px; }
+
+  .dashboard-layout { grid-template-columns: 180px 1fr; }
+
+  .quiz-options { grid-template-columns: repeat(3, 1fr); }
+
+  .style-selector-grid { grid-template-columns: repeat(2, 1fr); }
+
+  .social-strip-grid { grid-template-columns: repeat(4, 1fr); }
+
+  .hero-bg { grid-template-columns: repeat(2, 1fr); }
+  .hero-bg > *:nth-child(n+5) { display: none; }
+}
+
+/* ═══════════════════════════════════════════════════
+   MOBILE  < 768px
+═══════════════════════════════════════════════════ */
+@media (max-width: 767px) {
+  .section    { padding: 2.5rem 0; }
+  .section-lg { padding: 3rem 0; }
+
+  .container { padding: 0 1rem; }
+
+  /* Nav */
+  .nav-inner { padding: 0 1rem; }
+  .nav-hamburger { display: flex; }
+
+  /* Hero */
+  .hero-bg { grid-template-columns: 1fr; grid-template-rows: 1fr; }
+  .hero-bg > *:nth-child(n+2) { display: none; }
+  .hero-bg > *:first-child { height: 100vh; }
+  .hero-ctas { flex-direction: column; align-items: center; }
+
+  /* Grids */
+  .grid-2 { grid-template-columns: 1fr; }
+  .grid-3 { grid-template-columns: 1fr; }
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+
+  .styles-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+
+  .gallery-grid { columns: 1; }
+
+  .services-grid { grid-template-columns: 1fr; }
+
+  /* Proverb */
+  .proverb-strip { flex-direction: column; text-align: center; padding: 1.25rem 1rem; }
+  .proverb-strip .adinkra-icon { display: none; }
+
+  /* Footer */
+  .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
+  .footer-bottom { flex-direction: column; text-align: center; gap: 0.5rem; }
+
+  /* Bundles */
+  .bundle-strip-scroll {
+    display: flex;
+    overflow-x: auto;
+    gap: 1rem;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 1rem;
+  }
+  .bundle-strip-scroll .bundle-card { min-width: 280px; }
+
+  /* Booking */
+  .booking-stepper { gap: 0; }
+  .booking-step-line { min-width: 30px; }
+  .booking-step-label { font-size: 0.65rem; }
+  .style-selector-grid { grid-template-columns: repeat(2, 1fr); }
+
+  /* Quiz */
+  .quiz-options { grid-template-columns: repeat(2, 1fr); }
+
+  /* Cart */
+  .cart-item { grid-template-columns: 64px 1fr; }
+  .cart-item-price { grid-column: 2; }
+
+  /* Dashboard */
+  .dashboard-layout { grid-template-columns: 1fr; }
+  .dashboard-nav {
+    position: static;
+    display: flex;
+    overflow-x: auto;
+    gap: 0.25rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--gyc-green-100);
+    margin-bottom: 1.5rem;
+  }
+  .dashboard-nav a { white-space: nowrap; }
+
+  /* Product detail */
+  .product-detail { grid-template-columns: 1fr; gap: 1.5rem; }
+
+  /* Social strip */
+  .social-strip-grid { grid-template-columns: repeat(3, 1fr); }
+
+  /* Clothing strip */
+  .clothing-thumb { width: 150px; height: 200px; }
+
+  /* Typography */
+  h2 { font-size: 1.5rem; }
+  h3 { font-size: 1.2rem; }
+
+  /* Before/after slider */
+  .before-after-slider { border-radius: 8px; }
+
+  /* Buttons */
+  .btn { padding: 0.65rem 1.25rem; }
+  .btn-lg { padding: 0.75rem 1.5rem; font-size: 0.95rem; }
+
+  /* Moodboard */
+  .moodboard-grid { grid-template-columns: 1fr; }
+
+  /* About */
+  .about-strip { grid-template-columns: 1fr; }
+  .about-strip-img { max-height: 300px; aspect-ratio: 4/3; }
+
+  /* Quiz CTA */
+  .quiz-cta-strip { padding: 2.5rem 1rem; }
+
+  /* Filter chips */
+  .filter-chips { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 0.5rem; }
+  .filter-chip  { flex-shrink: 0; }
+
+  /* Tab bar */
+  .tab-bar { overflow-x: auto; }
+  .tab-btn  { white-space: nowrap; padding: 0.6rem 1rem; }
+
+  /* WhatsApp float + scroll-top: avoid overlap */
+  .scroll-top { right: 1.25rem; bottom: 4.5rem; }
+  .whatsapp-float { bottom: 1.25rem; right: 1.25rem; }
+}
+
+/* ═══════════════════════════════════════════════════
+   SMALL MOBILE  < 380px
+═══════════════════════════════════════════════════ */
+@media (max-width: 379px) {
+  .styles-grid { grid-template-columns: 1fr; }
+  .grid-4 { grid-template-columns: 1fr; }
+  .quiz-options { grid-template-columns: 1fr; }
+  .style-selector-grid { grid-template-columns: 1fr; }
+  .hero-title { font-size: 2rem; }
+}
+
+/* ═══════════════════════════════════════════════════
+   PRINT
+═══════════════════════════════════════════════════ */
+@media print {
+  .site-header, .site-footer, .whatsapp-float,
+  .scroll-top, .cookie-banner, .toast-container { display: none; }
+}
+
+/* ═══════════════════════════════════════════════════
+   CLOTHING PAGE — RESPONSIVE
+═══════════════════════════════════════════════════ */
+@media (max-width: 1023px) {
+  .clothing-brand-story  { grid-template-columns: 1fr !important; }
+  .clothing-lookbook     { grid-template-columns: 1fr 1fr !important; }
+}
+@media (max-width: 767px) {
+  .clothing-lookbook     { grid-template-columns: 1fr !important; }
+  .clothing-cat-strip    { grid-template-columns: repeat(3, 1fr) !important; }
+  .clothing-perks        { grid-template-columns: 1fr 1fr !important; }
+}
+@media (max-width: 479px) {
+  .clothing-cat-strip    { grid-template-columns: repeat(2, 1fr) !important; }
+  .clothing-perks        { grid-template-columns: 1fr !important; }
+}
+
+/* ═══════════════════════════════════════════════════
+   EMAIL TEMPLATE RESPONSIVE (used in admin preview)
+═══════════════════════════════════════════════════ */
+@media (max-width: 620px) {
+  .email-container { width: 100% !important; }
+  .email-body      { padding: 20px !important; }
+}
+
+/* ═══════════════════════════════════════════════════
+   PERFORMANCE — CONTENT VISIBILITY
+   Defer off-screen rendering for below-the-fold sections
+═══════════════════════════════════════════════════ */
+.cv-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 500px;  /* best-guess placeholder height */
+}
+.cv-auto-tall {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 900px;
+}
+
+/* ═══════════════════════════════════════════════════
+   LAZY-IMAGE FADE-IN
+═══════════════════════════════════════════════════ */
+img[loading="lazy"] {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+img[loading="lazy"].loaded {
+  opacity: 1;
+}
+/* For browsers that already have it cached — instant */
+img[loading="lazy"].instantly-visible {
+  opacity: 1;
+  transition: none;
+}
+
+/* ═══════════════════════════════════════════════════
+   FOCUS VISIBLE — keyboard accessibility
+═══════════════════════════════════════════════════ */
+:focus-visible {
+  outline: 3px solid var(--gyc-green-600);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+button:focus:not(:focus-visible),
+a:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* ═══════════════════════════════════════════════════
+   REDUCED MOTION
+═══════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  img[loading="lazy"] { opacity: 1; transition: none; }
+}
+
+/* ═══════════════════════════════════════════════════
+   DARK MODE SUPPORT (system preference)
+═══════════════════════════════════════════════════ */
+@media (prefers-color-scheme: dark) {
+  /* Applied only to elements that opt in via .dark-aware class */
+  .dark-aware {
+    --_bg:   #1a1a1a;
+    --_text: #f0f0f0;
+    background: var(--_bg);
+    color: var(--_text);
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   UTILITY ADDITIONS
+═══════════════════════════════════════════════════ */
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
+.truncate-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.truncate-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+/* Safe area padding for iOS notch */
+.safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+.safe-top    { padding-top: env(safe-area-inset-top); }

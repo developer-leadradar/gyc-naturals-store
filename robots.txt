@@ -1,0 +1,58 @@
+User-agent: *
+Allow: /gyc-store/
+
+# Block admin and API
+Disallow: /gyc-store/admin/
+Disallow: /gyc-store/api/
+Disallow: /gyc-store/uploads/
+Disallow: /gyc-store/includes/
+
+# Block utility/private pages
+Disallow: /gyc-store/order-details.php
+Disallow: /gyc-store/checkout.php
+Disallow: /gyc-store/cart.php
+Disallow: /gyc-store/customer-dashboard.php
+Disallow: /gyc-store/my-orders.php
+Disallow: /gyc-store/my-appointments.php
+Disallow: /gyc-store/my-wishlist.php
+Disallow: /gyc-store/my-profile.php
+Disallow: /gyc-store/login.php
+Disallow: /gyc-store/register.php
+Disallow: /gyc-store/logout.php
+Disallow: /gyc-store/forgot-password.php
+Disallow: /gyc-store/reset-password.php
+Disallow: /gyc-store/booking-confirmation.php
+Disallow: /gyc-store/quiz-result.php
+Disallow: /gyc-store/offline.php
+
+# Block search/filter query strings that create duplicate content
+Disallow: /gyc-store/shop.php?sort=
+Disallow: /gyc-store/shop.php?min_price=
+Disallow: /gyc-store/shop.php?page=
+
+# Sitemap location
+Sitemap: http://localhost/gyc-store/sitemap.php
+
+# Crawl delay (be nice to our server)
+Crawl-delay: 2
+
+# Well-known bots
+User-agent: Googlebot
+Allow: /gyc-store/
+Crawl-delay: 1
+
+User-agent: Bingbot
+Allow: /gyc-store/
+Crawl-delay: 2
+
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /

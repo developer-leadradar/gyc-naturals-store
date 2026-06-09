@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="40" height="40">
+  <rect width="40" height="40" fill="none"/>
+  <!-- Interlocking triangles and diamonds — Ankara/Kente geometric motif -->
+  <!-- Top diamond -->
+  <polygon points="20,2 28,10 20,18 12,10" fill="none" stroke="#40916C" stroke-width="1.2"/>
+  <!-- Bottom diamond -->
+  <polygon points="20,22 28,30 20,38 12,30" fill="none" stroke="#40916C" stroke-width="1.2"/>
+  <!-- Left triangle -->
+  <polygon points="2,10 10,18 2,26" fill="none" stroke="#40916C" stroke-width="1"/>
+  <!-- Right triangle -->
+  <polygon points="38,10 30,18 38,26" fill="none" stroke="#40916C" stroke-width="1"/>
+  <!-- Center cross dots -->
+  <circle cx="20" cy="10" r="1.2" fill="#40916C"/>
+  <circle cx="20" cy="30" r="1.2" fill="#40916C"/>
+  <circle cx="10" cy="20" r="1.2" fill="#40916C"/>
+  <circle cx="30" cy="20" r="1.2" fill="#40916C"/>
+  <!-- Corner connection lines -->
+  <line x1="0" y1="0"  x2="12" y2="10" stroke="#40916C" stroke-width="0.8" opacity="0.5"/>
+  <line x1="40" y1="0" x2="28" y2="10" stroke="#40916C" stroke-width="0.8" opacity="0.5"/>
+  <line x1="0" y1="40" x2="12" y2="30" stroke="#40916C" stroke-width="0.8" opacity="0.5"/>
+  <line x1="40" y1="40" x2="28" y2="30" stroke="#40916C" stroke-width="0.8" opacity="0.5"/>
+</svg>

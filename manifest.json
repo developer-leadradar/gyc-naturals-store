@@ -1,0 +1,92 @@
+{
+  "name": "GYC Naturals",
+  "short_name": "GYC Naturals",
+  "description": "African Hair Braiding Salon & Natural Hair Products — Victoria Island, Lagos",
+  "start_url": "/gyc-store/",
+  "scope": "/gyc-store/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#FAFFF7",
+  "theme_color": "#166534",
+  "lang": "en-NG",
+  "categories": ["beauty", "shopping", "lifestyle"],
+  "icons": [
+    {
+      "src": "/gyc-store/assets/images/icon-72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/gyc-store/assets/images/icon-96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/gyc-store/assets/images/icon-128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/gyc-store/assets/images/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/gyc-store/assets/images/icon-384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/gyc-store/assets/images/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Book Appointment",
+      "short_name": "Book",
+      "description": "Book a hair braiding or styling appointment",
+      "url": "/gyc-store/book-appointment.php",
+      "icons": [{ "src": "/gyc-store/assets/images/icon-96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Shop Products",
+      "short_name": "Shop",
+      "description": "Browse natural hair products and clothing",
+      "url": "/gyc-store/shop.php",
+      "icons": [{ "src": "/gyc-store/assets/images/icon-96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "View Gallery",
+      "short_name": "Gallery",
+      "description": "See our protective styles gallery",
+      "url": "/gyc-store/gallery.php",
+      "icons": [{ "src": "/gyc-store/assets/images/icon-96.png", "sizes": "96x96" }]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/gyc-store/assets/images/screenshot-mobile.jpg",
+      "sizes": "390x844",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "GYC Naturals homepage on mobile"
+    },
+    {
+      "src": "/gyc-store/assets/images/screenshot-desktop.jpg",
+      "sizes": "1280x800",
+      "type": "image/jpeg",
+      "form_factor": "wide",
+      "label": "GYC Naturals shop on desktop"
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false
+}

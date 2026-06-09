@@ -1,0 +1,67 @@
+# GYC Naturals — Git Ignore
+# ============================================================
+
+# Environment & secrets
+.env
+*.env.local
+*.env.production
+
+# Master prompt (contains business owner info — not for public repo)
+GYC_Naturals_Master_Prompt.txt
+
+# XAMPP / PHP specific
+*.log
+php_errors.log
+
+# Uploads (media files — not tracked in git)
+uploads/gallery/*.jpg
+uploads/gallery/*.jpeg
+uploads/gallery/*.png
+uploads/gallery/*.webp
+uploads/gallery/*.gif
+uploads/products/*.jpg
+uploads/products/*.jpeg
+uploads/products/*.png
+uploads/products/*.webp
+uploads/testimonials/*.jpg
+uploads/testimonials/*.png
+uploads/testimonials/*.webp
+uploads/blog/*.jpg
+uploads/blog/*.png
+uploads/blog/*.webp
+uploads/about/*.jpg
+uploads/about/*.png
+uploads/about/*.webp
+
+# Keep upload directories themselves
+!uploads/gallery/.gitkeep
+!uploads/products/.gitkeep
+!uploads/testimonials/.gitkeep
+!uploads/blog/.gitkeep
+!uploads/about/.gitkeep
+
+# Vendor (PHPMailer etc.)
+vendor/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Node (if any build tools used)
+node_modules/
+npm-debug.log
+
+# Temp files
+*.tmp
+*.bak
+*.orig
+
+# Windows
+ehthumbs.db
