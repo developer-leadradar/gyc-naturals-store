@@ -3,11 +3,19 @@
   "name": "gyc-naturals",
   "builds": [
     {
+      "src": "api/db-proxy.js",
+      "use": "@vercel/node"
+    },
+    {
       "src": "**/*.php",
       "use": "vercel-php@0.9.0"
     }
   ],
   "routes": [
+    {
+      "src": "/api/db-proxy",
+      "dest": "/api/db-proxy.js"
+    },
     {
       "src": "/api/(.*\\.php)",
       "dest": "/api/$1"

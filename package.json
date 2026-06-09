@@ -1,0 +1,12 @@
+{
+  "name": "gyc-naturals",
+  "version": "1.0.0",
+  "private": true,
+  "description": "GYC Naturals — Node.js DB proxy for Vercel",
+  "dependencies": {
+    "pg": "^8.13.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

@@ -56,6 +56,9 @@ define('SUPABASE_BUCKET',      getenv('SUPABASE_BUCKET')      ?: 'gyc-gallery');
 define('UPLOAD_PATH', getenv('UPLOAD_PATH') ?: __DIR__ . '/uploads/');
 define('UPLOAD_URL',  getenv('UPLOAD_URL')  ?: SITE_URL . '/uploads/');
 
+// DB proxy (Node.js ↔ PHP bridge on Vercel)
+define('DB_PROXY_SECRET', getenv('DB_PROXY_SECRET') ?: '');
+
 // Security
 define('PASSWORD_HASH_ALGO', PASSWORD_BCRYPT);
 define('PASSWORD_HASH_COST', 12);

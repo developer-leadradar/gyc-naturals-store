@@ -1,6 +1,6 @@
 <?php
 /**
- * NeonStatement — returned by Database::query() on the pgsql/HTTP path.
+ * NeonStatement — returned by Database::query() on the pgsql proxy path.
  * Implements the PDOStatement subset used across the codebase.
  */
 class NeonStatement {
@@ -37,7 +37,7 @@ class NeonStatement {
 
 /**
  * NeonPreparedStatement — returned by NeonConnection::prepare().
- * Stores the SQL, executes via the Database HTTP layer on execute().
+ * Stores the SQL, executes via the Database proxy layer on execute().
  */
 class NeonPreparedStatement {
     private Database       $db;
@@ -101,9 +101,13 @@ class NeonConnection {
 
 /**
  * Database — singleton that supports:
- *   • MySQL    → standard PDO connection
- *   • pgsql    → Neon HTTP query API via curl on port 443
- *                (bypasses broken getaddrinfo + blocked port 5432 in Vercel)
+ *   • MySQL  → standard PDO connection
+ *   • pgsql  → Node.js db-proxy via HTTPS (api/db-proxy.js within the same
+ *               Vercel project).  PHP cannot open TCP sockets in vercel-php,
+ *               and Neon's HTTP query API is not supported on c-8 cluster
+ *               endpoints.  The Node.js function uses the pg npm package over
+ *               TCP (which works in Node.js on Vercel) and exposes a simple
+ *               authenticated JSON endpoint that PHP can reach over HTTPS.
  */
 class Database {
     private static ?Database $instance = null;
@@ -112,33 +116,18 @@ class Database {
     // ── MySQL path ──────────────────────────────────────────────────────────
     private ?PDO $connection = null;
 
-    // ── Neon HTTP path ──────────────────────────────────────────────────────
-    private ?string $neonHost    = null;  // original hostname (used for SNI)
-    private ?string $neonIp      = null;  // resolved A-record IP (bypass DNS)
-    private ?string $neonConnStr = null;  // postgresql://user:pass@host/db
+    // ── pgsql proxy path ────────────────────────────────────────────────────
+    private ?string $proxyUrl    = null;  // https://<host>/api/db-proxy
+    private ?string $proxySecret = null;  // shared secret header value
 
     // ───────────────────────────────────────────────────────────────────────
-    // Resolve a Neon hostname to an IPv4 using dns_get_record().
-    // This works in vercel-php even when gethostbyname() / getaddrinfo fail.
-    // ───────────────────────────────────────────────────────────────────────
-    private static function resolveHostIp(string $hostname): ?string {
-        if (!function_exists('dns_get_record')) return null;
-        $recs = @dns_get_record($hostname, DNS_A);
-        if (is_array($recs) && !empty($recs)) {
-            shuffle($recs);          // spread across Neon's multiple IPs
-            return $recs[0]['ip'] ?? null;
-        }
-        return null;
-    }
-
-    // ───────────────────────────────────────────────────────────────────────
-    // Core HTTP query helper — sends SQL to Neon's /query HTTP endpoint.
+    // Core proxy helper — sends SQL + params to the Node.js db-proxy.
     //
     // Named params  (:foo)  are converted to PostgreSQL positional ($1, $2…)
     // before sending.  :: type-casts are left untouched (lookbehind on :).
     // ───────────────────────────────────────────────────────────────────────
     private function httpQuery(string $sql, array $params): ?array {
-        if (!function_exists('curl_init')) return null;
+        if (!function_exists('curl_init') || !$this->proxyUrl) return null;
 
         // Step 1: convert named  :param  →  $N  (skip  ::type-casts)
         $positional = [];
@@ -161,31 +150,23 @@ class Database {
         }
 
         $payload = json_encode([
-            'query'  => $converted,
+            'sql'    => $converted,
             'params' => $positional,
         ]);
 
-        $host = $this->neonHost;
-        $ch   = curl_init("https://$host/query");
-        $opts = [
+        $ch = curl_init($this->proxyUrl);
+        curl_setopt_array($ch, [
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_TIMEOUT        => 15,
-            CURLOPT_CONNECTTIMEOUT => 8,
+            CURLOPT_TIMEOUT        => 20,
+            CURLOPT_CONNECTTIMEOUT => 10,
             CURLOPT_POST           => true,
             CURLOPT_POSTFIELDS     => $payload,
             CURLOPT_HTTPHEADER     => [
                 'Content-Type: application/json',
-                "Neon-Connection-String: {$this->neonConnStr}",
+                'x-db-secret: ' . $this->proxySecret,
             ],
             CURLOPT_SSL_VERIFYPEER => true,
-        ];
-        // CURLOPT_RESOLVE injects the pre-resolved IP into curl's DNS cache,
-        // so curl skips its own DNS lookup but still sends the correct hostname
-        // via TLS SNI — which Neon requires for routing to the right compute.
-        if ($this->neonIp) {
-            $opts[CURLOPT_RESOLVE] = ["$host:443:{$this->neonIp}"];
-        }
-        curl_setopt_array($ch, $opts);
+        ]);
 
         $resp = curl_exec($ch);
         $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -193,7 +174,7 @@ class Database {
         curl_close($ch);
 
         if ($err || $code !== 200) {
-            error_log("Neon HTTP query failed: HTTP $code | $err | "
+            error_log("DB proxy query failed: HTTP $code | $err | "
                     . substr($sql, 0, 120));
             return null;
         }
@@ -208,39 +189,23 @@ class Database {
         $port         = defined('DB_PORT')   ? DB_PORT   : ($this->driver === 'pgsql' ? '5432' : '3306');
 
         if ($this->driver === 'pgsql') {
-            // ── Neon HTTP API path ─────────────────────────────────────────
-            // The HTTP query API works on the DIRECT endpoint (strip -pooler).
-            // We intentionally do NOT use CURLOPT_RESOLVE — dns_get_record()
-            // resolves the direct hostname to pooler IPs (same anycast range),
-            // pinning those IPs causes the proxy to reject /query requests.
-            // Letting libcurl (c-ares) handle DNS independently reaches the
-            // correct compute-side proxy that accepts HTTP queries.
-            //
-            // We also include options=endpoint=<id> in the connection string,
-            // as required by Neon c-N cluster endpoints for HTTP query routing.
-            $poolerHost  = DB_HOST;
-            $directHost  = preg_replace('/-pooler(?=\.)/', '', $poolerHost);
-            $this->neonHost   = $directHost;
-            $this->neonIp     = null;  // do NOT pin IP — let curl resolve natively
+            // ── pgsql → Node.js proxy path ─────────────────────────────────
+            // Construct the proxy URL from the current request host so that
+            // preview deployments call their own proxy, not production.
+            $requestHost      = $_SERVER['HTTP_HOST'] ?? 'gyc-naturals.vercel.app';
+            $this->proxyUrl   = 'https://' . $requestHost . '/api/db-proxy';
+            $this->proxySecret = defined('DB_PROXY_SECRET') ? DB_PROXY_SECRET : '';
 
-            // Extract endpoint ID from hostname (ep-xxxx-xxxx)
-            $endpointId = '';
-            if (preg_match('/^(ep-[a-z0-9]+-[a-z0-9]+)/', $directHost, $m)) {
-                $endpointId = $m[1];
+            if (empty($this->proxySecret)) {
+                die('Database Connection Failed: DB_PROXY_SECRET is not set. '
+                  . 'Add it as an environment variable in Vercel.');
             }
-
-            $this->neonConnStr = 'postgresql://'
-                               . urlencode(DB_USER) . ':' . urlencode(DB_PASS)
-                               . '@' . $directHost . '/' . DB_NAME
-                               . ($endpointId ? '?options=endpoint%3D' . $endpointId : '');
 
             // Verify connectivity with a lightweight probe
             $check = $this->httpQuery('SELECT 1 AS ok', []);
             if ($check === null) {
-                // Surface a clear error (same format callers expect)
-                die('Database Connection Failed: Neon HTTP API unreachable. '
-                  . 'Verify DB_HOST / DB_USER / DB_PASS environment variables '
-                  . 'and that outbound HTTPS (port 443) is allowed.');
+                die('Database Connection Failed: could not reach /api/db-proxy. '
+                  . 'Ensure the Node.js function is deployed and DB_PROXY_SECRET matches.');
             }
         } else {
             // ── MySQL PDO path ─────────────────────────────────────────────
@@ -290,10 +255,10 @@ class Database {
                 return false;
             }
         }
-        // pgsql: Neon HTTP
+        // pgsql: Node.js proxy
         $result = $this->httpQuery($sql, $params);
         if ($result === null) {
-            error_log('Neon query returned null | SQL: ' . $sql);
+            error_log('DB proxy query returned null | SQL: ' . $sql);
             return false;
         }
         return new NeonStatement($result);

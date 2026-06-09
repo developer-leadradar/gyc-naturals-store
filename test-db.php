@@ -134,7 +134,46 @@ if ($host !== '(not set)' && function_exists('curl_init') && $pass !== '(not set
 }
 echo "\n";
 
-// 6. PDO pgsql with resolved IP + options=endpoint (fallback test)
+// 6. Node.js DB proxy test (the actual production path)
+echo "--- Node.js DB Proxy (/api/db-proxy) ---\n";
+$proxySecret = getenv('DB_PROXY_SECRET') ?: '';
+if (empty($proxySecret)) {
+    echo "DB_PROXY_SECRET not set — skipping\n";
+} elseif (!function_exists('curl_init')) {
+    echo "curl not available — skipping\n";
+} else {
+    $requestHost = $_SERVER['HTTP_HOST'] ?? 'gyc-naturals.vercel.app';
+    $proxyUrl    = 'https://' . $requestHost . '/api/db-proxy';
+    echo "Proxy URL: $proxyUrl\n";
+    $ch = curl_init($proxyUrl);
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_TIMEOUT        => 15,
+        CURLOPT_POST           => true,
+        CURLOPT_POSTFIELDS     => json_encode(['sql' => 'SELECT 1 AS ok', 'params' => []]),
+        CURLOPT_HTTPHEADER     => [
+            'Content-Type: application/json',
+            "x-db-secret: $proxySecret",
+        ],
+        CURLOPT_SSL_VERIFYPEER => true,
+    ]);
+    $resp = curl_exec($ch);
+    $err  = curl_error($ch);
+    $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+    echo "HTTP $code" . ($err ? " | curl error: $err" : '') . "\n";
+    if ($resp) {
+        $data = json_decode($resp, true);
+        if ($code === 200 && isset($data['rows'])) {
+            echo "✅ Proxy working! rows=" . json_encode($data['rows']) . "\n";
+        } else {
+            echo "Response: " . substr($resp, 0, 300) . "\n";
+        }
+    }
+}
+echo "\n";
+
+// 7. PDO pgsql with resolved IP + options=endpoint (fallback test)
 echo "--- PDO pgsql: host=resolvedIP + options=endpoint ---\n";
 if ($host !== '(not set)' && $resolvedIp && class_exists('PDO')) {
     $endpointId = preg_match('/^(ep-[a-z0-9-]+?)(?:-pooler)?(?:\.|$)/', $host, $m) ? $m[1] : null;
