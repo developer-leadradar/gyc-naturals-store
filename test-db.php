@@ -71,16 +71,24 @@ if (function_exists('curl_init')) {
 }
 echo "\n";
 
-// 5. TCP socket test on port 5432
+// 5. TCP socket test on port 5432 (hostname + IPs)
 echo "--- TCP Socket port 5432 ---\n";
 if ($host !== '(not set)') {
+    // Try hostname first
     $errno = $errstr = null;
     $sock = @fsockopen($host, (int)($port ?: 5432), $errno, $errstr, 5);
-    if ($sock) {
-        fclose($sock);
-        echo "fsockopen($host:$port) => OK\n";
-    } else {
-        echo "fsockopen($host:$port) => FAILED: [$errno] $errstr\n";
+    if ($sock) { fclose($sock); echo "fsockopen($host:$port) => OK\n"; }
+    else        { echo "fsockopen($host:$port) => FAILED: [$errno] $errstr\n"; }
+
+    // Try each resolved IP directly
+    $recs = @dns_get_record($host, DNS_A) ?: [];
+    foreach ($recs as $r) {
+        if (empty($r['ip'])) continue;
+        $ip    = $r['ip'];
+        $errno = $errstr = null;
+        $s     = @fsockopen($ip, (int)($port ?: 5432), $errno, $errstr, 5);
+        if ($s) { fclose($s); echo "fsockopen($ip:$port) => OK\n"; }
+        else    { echo "fsockopen($ip:$port) => FAILED: [$errno] $errstr\n"; }
     }
 } else {
     echo "DB_HOST not set — skipping TCP test\n";
