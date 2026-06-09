@@ -121,11 +121,16 @@ class Database {
     private ?string $proxyUrl    = null;  // https://<host>/api/db-proxy
     private ?string $proxySecret = null;  // shared secret header value
 
+    /** Reused curl handle — one TLS handshake per PHP process invocation. */
+    private mixed $curlHandle = null;
+
     // ───────────────────────────────────────────────────────────────────────
     // Core proxy helper — sends SQL + params to the Node.js db-proxy.
     //
     // Named params  (:foo)  are converted to PostgreSQL positional ($1, $2…)
     // before sending.  :: type-casts are left untouched (lookbehind on :).
+    // The curl handle is reused across calls within the same PHP process so
+    // TLS negotiation only happens once (HTTP/1.1 keep-alive).
     // ───────────────────────────────────────────────────────────────────────
     private function httpQuery(string $sql, array $params): ?array {
         if (!function_exists('curl_init') || !$this->proxyUrl) return null;
@@ -155,24 +160,32 @@ class Database {
             'params' => $positional,
         ]);
 
-        $ch = curl_init($this->proxyUrl);
-        curl_setopt_array($ch, [
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_TIMEOUT        => 20,
-            CURLOPT_CONNECTTIMEOUT => 10,
-            CURLOPT_POST           => true,
-            CURLOPT_POSTFIELDS     => $payload,
-            CURLOPT_HTTPHEADER     => [
-                'Content-Type: application/json',
-                'x-db-secret: ' . $this->proxySecret,
-            ],
-            CURLOPT_SSL_VERIFYPEER => true,
-        ]);
+        // Initialise (or reuse) the persistent curl handle
+        if ($this->curlHandle === null) {
+            $this->curlHandle = curl_init();
+            curl_setopt_array($this->curlHandle, [
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_TIMEOUT        => 20,
+                CURLOPT_CONNECTTIMEOUT => 10,
+                CURLOPT_SSL_VERIFYPEER => true,
+                CURLOPT_FORBID_REUSE   => false,   // keep connection alive
+                CURLOPT_FRESH_CONNECT  => false,   // reuse if possible
+                CURLOPT_HTTPHEADER     => [
+                    'Content-Type: application/json',
+                    'Connection: keep-alive',
+                    'x-db-secret: ' . $this->proxySecret,
+                ],
+            ]);
+        }
+
+        $ch = $this->curlHandle;
+        curl_setopt($ch, CURLOPT_URL,        $this->proxyUrl);
+        curl_setopt($ch, CURLOPT_POST,       true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
 
         $resp = curl_exec($ch);
         $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         $err  = curl_error($ch);
-        curl_close($ch);
 
         if ($err || $code !== 200) {
             error_log("DB proxy query failed: HTTP $code | $err | "
@@ -201,13 +214,9 @@ class Database {
                 die('Database Connection Failed: DB_PROXY_SECRET is not set. '
                   . 'Add it as an environment variable in Vercel.');
             }
-
-            // Verify connectivity with a lightweight probe
-            $check = $this->httpQuery('SELECT 1 AS ok', []);
-            if ($check === null) {
-                die('Database Connection Failed: could not reach /api/db-proxy. '
-                  . 'Ensure the Node.js function is deployed and DB_PROXY_SECRET matches.');
-            }
+            // No connectivity probe here — the probe added ~1-2s to every page
+            // load (cold-start overhead × one extra HTTPS round-trip to the
+            // Node.js proxy).  Any real query failure will surface on first use.
         } else {
             // ── MySQL PDO path ─────────────────────────────────────────────
             $dsn = 'mysql:host=' . DB_HOST . ';port=' . $port
