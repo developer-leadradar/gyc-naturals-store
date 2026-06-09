@@ -209,17 +209,30 @@ class Database {
 
         if ($this->driver === 'pgsql') {
             // ── Neon HTTP API path ─────────────────────────────────────────
-            // The HTTP query API works on the DIRECT endpoint, NOT the pooler.
-            // Pooler (PgBouncer) only speaks the PostgreSQL wire protocol.
-            // Strip "-pooler" from the hostname to get the direct endpoint.
-            $poolerHost       = DB_HOST;
-            $directHost       = preg_replace('/-pooler(?=\.)/', '', $poolerHost);
-            $this->neonHost   = $directHost;  // used for HTTP API queries
-            $this->neonIp     = self::resolveHostIp($directHost)
-                             ?? self::resolveHostIp($poolerHost); // fallback to pooler IP
+            // The HTTP query API works on the DIRECT endpoint (strip -pooler).
+            // We intentionally do NOT use CURLOPT_RESOLVE — dns_get_record()
+            // resolves the direct hostname to pooler IPs (same anycast range),
+            // pinning those IPs causes the proxy to reject /query requests.
+            // Letting libcurl (c-ares) handle DNS independently reaches the
+            // correct compute-side proxy that accepts HTTP queries.
+            //
+            // We also include options=endpoint=<id> in the connection string,
+            // as required by Neon c-N cluster endpoints for HTTP query routing.
+            $poolerHost  = DB_HOST;
+            $directHost  = preg_replace('/-pooler(?=\.)/', '', $poolerHost);
+            $this->neonHost   = $directHost;
+            $this->neonIp     = null;  // do NOT pin IP — let curl resolve natively
+
+            // Extract endpoint ID from hostname (ep-xxxx-xxxx)
+            $endpointId = '';
+            if (preg_match('/^(ep-[a-z0-9]+-[a-z0-9]+)/', $directHost, $m)) {
+                $endpointId = $m[1];
+            }
+
             $this->neonConnStr = 'postgresql://'
                                . urlencode(DB_USER) . ':' . urlencode(DB_PASS)
-                               . '@' . $directHost . '/' . DB_NAME;
+                               . '@' . $directHost . '/' . DB_NAME
+                               . ($endpointId ? '?options=endpoint%3D' . $endpointId : '');
 
             // Verify connectivity with a lightweight probe
             $check = $this->httpQuery('SELECT 1 AS ok', []);

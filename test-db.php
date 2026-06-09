@@ -70,11 +70,18 @@ echo "--- Neon HTTP Query API ---\n";
 echo "Direct host: $directHost (IP=$directIp)\n";
 if ($host !== '(not set)' && function_exists('curl_init') && $pass !== '(not set)') {
 
+    $payload = json_encode(['query' => 'SELECT 1 AS ok', 'params' => []]);
+
+    // Extract endpoint ID for options= parameter
+    $endpointId = '';
+    if (preg_match('/^(ep-[a-z0-9]+-[a-z0-9]+)/', $directHost, $m)) {
+        $endpointId = $m[1];
+    }
+
     // Shared curl helper
     $doQuery = function(string $url, string $ip, string $connStr, string $label)
-               use ($pass, $payload): void {
-        $payload = json_encode(['query' => 'SELECT 1 AS ok', 'params' => []]);
-        $host    = parse_url($url, PHP_URL_HOST);
+               use ($payload): void {
+        $h    = parse_url($url, PHP_URL_HOST);
         $opts = [
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_TIMEOUT        => 12,
@@ -86,7 +93,7 @@ if ($host !== '(not set)' && function_exists('curl_init') && $pass !== '(not set
             ],
             CURLOPT_SSL_VERIFYPEER => true,
         ];
-        if ($ip) $opts[CURLOPT_RESOLVE] = ["$host:443:$ip"];
+        if ($ip) $opts[CURLOPT_RESOLVE] = ["$h:443:$ip"];
         $ch = curl_init($url);
         curl_setopt_array($ch, $opts);
         $resp = curl_exec($ch);
@@ -97,36 +104,30 @@ if ($host !== '(not set)' && function_exists('curl_init') && $pass !== '(not set
         if ($resp) echo "  response: " . substr($resp, 0, 300) . "\n";
     };
 
-    $connStrPooler = "postgresql://" . urlencode($user) . ":" . urlencode($pass) . "@$host/$dbname";
-    $connStrDirect = "postgresql://" . urlencode($user) . ":" . urlencode($pass) . "@$directHost/$dbname";
+    $connDirect     = "postgresql://" . urlencode($user) . ":" . urlencode($pass) . "@$directHost/$dbname";
+    $connDirectOpts = $connDirect . ($endpointId ? "?options=endpoint%3D$endpointId" : "");
+    $connPoolerOpts = "postgresql://" . urlencode($user) . ":" . urlencode($pass)
+                    . "@$host/$dbname" . ($endpointId ? "?options=endpoint%3D$endpointId" : "");
 
-    // Test direct endpoint /query (primary — this is what HTTP API uses)
-    $doQuery("https://$directHost/query", $directIp ?? '', $connStrDirect,
-             "DIRECT /query  [conn-string, IP=$directIp]");
+    // Test 1: direct + resolved IP (old approach)
+    $doQuery("https://$directHost/query", $directIp ?? '', $connDirect,
+             "T1 DIRECT  /query  IP=$directIp  no-opts");
 
-    // Test direct endpoint /query with bearer auth too
-    $ch4 = curl_init("https://$directHost/query");
-    $opts4 = [
-        CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 12,
-        CURLOPT_POST => true,
-        CURLOPT_POSTFIELDS => json_encode(['query' => 'SELECT 1 AS ok', 'params' => []]),
-        CURLOPT_HTTPHEADER => [
-            'Content-Type: application/json',
-            "Authorization: Bearer $pass",
-            "Neon-Connection-String: $connStrDirect",
-        ],
-        CURLOPT_SSL_VERIFYPEER => true,
-    ];
-    if ($directIp) $opts4[CURLOPT_RESOLVE] = ["$directHost:443:$directIp"];
-    curl_setopt_array($ch4, $opts4);
-    $r4 = curl_exec($ch4); $e4 = curl_error($ch4); $c4 = curl_getinfo($ch4, CURLINFO_HTTP_CODE);
-    curl_close($ch4);
-    echo "DIRECT /query  [bearer+conn-str]:          HTTP $c4" . ($e4 ? " | $e4" : "") . "\n";
-    if ($r4) echo "  response: " . substr($r4, 0, 300) . "\n";
+    // Test 2: direct NO IP + options=endpoint (new approach — let curl do DNS)
+    $doQuery("https://$directHost/query", '', $connDirectOpts,
+             "T2 DIRECT  /query  no-IP  +options");
 
-    // Still test pooler endpoint for comparison
-    $doQuery("https://$host/query", $resolvedIp ?? '', $connStrPooler,
-             "POOLER /query  [conn-string, IP=$resolvedIp]");
+    // Test 3: direct NO IP, no options
+    $doQuery("https://$directHost/query", '', $connDirect,
+             "T3 DIRECT  /query  no-IP  no-opts");
+
+    // Test 4: pooler + options=endpoint, no IP
+    $doQuery("https://$host/query", '', $connPoolerOpts,
+             "T4 POOLER  /query  no-IP  +options");
+
+    // Test 5: pooler + options=endpoint, resolved IP
+    $doQuery("https://$host/query", $resolvedIp ?? '', $connPoolerOpts,
+             "T5 POOLER  /query  IP=$resolvedIp  +options");
 
 } else {
     echo "curl unavailable or env vars missing\n";
