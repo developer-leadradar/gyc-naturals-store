@@ -22,7 +22,7 @@ $err    = function($msg) use (&$out) { $out[] = ['❌', $msg]; };
  * Upsert/insert-ignore helper — works for both MySQL and PostgreSQL.
  * @param string $uniqueCol  The unique column name for ON CONFLICT (pgsql)
  */
-function seed_insert(PDO $db, bool $isPg, string $table, array $data,
+function seed_insert(PDO|NeonConnection $db, bool $isPg, string $table, array $data,
                      string $uniqueCol = 'slug'): int {
     $cols = array_keys($data);
     $phs  = array_map(fn($c) => ":$c", $cols);
