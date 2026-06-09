@@ -5,28 +5,34 @@ class Database {
     private string $driver;
 
     /**
-     * Resolve a hostname to an IPv4 address using PHP's dns_get_record().
+     * Resolve a Neon PostgreSQL hostname to an IPv4 address using
+     * PHP's dns_get_record(), which queries DNS directly and works
+     * even when getaddrinfo / gethostbyname are broken for long hostnames
+     * in serverless environments (Vercel + vercel-php).
      *
-     * In some serverless environments (Vercel + vercel-php), the system
-     * getaddrinfo / gethostbyname calls fail for long cloud hostnames,
-     * but PHP's own dns_get_record() works because it queries the DNS
-     * server directly via /etc/resolv.conf rather than through NSS.
-     *
-     * The resolved IP is passed as hostaddr= in the libpq DSN so libpq
-     * bypasses its own hostname→IP lookup entirely, while keeping host=
-     * for TLS SNI routing (critical for Neon's pooler).
-     *
-     * Returns an IPv4 string, or null on failure.
+     * Returns [ip, endpointId] or [null, null] on failure.
+     *   ip         — one of the resolved A-record IPs (shuffled for load distribution)
+     *   endpointId — Neon endpoint ID extracted from the hostname,
+     *                used for SNI-less routing via the PostgreSQL `options` parameter
      */
-    private static function resolveHostForPgsql(string $hostname): ?string {
-        if (!function_exists('dns_get_record')) return null;
+    private static function resolveNeonHost(string $hostname): array {
+        // Extract Neon endpoint ID from hostname:
+        //   ep-withered-queen-aq0iyxzp-pooler.c-8.us-east-1.aws.neon.tech
+        //   → ep-withered-queen-aq0iyxzp
+        $endpointId = preg_match(
+            '/^(ep-[a-z0-9-]+?)(?:-pooler)?(?:\.|$)/',
+            $hostname,
+            $m
+        ) ? $m[1] : null;
+
+        if (!function_exists('dns_get_record')) return [null, $endpointId];
         $records = @dns_get_record($hostname, DNS_A);
         if (is_array($records) && !empty($records)) {
-            // Shuffle to spread load across multiple IPs (Neon returns 3)
-            shuffle($records);
-            return $records[0]['ip'] ?? null;
+            shuffle($records);                    // spread load across Neon's IPs
+            $ip = $records[0]['ip'] ?? null;
+            return [$ip, $endpointId];
         }
-        return null;
+        return [null, $endpointId];
     }
 
     private function __construct() {
@@ -36,15 +42,27 @@ class Database {
 
             if ($this->driver === 'pgsql') {
                 $host = DB_HOST;
-                // In serverless environments (Vercel + vercel-php), PHP's getaddrinfo
-                // fails for long cloud hostnames (EAI_SYSTEM from broken NSS config).
-                // dns_get_record() queries DNS directly and does work — use its result
-                // as hostaddr= so libpq connects to the IP directly.
-                // host= is still set to the real hostname so TLS SNI routes correctly
-                // (Neon uses SNI-based routing; connecting via raw IP alone won't work).
-                $resolvedIp = self::resolveHostForPgsql($host);
-                $hostaddr   = $resolvedIp ? ";hostaddr=$resolvedIp" : '';
-                $dsn = "pgsql:host=$host;port=$port;dbname=" . DB_NAME . ";sslmode=require$hostaddr";
+
+                // In Vercel + vercel-php, PHP's getaddrinfo fails with EAI_SYSTEM for
+                // long cloud hostnames (broken NSS config), but dns_get_record() works.
+                //
+                // Strategy:
+                //   1. dns_get_record() → get a real IPv4 (52.x.x.x etc.)
+                //   2. Use the IP as host= so PHP's socket code sees a numeric address
+                //      (no DNS lookup needed for numeric IPs → getaddrinfo bypassed)
+                //   3. Add options=endpoint=ep-xxx as a PostgreSQL startup parameter
+                //      so Neon can route to the correct compute without SNI
+                //      (Neon explicitly supports this for SNI-less environments)
+                [$resolvedIp, $endpointId] = self::resolveNeonHost($host);
+
+                if ($resolvedIp) {
+                    // Numeric host= bypasses getaddrinfo; endpoint option routes on Neon
+                    $opts = $endpointId ? ";options=endpoint=$endpointId" : '';
+                    $dsn  = "pgsql:host=$resolvedIp;port=$port;dbname=" . DB_NAME . ";sslmode=require$opts";
+                } else {
+                    // Fallback: use original hostname (may fail in serverless)
+                    $dsn = "pgsql:host=$host;port=$port;dbname=" . DB_NAME . ";sslmode=require";
+                }
             } else {
                 $dsn = "mysql:host=" . DB_HOST . ";port=" . $port . ";dbname=" . DB_NAME . ";charset=utf8mb4";
             }
