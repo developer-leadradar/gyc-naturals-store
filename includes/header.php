@@ -74,6 +74,7 @@ $pageTitle     = $pageTitle     ?? SITE_NAME;
 
     <!-- Desktop links -->
     <div class="nav-links">
+      <a href="<?= SITE_URL ?>/"                     class="<?= ($_SERVER['REQUEST_URI']==='/'||$_SERVER['REQUEST_URI']==='/index.php')?'active':'' ?>">Home</a>
       <a href="<?= SITE_URL ?>/gallery.php"          class="<?= (strpos($_SERVER['REQUEST_URI'],'gallery')!==false&&strpos($_SERVER['REQUEST_URI'],'admin')===false)?'active':'' ?>">Gallery</a>
       <a href="<?= SITE_URL ?>/shop.php"             class="<?= strpos($_SERVER['REQUEST_URI'],'/shop')!==false&&strpos($_SERVER['REQUEST_URI'],'clothing')===false?'active':'' ?>">Shop</a>
       <a href="<?= SITE_URL ?>/clothing.php"         class="<?= strpos($_SERVER['REQUEST_URI'],'clothing')!==false?'active':'' ?>">Clothing</a>

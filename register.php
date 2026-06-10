@@ -66,7 +66,7 @@ require_once __DIR__ . '/includes/header.php';
 
       <div style="text-align:center;margin-bottom:2rem;">
         <a href="<?= SITE_URL ?>">
-          <img src="<?= SITE_URL ?>/assets/images/logo.png" alt="GYC Naturals" style="height:48px;">
+          <img src="<?= SITE_URL ?>/assets/images/gyc-logo-horizontal.svg" alt="GYC Naturals" style="height:48px;">
         </a>
       </div>
 

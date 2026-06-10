@@ -10,7 +10,7 @@
 
 function emailWrapper(string $preheader, string $bodyHtml): string {
     $siteUrl    = defined('SITE_URL') ? SITE_URL : 'http://localhost/gyc-store';
-    $logoUrl    = $siteUrl . '/assets/images/logo.png';
+    $logoUrl    = $siteUrl . '/assets/images/gyc-logo-horizontal.svg';
     $year       = date('Y');
     $address    = 'GYC Naturals, Big Qua Mall, Ediba Road, Calabar, Cross River State, Nigeria';
     $whatsapp   = function_exists('getSetting') ? (getSetting('site_whatsapp') ?: '+2348100000000') : '+2348100000000';
