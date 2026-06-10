@@ -4,7 +4,7 @@ require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/includes/db.php';
 require_once __DIR__ . '/includes/functions.php';
 
-$pageTitle       = 'My Style Moodboard — GYC Naturals Lagos';
+$pageTitle       = 'My Style Moodboard — GYC Naturals Calabar';
 $pageDescription = 'Your saved hair styles and inspiration board. Share your favourites with our stylists when you book your appointment.';
 
 require_once __DIR__ . '/includes/header.php';

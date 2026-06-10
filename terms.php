@@ -125,7 +125,7 @@ $siteEmail   = getSetting('contact_email') ?: 'hello@gycnaturals.com';
 
       <div class="terms-section" id="governing">
         <h2>8. Governing Law</h2>
-        <p>These Terms are governed by and construed in accordance with the laws of the Federal Republic of Nigeria. Any disputes shall be subject to the exclusive jurisdiction of the courts of Lagos State, Nigeria. We encourage you to contact us first to resolve any dispute informally.</p>
+        <p>These Terms are governed by and construed in accordance with the laws of the Federal Republic of Nigeria. Any disputes shall be subject to the exclusive jurisdiction of the courts of Cross River State, Nigeria. We encourage you to contact us first to resolve any dispute informally.</p>
       </div>
 
       <div class="terms-section" id="contact">

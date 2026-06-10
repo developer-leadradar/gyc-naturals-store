@@ -5,7 +5,7 @@ require_once __DIR__ . '/includes/db.php';
 require_once __DIR__ . '/includes/functions.php';
 
 $pageTitle       = 'Hair Salon Services — GYC Naturals';
-$pageDescription = 'Explore GYC Naturals full service menu: knotless braids, locs, natural twists, faux locs, sew-ins and more at our Victoria Island Lagos salon.';
+$pageDescription = 'Explore GYC Naturals full service menu: knotless braids, locs, natural twists, faux locs, sew-ins and more at our Big Qua Mall, Calabar salon.';
 require_once __DIR__ . '/includes/header.php';
 
 $waPhone = getSetting('site_whatsapp') ?: SITE_WHATSAPP;

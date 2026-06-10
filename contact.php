@@ -69,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 . htmlspecialchars($subject) . "</strong> and will get back to you within <strong>24 hours</strong>.</p>"
                 . "<div class=\"alert-box alert-gold\">For urgent inquiries, please WhatsApp us directly — it's the fastest way to reach us.</div>"
                 . "<p style=\"text-align:center;margin:28px 0;\"><a href=\"https://wa.me/" . preg_replace('/\D/','',SITE_WHATSAPP) . "\" class=\"btn-email\">💬 WhatsApp Us</a></p>"
-                . "<hr class=\"divider\"><p style=\"font-size:.82rem;color:#6B7280;\">GYC Naturals · Victoria Island, Lagos · Mon–Sat 9am–7pm</p>"
+                . "<hr class=\"divider\"><p style=\"font-size:.82rem;color:#6B7280;\">GYC Naturals · Big Qua Mall, Calabar · Mon–Sat 9am–7pm</p>"
             );
             sendEmail($email, 'We received your message — GYC Naturals', $ackHtml);
 
@@ -79,12 +79,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $pageTitle       = 'Contact Us — GYC Naturals';
-$pageDescription = 'Get in touch with GYC Naturals — Victoria Island Lagos hair salon and natural hair product store. WhatsApp, email, or visit us.';
+$pageDescription = 'Get in touch with GYC Naturals — Calabar hair braiding salon at Big Qua Mall, Ediba Road. WhatsApp, email, or visit us in Cross River State.';
 require_once __DIR__ . '/includes/header.php';
 
 $waPhone   = getSetting('site_whatsapp')   ?: SITE_WHATSAPP;
 $waClean   = preg_replace('/[^0-9]/', '', $waPhone);
-$address   = getSetting('site_address')    ?: 'Victoria Island, Lagos, Nigeria';
+$address   = getSetting('site_address')    ?: 'Big Qua Mall, Ediba Road, Off Big Qua Town by Marian Market, Calabar, Cross River State';
 $phoneNum  = getSetting('site_phone')      ?: '+234 XXX XXX XXXX';
 $emailAddr = getSetting('contact_email')   ?: 'hello@gycnaturals.com';
 $openHours = getSetting('opening_hours')   ?: 'Mon–Sat: 8:00 AM – 7:00 PM | Sun: 10:00 AM – 5:00 PM';
@@ -109,7 +109,7 @@ $openHours = getSetting('opening_hours')   ?: 'Mon–Sat: 8:00 AM – 7:00 PM | 
         ['message-circle','WhatsApp','Fastest response','btn-whatsapp','https://wa.me/'.$waClean],
         ['phone','Call Us',$phoneNum,'btn-outline-green','tel:'.$phoneNum],
         ['mail','Email Us',$emailAddr,'btn-outline-green','mailto:'.$emailAddr],
-        ['map-pin','Visit Us','VI, Lagos, Nigeria','btn-outline-green','https://maps.google.com/?q='.$address],
+        ['map-pin','Visit Us','Big Qua Mall, Calabar','btn-outline-green','https://maps.google.com/?q=Big+Qua+Mall+Calabar+Cross+River+State+Nigeria'],
       ];
       foreach ($contacts as $c): ?>
       <a href="<?= htmlspecialchars($c[4]) ?>" target="_blank" rel="noopener"
@@ -193,11 +193,19 @@ $openHours = getSetting('opening_hours')   ?: 'Mon–Sat: 8:00 AM – 7:00 PM | 
 
         <!-- Location card -->
         <div style="background:#fff;border:1.5px solid var(--gyc-green-100);border-radius:var(--gyc-radius-lg);overflow:hidden;">
-          <!-- Map placeholder -->
-          <div style="height:180px;background:linear-gradient(135deg,var(--gyc-green-100),var(--gyc-green-200));display:flex;align-items:center;justify-content:center;flex-direction:column;gap:.5rem;">
-            <i data-lucide="map" style="width:40px;height:40px;color:var(--gyc-green-500);opacity:.5;"></i>
-            <a href="https://maps.google.com/?q=<?= urlencode($address) ?>" target="_blank" rel="noopener"
-               class="btn btn-green btn-sm" style="font-size:.78rem;">Open in Google Maps</a>
+          <!-- Google Maps embed -->
+          <div style="position:relative;overflow:hidden;height:220px;">
+            <iframe
+              src="https://maps.google.com/maps?q=Big+Qua+Mall,Ediba+Road,Calabar,Cross+River+State,Nigeria&t=&z=15&ie=UTF8&iwloc=&output=embed"
+              width="100%" height="220" frameborder="0" scrolling="no"
+              style="border:0;display:block;"
+              title="GYC Naturals location — Big Qua Mall, Calabar"
+              allowfullscreen loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"></iframe>
+            <a href="https://maps.google.com/?q=Big+Qua+Mall,Ediba+Road,Calabar,Cross+River+State,Nigeria"
+               target="_blank" rel="noopener"
+               style="position:absolute;bottom:.6rem;right:.6rem;z-index:2;"
+               class="btn btn-green btn-sm" style="font-size:.75rem;">Open in Maps</a>
           </div>
           <div style="padding:1.5rem;">
             <h3 style="font-family:'Playfair Display',serif;font-size:1rem;margin-bottom:1rem;">Our Salon</h3>

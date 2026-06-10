@@ -5,7 +5,7 @@ require_once __DIR__ . '/includes/db.php';
 require_once __DIR__ . '/includes/functions.php';
 
 $pageTitle       = 'Frequently Asked Questions — GYC Naturals';
-$pageDescription = 'Answers to common questions about GYC Naturals hair salon services, natural products, appointments, shipping, and returns in Lagos Nigeria.';
+$pageDescription = 'Answers to common questions about GYC Naturals hair salon services, natural products, appointments, shipping, and returns — Calabar, Cross River State.';
 require_once __DIR__ . '/includes/header.php';
 
 $waPhone  = getSetting('site_whatsapp') ?: SITE_WHATSAPP;
@@ -49,7 +49,7 @@ $faqs = [
     ],
     [
       'q' => 'How long does delivery take?',
-      'a' => 'Lagos & Abuja: 1–2 business days. Other major cities: 2–4 business days. Remote locations: 4–7 business days. Delivery is handled by trusted courier partners. You\'ll receive a tracking number once your order ships.',
+      'a' => 'Calabar & Cross River: 1–2 business days. Other major cities: 2–4 business days. Remote locations: 4–7 business days. Delivery is handled by trusted courier partners. You\'ll receive a tracking number once your order ships.',
     ],
     [
       'q' => 'What is the minimum order for free shipping?',

@@ -4,9 +4,9 @@ require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/includes/db.php';
 require_once __DIR__ . '/includes/functions.php';
 
-$pageTitle       = 'GYC Naturals — Grow Your Crown | Professional Hair Braiding & Natural Products, Lagos';
-$pageDescription = 'Professional African hair braiding salon in Lagos. Knotless braids, box braids, cornrows, Senegalese twists & natural hair products. Book your appointment online.';
-$pageKeywords    = 'hair braiding Lagos, knotless braids Lagos, box braids Nigeria, natural hair products Lagos, GYC Naturals, African hair salon Victoria Island';
+$pageTitle       = 'GYC Naturals — Grow Your Crown | Professional Hair Braiding & Natural Products, Calabar';
+$pageDescription = 'Professional African hair braiding salon in Calabar, Cross River State. Knotless braids, box braids, cornrows, Senegalese twists & natural hair products. Book your appointment online.';
+$pageKeywords    = 'hair braiding Calabar, knotless braids Calabar, box braids Calabar Nigeria, natural hair products Calabar, GYC Naturals, African hair salon Big Qua Mall';
 
 // Fetch data for all sections
 $featuredGallery = getFeaturedGalleryImages(6);
@@ -32,14 +32,14 @@ $proverb = getProverbOfTheDay();
 // JSON-LD LocalBusiness schema
 $phone    = getSetting('site_phone')    ?: SITE_PHONE;
 $wa       = getSetting('site_whatsapp') ?: SITE_WHATSAPP;
-$address  = getSetting('site_address')  ?: '14 Akin Adesola Street, Victoria Island, Lagos, Nigeria';
+$address  = getSetting('site_address')  ?: 'Big Qua Mall, Ediba Road, Off Big Qua Town by Marian Market, Calabar, Cross River State, Nigeria';
 $email    = getSetting('site_email')    ?: SITE_EMAIL;
 $hours    = getSetting('opening_hours') ?: 'Mo-Sa 09:00-19:00';
 $jsonLd = json_encode([
     '@context'    => 'https://schema.org',
     '@type'       => 'BeautySalon',
     'name'        => 'GYC Naturals',
-    'description' => 'Professional African hair braiding salon and natural hair product store in Victoria Island, Lagos Nigeria. Specialising in knotless braids, faux locs, cornrows, Senegalese twists and scalp treatments.',
+    'description' => 'Professional African hair braiding salon and natural hair product store at Big Qua Mall, Calabar, Cross River State, Nigeria. Specialising in knotless braids, faux locs, cornrows, Senegalese twists and scalp treatments.',
     'url'         => SITE_URL . '/',
     'logo'        => SITE_URL . '/assets/images/gyc-logo.png',
     'image'       => SITE_URL . '/assets/images/salon-exterior.jpg',
@@ -47,21 +47,21 @@ $jsonLd = json_encode([
     'email'       => $email,
     'address'     => [
         '@type'           => 'PostalAddress',
-        'streetAddress'   => '14 Akin Adesola Street',
-        'addressLocality' => 'Victoria Island',
-        'addressRegion'   => 'Lagos',
+        'streetAddress'   => 'Big Qua Mall, Ediba Road, Off Big Qua Town by Marian Market',
+        'addressLocality' => 'Calabar',
+        'addressRegion'   => 'Cross River State',
         'addressCountry'  => 'NG',
     ],
     'geo' => [
         '@type'     => 'GeoCoordinates',
-        'latitude'  => 6.4281,
-        'longitude' => 3.4219,
+        'latitude'  => 4.9517,
+        'longitude' => 8.3601,
     ],
     'openingHours'       => $hours,
     'priceRange'         => '₦₦',
     'currenciesAccepted' => 'NGN',
     'paymentAccepted'    => 'Cash, Bank Transfer, Card, Paystack',
-    'hasMap'             => 'https://maps.google.com/?q=Victoria+Island+Lagos',
+    'hasMap'             => 'https://maps.google.com/?q=Big+Qua+Mall,Calabar,Cross+River+State,Nigeria',
     'sameAs'             => array_filter([
         getSetting('social_instagram') ?: '',
         getSetting('social_facebook')  ?: '',
@@ -98,7 +98,7 @@ require_once __DIR__ . '/includes/header.php';
     <div class="hero-content" data-aos="fade-up">
       <span class="hero-eyebrow">
         <img src="<?= SITE_URL ?>/assets/images/adinkra-sankofa.svg" alt="Sankofa" width="20" height="20" style="vertical-align:middle;margin-right:6px;">
-        Victoria Island, Lagos &nbsp;·&nbsp; Est. 2018
+        Big Qua Mall, Calabar &nbsp;·&nbsp; Est. 2024
       </span>
       <h1 class="hero-headline">
         <span class="hero-headline-line1">Grow Your</span>
@@ -149,12 +149,15 @@ require_once __DIR__ . '/includes/header.php';
         <div class="hero-tile-caption"><?= htmlspecialchars($img['title']) ?></div>
       </div>
       <?php endforeach; ?>
-      <?php if (empty($heroImages)):
-          for ($i = 0; $i < 6; $i++): $pos = $positions[$i % count($positions)]; ?>
+      <?php
+      $heroFallback = [31473242,14883868,37115258,17463802,5722771,11268995];
+      if (empty($heroImages)):
+          foreach ($heroFallback as $idx => $pid): $pos = $positions[$idx % count($positions)]; ?>
           <div class="hero-tile hero-tile--<?= $pos ?>">
-            <img src="https://picsum.photos/seed/hero<?= $i ?>/400/500" alt="Hair style" loading="lazy" width="400" height="500">
+            <img src="https://images.pexels.com/photos/<?= $pid ?>/pexels-photo-<?= $pid ?>.jpeg?auto=compress&cs=tinysrgb&w=500"
+                 alt="African braided hair style" loading="lazy" width="400" height="500">
           </div>
-          <?php endfor; endif; ?>
+          <?php endforeach; endif; ?>
     </div>
 
   </div><!-- .hero-inner -->
@@ -488,7 +491,8 @@ require_once __DIR__ . '/includes/header.php';
       ?>
       <article class="bundle-card" role="listitem">
         <div class="bundle-card-img-wrap">
-          <img src="<?= htmlspecialchars($bundle['image'] ?? 'https://picsum.photos/seed/bundle'.$bundle['id'].'/400/300') ?>"
+          <?php $bFallbacks = [33664383,14931950,5706984]; $bIdx = ($bundle['id'] - 1) % 3; ?>
+          <img src="<?= htmlspecialchars($bundle['image'] ?? 'https://images.pexels.com/photos/'.$bFallbacks[$bIdx].'/pexels-photo-'.$bFallbacks[$bIdx].'.jpeg?auto=compress&cs=tinysrgb&w=400') ?>"
                alt="<?= htmlspecialchars($bundle['name']) ?>"
                loading="lazy" width="400" height="260">
           <?php if ($bundleInfo && $bundleInfo['discount_pct'] > 0): ?>
@@ -668,9 +672,8 @@ require_once __DIR__ . '/includes/header.php';
     <div class="about-strip-inner">
       <div class="about-strip-image">
         <div class="about-img-wrap">
-          <img src="<?= SITE_URL ?>/assets/images/owner-placeholder.jpg"
-               onerror="this.src='https://picsum.photos/seed/owner/500/600'"
-               alt="GYC Naturals founder"
+          <img src="https://images.pexels.com/photos/713527/pexels-photo-713527.jpeg?auto=compress&cs=tinysrgb&w=600"
+               alt="Juliet Arah — Founder, GYC Naturals Calabar"
                loading="lazy" width="420" height="520">
           <div class="about-kente-accent"></div>
           <div class="about-adinkra-float">
@@ -728,7 +731,8 @@ require_once __DIR__ . '/includes/header.php';
       <?php foreach ($blogPosts as $i => $post): ?>
       <article class="blog-card <?= $i === 0 ? 'blog-card--featured' : '' ?>">
         <a href="<?= SITE_URL ?>/blog-post.php?slug=<?= urlencode($post['slug']) ?>" class="blog-card-img-wrap">
-          <img src="<?= htmlspecialchars($post['featured_image'] ?? 'https://picsum.photos/seed/blog'.$post['id'].'/800/450') ?>"
+          <?php $blogFallbacks = [28383173,11641088,6960735,34191088]; $bpIdx = ($post['id'] - 1) % 4; ?>
+          <img src="<?= htmlspecialchars($post['featured_image'] ?? 'https://images.pexels.com/photos/'.$blogFallbacks[$bpIdx].'/pexels-photo-'.$blogFallbacks[$bpIdx].'.jpeg?auto=compress&cs=tinysrgb&w=800') ?>"
                alt="<?= htmlspecialchars($post['title']) ?>"
                loading="lazy" width="800" height="450" class="blog-card-img">
         </a>

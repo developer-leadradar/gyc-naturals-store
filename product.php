@@ -23,10 +23,10 @@ if (!empty($product['extra_images'])) {
 }
 $allImages = array_merge([$product['image']], $extraImages);
 
-$pageTitle       = htmlspecialchars($product['name']) . ' — GYC Naturals | Lagos Natural Hair Shop';
+$pageTitle       = htmlspecialchars($product['name']) . ' — GYC Naturals | Calabar Natural Hair Shop';
 $pageDescription = $product['description']
     ? htmlspecialchars(substr($product['description'], 0, 155)) . '…'
-    : 'Buy ' . $product['name'] . ' at GYC Naturals Lagos. Fast delivery across Nigeria.';
+    : 'Buy ' . $product['name'] . ' at GYC Naturals Calabar. Fast delivery across Nigeria.';
 $ogImage = $product['image'];
 
 // JSON-LD Product schema
@@ -216,7 +216,7 @@ require_once __DIR__ . '/includes/header.php';
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;">
           <?php
           $assurances = [
-            ['truck', 'Fast Delivery', 'Lagos delivery in 1–2 days'],
+            ['truck', 'Fast Delivery', 'Nationwide delivery in 1–3 days'],
             ['shield-check', '100% Natural', 'No harsh chemicals'],
             ['refresh-ccw', 'Easy Returns', '14-day return policy'],
             ['award', 'GYC Approved', 'Tested on African hair'],

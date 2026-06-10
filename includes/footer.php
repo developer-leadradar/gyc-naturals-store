@@ -4,7 +4,7 @@ $whatsapp  = getSetting('site_whatsapp') ?: SITE_WHATSAPP;
 $instagram = getSetting('instagram_handle') ?: 'gycnaturals';
 $igUrl     = getSetting('instagram_url')    ?: 'https://instagram.com/gycnaturals';
 $hours     = getSetting('business_hours')   ?: 'Mon–Sat: 9am – 7pm';
-$address   = getSetting('business_address') ?: 'Victoria Island, Lagos, Nigeria';
+$address   = getSetting('business_address') ?: 'Big Qua Mall, Ediba Road, Calabar, Cross River State';
 $email     = getSetting('site_email')       ?: SITE_EMAIL;
 $waLink    = getWhatsAppFloat();
 ?>
@@ -18,7 +18,7 @@ $waLink    = getWhatsAppFloat();
         <img src="<?= SITE_URL ?>/assets/images/gyc-logo-horizontal.svg"
              alt="GYC Naturals" width="180" height="45"
              style="filter:brightness(0) invert(1);opacity:0.9;">
-        <p>Professional African hair braiding, natural hair products &amp; fashion in Lagos, Nigeria. Wear your crown with confidence.</p>
+        <p>Professional African hair braiding, natural hair products &amp; fashion in Calabar, Cross River State. Wear your crown with confidence.</p>
         <div class="footer-social">
           <a href="<?= htmlspecialchars($igUrl) ?>" target="_blank" rel="noopener" aria-label="Instagram">
             <i data-lucide="instagram" style="width:18px;height:18px;"></i>
@@ -96,7 +96,7 @@ $waLink    = getWhatsAppFloat();
 
     <div class="footer-bottom">
       <span>&copy; <?= date('Y') ?> GYC Naturals. All rights reserved.</span>
-      <span>Made with love in Lagos 🇳🇬</span>
+      <span>Made with love in Calabar 🇳🇬</span>
       <span>
         <a href="<?= SITE_URL ?>/privacy.php" style="color:rgba(255,255,255,0.4);">Privacy</a> ·
         <a href="<?= SITE_URL ?>/terms.php"   style="color:rgba(255,255,255,0.4);">Terms</a>

@@ -12,7 +12,7 @@ function emailWrapper(string $preheader, string $bodyHtml): string {
     $siteUrl    = defined('SITE_URL') ? SITE_URL : 'http://localhost/gyc-store';
     $logoUrl    = $siteUrl . '/assets/images/logo.png';
     $year       = date('Y');
-    $address    = 'GYC Naturals, Victoria Island, Lagos, Nigeria';
+    $address    = 'GYC Naturals, Big Qua Mall, Ediba Road, Calabar, Cross River State, Nigeria';
     $whatsapp   = function_exists('getSetting') ? (getSetting('site_whatsapp') ?: '+2348100000000') : '+2348100000000';
     $instagram  = function_exists('getSetting') ? (getSetting('social_instagram') ?: 'gycnaturals') : 'gycnaturals';
 
@@ -101,7 +101,7 @@ function emailWrapper(string $preheader, string $bodyHtml): string {
     <tr>
       <td class="email-header">
         <img src="{$logoUrl}" alt="GYC Naturals" height="48">
-        <div class="email-tagline">Natural Hair · Braiding · Clothing — Victoria Island, Lagos</div>
+        <div class="email-tagline">Natural Hair · Braiding · Clothing — Big Qua Mall, Calabar</div>
       </td>
     </tr>
 
@@ -215,7 +215,7 @@ function emailOrderConfirmation(array $order, array $items): string {
 <table class="info-table" role="presentation">
   <tr><td>Name</td><td>{$firstName} {$lastName}</td></tr>
   <tr><td>Deliver To</td><td>{$address}</td></tr>
-  <tr><td>Est. Delivery</td><td>3–5 business days (Lagos) · 5–7 days (other states)</td></tr>
+  <tr><td>Est. Delivery</td><td>1–3 business days (Cross River) · 3–7 days (other states)</td></tr>
 </table>
 
 <div class="alert-box alert-gold">
@@ -281,7 +281,7 @@ function emailBookingConfirmation(array $apt, bool $depositPaid = false): string
 
 <h2>📍 Location & What to Bring</h2>
 <table class="info-table" role="presentation">
-  <tr><td>Salon</td><td>GYC Naturals, Victoria Island, Lagos</td></tr>
+  <tr><td>Salon</td><td>GYC Naturals, Big Qua Mall, Ediba Road, Calabar</td></tr>
   <tr><td>What to bring</td><td>Clean, detangled hair. Arrive on time — late arrivals may need to reschedule.</td></tr>
   <tr><td>Cancellation</td><td>Cancel at least 24 hrs in advance to avoid deposit forfeiture.</td></tr>
 </table>
@@ -383,7 +383,7 @@ function emailOrderStatusUpdate(array $order, string $status, string $note = '')
 
     $statusInfo = [
         'processing' => ['emoji' => '⚙️', 'label' => 'Being Prepared',  'color' => 'alert-gold',  'msg' => 'Great news! Your order is currently being prepared and packed with care.'],
-        'shipped'    => ['emoji' => '🚚', 'label' => 'On Its Way',       'color' => 'alert-gold',  'msg' => 'Your order is on its way to you! Delivery typically takes 1–3 business days within Lagos.'],
+        'shipped'    => ['emoji' => '🚚', 'label' => 'On Its Way',       'color' => 'alert-gold',  'msg' => 'Your order is on its way to you! Delivery typically takes 1–3 business days within Cross River State.'],
         'delivered'  => ['emoji' => '✅', 'label' => 'Delivered',        'color' => 'alert-green', 'msg' => 'Your order has been delivered! We hope you love your GYC Naturals products.'],
         'cancelled'  => ['emoji' => '❌', 'label' => 'Cancelled',        'color' => 'alert-terra', 'msg' => 'Your order has been cancelled. If you paid, a refund will be processed within 3–5 business days.'],
     ];

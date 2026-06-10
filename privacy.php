@@ -11,7 +11,7 @@ require_once __DIR__ . '/includes/header.php';
 $lastUpdated = 'January 1, 2025';
 $siteName    = getSetting('site_name') ?: 'GYC Naturals';
 $siteEmail   = getSetting('contact_email') ?: 'hello@gycnaturals.com';
-$siteAddress = getSetting('site_address') ?: 'Victoria Island, Lagos, Nigeria';
+$siteAddress = getSetting('site_address') ?: 'Big Qua Mall, Ediba Road, Calabar, Cross River State, Nigeria';
 ?>
 
 <div style="min-height:72px;"></div>

@@ -5,31 +5,11 @@ require_once __DIR__ . '/includes/db.php';
 require_once __DIR__ . '/includes/functions.php';
 
 $pageTitle       = 'About Us — GYC Naturals';
-$pageDescription = 'The story of GYC Naturals — a Nigerian natural hair brand celebrating African beauty through braiding artistry, natural hair products, and authentic cultural fashion.';
+$pageDescription = 'The story of GYC Naturals — a Calabar-based natural hair salon celebrating African beauty through braiding artistry, natural hair products, and authentic cultural fashion. Founded by Juliet Arah in 2024.';
 require_once __DIR__ . '/includes/header.php';
 
 $waPhone    = getSetting('site_whatsapp') ?: SITE_WHATSAPP;
 $waClean    = preg_replace('/[^0-9]/', '', $waPhone);
-$team = [
-  [
-    'name'  => 'Grace Yakubu',
-    'role'  => 'Founder & Creative Director',
-    'bio'   => 'Grace founded GYC Naturals with a vision to make African women feel seen, celebrated, and elevated through their natural hair. With 10+ years of braiding experience, she leads our style direction.',
-    'photo' => SITE_URL . '/assets/images/team/grace.jpg',
-  ],
-  [
-    'name'  => 'Chinwe Okafor',
-    'role'  => 'Head Stylist & Loc Specialist',
-    'bio'   => 'Chinwe specialises in loc journeys, from starter locs to advanced loc art. She is a certified trichologist and brings deep scientific knowledge to every scalp treatment.',
-    'photo' => SITE_URL . '/assets/images/team/chinwe.jpg',
-  ],
-  [
-    'name'  => 'Adaeze Nwachukwu',
-    'role'  => 'Product Development Lead',
-    'bio'   => 'Adaeze formulates our natural hair product range using traditional Nigerian botanicals — including black seed, baobab, and African shea — with modern cosmetic science.',
-    'photo' => SITE_URL . '/assets/images/team/adaeze.jpg',
-  ],
-];
 ?>
 
 <div style="min-height:72px;"></div>
@@ -46,12 +26,12 @@ $team = [
       Where African<br>Beauty Lives
     </h1>
     <p style="font-size:1.05rem;opacity:.85;line-height:1.8;max-width:580px;margin-bottom:2rem;">
-      GYC Naturals was born in Victoria Island, Lagos — out of a love for natural African hair, ancestral braiding traditions, and the belief that every Nigerian woman deserves to feel crowned.
+      GYC Naturals was born in the heart of Calabar — out of a love for natural African hair, ancestral braiding traditions, and the belief that every woman deserves to feel crowned.
     </p>
     <div style="display:flex;gap:2.5rem;flex-wrap:wrap;">
       <div>
-        <div style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:var(--gyc-gold);">3+</div>
-        <div style="font-size:.78rem;opacity:.75;text-transform:uppercase;letter-spacing:.1em;">Years in Business</div>
+        <div style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:var(--gyc-gold);">2024</div>
+        <div style="font-size:.78rem;opacity:.75;text-transform:uppercase;letter-spacing:.1em;">Est. in Calabar</div>
       </div>
       <div>
         <div style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:var(--gyc-gold);">500+</div>
@@ -77,24 +57,20 @@ $team = [
         <p style="font-size:.8rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--gyc-green-500);margin-bottom:.75rem;">The Beginning</p>
         <h2 style="font-family:'Playfair Display',serif;font-size:2rem;line-height:1.25;margin-bottom:1.5rem;">Braids, Botanicals &amp; Bold African Fashion</h2>
         <p style="font-size:.95rem;color:#374151;line-height:1.85;margin-bottom:1.25rem;">
-          GYC Naturals started as a passion project in 2021 when our founder, Grace, noticed a gap in the Lagos market: women who wanted high-quality natural hair care but were forced to choose between expensive imported brands and products that didn't suit African hair textures.
+          GYC Naturals was founded in 2024 by Juliet Arah, who saw a clear need for a dedicated natural hair salon right here in Calabar. Women in Cross River State deserved high-quality braiding and natural hair care without travelling far or settling for less.
         </p>
         <p style="font-size:.95rem;color:#374151;line-height:1.85;margin-bottom:1.25rem;">
-          She began formulating small batches of scalp oil and hair butter — drawing on her grandmother's herbal remedies from Plateau State — and offering braiding services from her home studio. Word spread quickly.
+          Juliet set up her salon at Big Qua Mall, Ediba Road — a convenient, welcoming space where every client is treated like royalty. Drawing on deep expertise in African braiding techniques and a passion for healthy natural hair, she built a loyal client base through word of mouth alone.
         </p>
         <p style="font-size:.95rem;color:#374151;line-height:1.85;">
-          Today, GYC Naturals operates a full salon in Victoria Island, ships products nationwide, and has launched an African-inspired clothing line that celebrates the richness of Nigerian and pan-African heritage.
+          Today, GYC Naturals offers professional braiding services, curated natural hair products, and an African-inspired clothing line — all from the vibrant city of Calabar, Cross River State.
         </p>
       </div>
       <div style="position:relative;">
         <div style="aspect-ratio:4/5;background:linear-gradient(135deg,var(--gyc-green-100),var(--gyc-green-200));border-radius:var(--gyc-radius-xl);overflow:hidden;">
-          <img src="<?= SITE_URL ?>/assets/images/about-founder.jpg" alt="Grace — GYC Naturals Founder"
-               style="width:100%;height:100%;object-fit:cover;"
-               onerror="this.style.display='none'">
-          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:.5rem;color:var(--gyc-green-400);">
-            <i data-lucide="user" style="width:64px;height:64px;opacity:.25;"></i>
-            <span style="font-size:.8rem;opacity:.4;">Grace Yakubu</span>
-          </div>
+          <img src="https://images.pexels.com/photos/25752048/pexels-photo-25752048.jpeg?auto=compress&cs=tinysrgb&w=800"
+               alt="Juliet Arah — GYC Naturals Founder"
+               style="width:100%;height:100%;object-fit:cover;" loading="lazy">
         </div>
         <!-- Accent card -->
         <div style="position:absolute;bottom:-1.5rem;left:-1.5rem;background:var(--gyc-gold);color:#fff;border-radius:var(--gyc-radius-lg);padding:1.25rem 1.5rem;box-shadow:var(--gyc-shadow-lg);">
@@ -120,7 +96,7 @@ $team = [
         ['crown',     'Crown Celebration',    '#B45309',              '#FEF9EC',
          'African hair textures are not a problem to be solved — they are a crown to be celebrated. Everything we do affirms this.'],
         ['users',     'Community First',       '#1D4ED8',             '#EFF6FF',
-         'We are Lagosians, for Lagosians. We host free natural hair workshops, support local artisans, and give back through the GYC Foundation.'],
+         'We are from Calabar, and we are proud of it. We support local artisans, celebrate Cross River State culture, and believe in giving back to the community that gave us our home.'],
         ['shield',    'Gentle & Safe',         'var(--gyc-green-700)', 'var(--gyc-green-100)',
          'Zero-tension braiding, certified stylists, and honest product labels. We never cut corners on your safety or hair health.'],
         ['globe',     'African Heritage',      '#7C3AED',             '#F5F3FF',
@@ -141,27 +117,26 @@ $team = [
   </div>
 </section>
 
-<!-- TEAM -->
+<!-- FOUNDER -->
 <section style="padding:5rem 0;background:#fff;">
   <div class="container">
     <div style="text-align:center;margin-bottom:3rem;">
-      <p style="font-size:.8rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--gyc-green-500);margin-bottom:.5rem;">The People</p>
-      <h2 style="font-family:'Playfair Display',serif;font-size:2rem;">Meet Our Team</h2>
-      <p style="color:#6B7280;max-width:500px;margin:.75rem auto 0;font-size:.9rem;">Experts in African hair care, passionate about your journey from the first consultation to the final style.</p>
+      <p style="font-size:.8rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--gyc-green-500);margin-bottom:.5rem;">The Person Behind It All</p>
+      <h2 style="font-family:'Playfair Display',serif;font-size:2rem;">Meet the Founder</h2>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:2.5rem;">
-      <?php foreach ($team as $member): ?>
-      <div style="text-align:center;">
-        <div style="width:140px;height:140px;border-radius:50%;overflow:hidden;margin:0 auto 1.25rem;border:4px solid var(--gyc-green-100);background:var(--gyc-green-100);">
-          <img src="<?= htmlspecialchars($member['photo']) ?>" alt="<?= htmlspecialchars($member['name']) ?>"
-               style="width:100%;height:100%;object-fit:cover;"
-               onerror="this.style.display='none'">
-        </div>
-        <h3 style="font-family:'Playfair Display',serif;font-size:1.1rem;margin-bottom:.25rem;"><?= htmlspecialchars($member['name']) ?></h3>
-        <p style="font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gyc-green-600);margin-bottom:.75rem;"><?= htmlspecialchars($member['role']) ?></p>
-        <p style="font-size:.84rem;color:#6B7280;line-height:1.7;max-width:280px;margin:0 auto;"><?= htmlspecialchars($member['bio']) ?></p>
+    <div style="max-width:700px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:1.5rem;text-align:center;">
+      <div style="width:180px;height:180px;border-radius:50%;overflow:hidden;border:5px solid var(--gyc-green-100);">
+        <img src="https://images.pexels.com/photos/29731065/pexels-photo-29731065.jpeg?auto=compress&cs=tinysrgb&w=400"
+             alt="Juliet Arah — Founder, GYC Naturals"
+             style="width:100%;height:100%;object-fit:cover;" loading="lazy">
       </div>
-      <?php endforeach; ?>
+      <div>
+        <h3 style="font-family:'Playfair Display',serif;font-size:1.5rem;margin-bottom:.25rem;">Juliet Arah</h3>
+        <p style="font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--gyc-green-600);margin-bottom:1.25rem;">Founder &amp; Creative Director</p>
+        <p style="font-size:1rem;color:#374151;line-height:1.85;max-width:580px;">
+          Juliet founded GYC Naturals in 2024 with a single mission: to bring world-class African hair braiding and natural hair care to Calabar. An experienced braiding specialist with a deep passion for African beauty culture, she personally attends to every client to ensure the highest standard of service. At GYC Naturals, you're in expert hands.
+        </p>
+      </div>
     </div>
   </div>
 </section>
@@ -174,11 +149,11 @@ $team = [
       <h2 style="font-family:'Playfair Display',serif;font-size:2rem;">Milestones</h2>
     </div>
     <?php $milestones = [
-      ['2021', 'Founded',        'Grace launches GYC Naturals from a home studio in Victoria Island — offering braiding services and 3 handmade products.'],
-      ['2022', 'Salon Opens',    'We move into a dedicated salon space. Launch our first full product range including scalp oil, hair butter, and shampoo bars.'],
-      ['2023', 'Nationwide',     'Online store goes live. We begin shipping to all 36 states. Launch our GYC Naturals clothing line inspired by Yoruba Adire print.'],
-      ['2024', 'GYC Foundation', 'Launch the GYC Foundation — providing free natural hair care workshops to young women in Lagos public schools.'],
-      ['2025', 'Growing Strong', '500+ loyal clients, 4.9★ rating, and expanding our product range with 20 new SKUs. Our best chapter yet.'],
+      ['2024', 'Founded',         'Juliet Arah opens GYC Naturals at Big Qua Mall, Ediba Road, Calabar — bringing professional African braiding to Cross River State.'],
+      ['2024', 'First 100 Clients', 'Word spreads fast. Within months of opening, GYC Naturals builds a loyal clientele through exceptional service and real results.'],
+      ['2025', 'Product Line',    'Launches a curated range of natural hair products — scalp oils, hair butter, and growth serums formulated for African hair textures.'],
+      ['2025', 'Online Booking',  'Website and online booking go live, making it even easier for clients to reserve their favourite styles from anywhere.'],
+      ['2026', 'Growing Strong',  'Growing steadily with 100+ loyal clients, 5★ reviews, and an expanding service menu. The best is yet to come.'],
     ];
     foreach ($milestones as $i => $ms): ?>
     <div style="display:flex;gap:2rem;align-items:flex-start;margin-bottom:<?= $i < count($milestones)-1 ? '2rem' : '0' ?>;position:relative;">
@@ -204,7 +179,7 @@ $team = [
 <section style="padding:5rem 0;background:#F8FAF9;text-align:center;">
   <div class="container" style="max-width:600px;">
     <h2 style="font-family:'Playfair Display',serif;font-size:2rem;margin-bottom:1rem;">Come Experience the GYC Difference</h2>
-    <p style="color:#6B7280;margin-bottom:2rem;line-height:1.7;">Visit us at our Victoria Island salon, book online, or order our natural hair products — delivered nationwide.</p>
+    <p style="color:#6B7280;margin-bottom:2rem;line-height:1.7;">Visit us at Big Qua Mall, Ediba Road, Calabar, book online, or order our natural hair products — delivered nationwide.</p>
     <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
       <a href="<?= SITE_URL ?>/book-appointment.php" class="btn btn-green" style="padding:.9rem 2rem;">Book Appointment</a>
       <a href="https://wa.me/<?= $waClean ?>" target="_blank" rel="noopener" class="btn btn-whatsapp" style="padding:.9rem 2rem;">

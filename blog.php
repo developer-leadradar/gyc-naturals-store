@@ -33,7 +33,7 @@ if (!$category && !$search && $page === 1 && !empty($posts)) {
 }
 
 $pageTitle       = 'Natural Hair Blog — GYC Naturals';
-$pageDescription = 'Expert tips, tutorials, and inspiration for natural hair care, braiding styles, and African fashion from GYC Naturals Lagos.';
+$pageDescription = 'Expert tips, tutorials, and inspiration for natural hair care, braiding styles, and African fashion from GYC Naturals Calabar.';
 require_once __DIR__ . '/includes/header.php';
 
 // Category display names

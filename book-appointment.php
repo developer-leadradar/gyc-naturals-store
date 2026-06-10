@@ -17,8 +17,8 @@ $categories = getAllGalleryCategories(true);
 $minDate = date('Y-m-d', strtotime('+1 day'));
 $maxDate = date('Y-m-d', strtotime('+60 days'));
 
-$pageTitle       = 'Book an Appointment — GYC Naturals Lagos';
-$pageDescription = 'Book your professional hair braiding appointment online at GYC Naturals, Victoria Island Lagos. Choose your style, pick a date, and confirm with a 30% deposit.';
+$pageTitle       = 'Book an Appointment — GYC Naturals Calabar';
+$pageDescription = 'Book your professional hair braiding appointment online at GYC Naturals, Big Qua Mall, Calabar. Choose your style, pick a date, and confirm with a 30% deposit.';
 
 require_once __DIR__ . '/includes/header.php';
 ?>

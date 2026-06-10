@@ -40,8 +40,8 @@ $pages    = (int)ceil($total / $perPage);
 // Featured bundles
 $bundles = getAllBundles();
 
-$pageTitle       = 'Shop Natural Hair Products — GYC Naturals Lagos';
-$pageDescription = 'Buy authentic African hair care products online in Lagos. Shea butter, castor oil, growth serums, curl defining creams and more. Fast delivery across Nigeria.';
+$pageTitle       = 'Shop Natural Hair Products — GYC Naturals Calabar';
+$pageDescription = 'Buy authentic African hair care products online. Shea butter, castor oil, growth serums, curl defining creams and more. Fast delivery across Nigeria.';
 
 require_once __DIR__ . '/includes/header.php';
 ?>

@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isLoggedIn()) {
 }
 
 $pageTitle       = 'Client Testimonials — GYC Naturals';
-$pageDescription = 'Read what our clients say about GYC Naturals hair braiding salon and natural hair products in Victoria Island, Lagos.';
+$pageDescription = 'Read what our clients say about GYC Naturals hair braiding salon and natural hair products in Calabar, Cross River State.';
 require_once __DIR__ . '/includes/header.php';
 ?>
 
@@ -62,7 +62,7 @@ require_once __DIR__ . '/includes/header.php';
         <svg width="20" height="20" viewBox="0 0 24 24" fill="var(--gyc-gold)" xmlns="http://www.w3.org/2000/svg"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
         <?php endfor; ?>
       </div>
-      <span style="font-size:.95rem;font-weight:600;">Trusted by 500+ Lagos clients</span>
+      <span style="font-size:.95rem;font-weight:600;">Trusted by 100+ Calabar clients</span>
     </div>
   </div>
 </section>
@@ -80,8 +80,8 @@ require_once __DIR__ . '/includes/header.php';
         <div style="font-size:.78rem;font-weight:600;color:rgba(255,255,255,.8);text-transform:uppercase;letter-spacing:.1em;">Average Rating</div>
       </div>
       <div>
-        <div style="font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:#fff;">3yrs</div>
-        <div style="font-size:.78rem;font-weight:600;color:rgba(255,255,255,.8);text-transform:uppercase;letter-spacing:.1em;">Serving Lagos</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:#fff;">2024</div>
+        <div style="font-size:.78rem;font-weight:600;color:rgba(255,255,255,.8);text-transform:uppercase;letter-spacing:.1em;">Est. in Calabar</div>
       </div>
       <div>
         <div style="font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:#fff;">100%</div>
@@ -165,7 +165,7 @@ require_once __DIR__ . '/includes/header.php';
     <!-- ── SUBMIT A REVIEW ── -->
     <div id="leave-review" style="margin-top:4rem;background:#fff;border:1.5px solid var(--gyc-green-100);border-radius:var(--gyc-radius-xl);padding:2.5rem;max-width:640px;margin-left:auto;margin-right:auto;">
       <h2 style="font-family:'Playfair Display',serif;font-size:1.5rem;margin-bottom:.5rem;text-align:center;">Share Your Experience</h2>
-      <p style="font-size:.875rem;color:#6B7280;text-align:center;margin-bottom:2rem;">Your review helps other naturals in Lagos find us.</p>
+      <p style="font-size:.875rem;color:#6B7280;text-align:center;margin-bottom:2rem;">Your review helps other naturals in Calabar find us.</p>
 
       <?php if ($success): ?>
       <div class="alert alert-success" style="margin-bottom:1.5rem;">
@@ -230,7 +230,7 @@ require_once __DIR__ . '/includes/header.php';
 <section style="background:var(--gyc-green-900);color:#fff;padding:4.5rem 0;text-align:center;">
   <div class="container" style="max-width:600px;">
     <h2 style="font-family:'Playfair Display',serif;font-size:2rem;margin-bottom:1rem;">Ready to become our next happy client?</h2>
-    <p style="opacity:.8;margin-bottom:2rem;line-height:1.7;">Book an appointment or shop our curated natural hair products — delivered across Lagos.</p>
+    <p style="opacity:.8;margin-bottom:2rem;line-height:1.7;">Book an appointment or shop our curated natural hair products — delivered nationwide.</p>
     <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
       <a href="<?= SITE_URL ?>/book-appointment.php" class="btn btn-gold" style="padding:.85rem 2rem;">Book Appointment</a>
       <a href="<?= SITE_URL ?>/shop.php" class="btn" style="padding:.85rem 2rem;background:rgba(255,255,255,.12);color:#fff;border:1.5px solid rgba(255,255,255,.3);">Shop Products</a>

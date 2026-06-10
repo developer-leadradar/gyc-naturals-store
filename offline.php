@@ -171,7 +171,7 @@
     <span id="status-text">No internet connection</span>
   </p>
 
-  <p>Don't worry — our team is ready to help when you're back online. GYC Naturals Victoria Island, Lagos.</p>
+  <p>Don't worry — our team is ready to help when you're back online. GYC Naturals, Big Qua Mall, Calabar.</p>
 
   <div>
     <button class="btn-green" onclick="retryConnection()">
