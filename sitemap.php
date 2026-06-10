@@ -66,9 +66,9 @@ foreach ($products as $p) {
 }
 
 // ── Shop category pages ────────────────────────────────────
-$cats = $db->fetchAll("SELECT id, slug FROM product_categories WHERE is_active=1");
+$cats = $db->fetchAll("SELECT id, slug FROM categories ORDER BY id");
 foreach ($cats as $c) {
-    $xml .= sitemapUrl("$base/shop.php?category=" . urlencode($c['id']), $today, 'weekly', '0.7');
+    $xml .= sitemapUrl("$base/shop.php?category=" . urlencode($c['slug']), $today, 'weekly', '0.7');
 }
 
 // ── Gallery styles ────────────────────────────────────────

@@ -6,9 +6,9 @@ require_once __DIR__ . '/includes/functions.php';
 
 // Load clothing products (category slug = 'clothing')
 $clothingCat = getDB()->fetchOne(
-    "SELECT * FROM product_categories WHERE slug = 'clothing' AND is_active = 1"
+    "SELECT * FROM categories WHERE slug = 'clothing'"
 );
-$catId = $clothingCat ? $clothingCat['id'] : 0;
+$catId = $clothingCat ? $clothingCat['id'] : 4;
 
 $clothingItems = getAllProducts(['category_id' => $catId, 'in_stock' => true], 24, 0);
 $newArrivals   = getAllProducts(['category_id' => $catId, 'in_stock' => true], 4, 0);
