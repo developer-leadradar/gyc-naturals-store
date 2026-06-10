@@ -71,7 +71,7 @@ $custWaMsg     = "Hi! I just booked an appointment at GYC Naturals.\n"
 $custWaUrl     = "https://wa.me/?text=" . rawurlencode($custWaMsg);
 
 $pageTitle       = 'Booking Received — ' . $aptNum . ' | GYC Naturals';
-$pageDescription = 'Your appointment request has been received at GYC Naturals Lagos. We will confirm within 24 hours.';
+$pageDescription = 'Your appointment request has been received at GYC Naturals Calabar. We will confirm within 24 hours.';
 
 require_once __DIR__ . '/includes/header.php';
 ?>
@@ -249,7 +249,7 @@ require_once __DIR__ . '/includes/header.php';
               <i data-lucide="map-pin" style="width:18px;height:18px;color:var(--gyc-green-600);flex-shrink:0;margin-top:2px;"></i>
               <div>
                 <strong style="display:block;font-size:0.9rem;color:var(--gyc-dark);">GYC Naturals Salon</strong>
-                <span style="font-size:0.85rem;color:#666;"><?= htmlspecialchars(getSetting('site_address') ?: 'Victoria Island, Lagos, Nigeria') ?></span>
+                <span style="font-size:0.85rem;color:#666;"><?= htmlspecialchars(getSetting('site_address') ?: 'Big Qua Mall, Ediba Road, Calabar, Cross River State') ?></span>
               </div>
             </div>
             <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem;">
@@ -262,7 +262,7 @@ require_once __DIR__ . '/includes/header.php';
             </div>
           </div>
           <div>
-            <a href="https://maps.google.com/?q=Victoria+Island+Lagos+Nigeria" target="_blank" rel="noopener"
+            <a href="https://maps.google.com/?q=Big+Qua+Mall,Calabar,Cross+River+State,Nigeria" target="_blank" rel="noopener"
                class="btn btn-outline-green btn-sm">
               <i data-lucide="navigation" style="width:14px;height:14px;"></i>
               Get Directions

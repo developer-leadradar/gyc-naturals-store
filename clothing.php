@@ -19,8 +19,8 @@ $sortBy = sanitize($_GET['sort'] ?? 'newest');
 $allowedSorts = ['newest','price_asc','price_desc'];
 if (!in_array($sortBy, $allowedSorts)) $sortBy = 'newest';
 
-$pageTitle       = 'African Fashion & Clothing — GYC Naturals Lagos';
-$pageDescription = 'Shop GYC Naturals clothing line — vibrant African prints, co-ord sets, and everyday natural-living fashion. Delivered across Lagos and Nigeria.';
+$pageTitle       = 'African Fashion & Clothing — GYC Naturals Calabar';
+$pageDescription = 'Shop GYC Naturals clothing line — vibrant African prints, co-ord sets, and everyday natural-living fashion. Delivered across Nigeria.';
 $canonicalUrl    = SITE_URL . '/clothing.php';
 require_once __DIR__ . '/includes/header.php';
 ?>
@@ -48,7 +48,7 @@ require_once __DIR__ . '/includes/header.php';
 ══════════════════════════════════════════════════════ -->
 <section style="position:relative;overflow:hidden;min-height:520px;display:flex;align-items:center;background:#1a0a00;">
   <!-- Background pattern -->
-  <div style="position:absolute;inset:0;background-image:url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1400&auto=format&fit=crop');background-size:cover;background-position:center;opacity:.35;"></div>
+  <div style="position:absolute;inset:0;background-image:url('https://images.pexels.com/photos/20370167/pexels-photo-20370167.jpeg?auto=compress&cs=tinysrgb&w=1400');background-size:cover;background-position:center;opacity:.35;"></div>
   <!-- African kente-inspired accent bars -->
   <div style="position:absolute;top:0;left:0;right:0;height:6px;background:linear-gradient(90deg,var(--gyc-gold) 0%,var(--gyc-terra) 33%,var(--gyc-green-600) 66%,var(--gyc-gold) 100%);"></div>
 
@@ -109,7 +109,7 @@ require_once __DIR__ . '/includes/header.php';
       <div>
         <p style="font-size:.75rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gyc-gold);margin-bottom:.75rem;">Our Fashion Philosophy</p>
         <h2 style="font-family:'Playfair Display',serif;font-size:clamp(1.6rem,3vw,2.2rem);margin-bottom:1.25rem;line-height:1.3;">Rooted in Africa.<br>Made for Today.</h2>
-        <p style="opacity:.85;line-height:1.8;margin-bottom:1.25rem;">At GYC Naturals, fashion is an extension of our philosophy — embrace your natural self, wear your heritage with pride. Every piece in our clothing line is inspired by the rich textile traditions of West Africa, reimagined for the modern Lagos woman.</p>
+        <p style="opacity:.85;line-height:1.8;margin-bottom:1.25rem;">At GYC Naturals, fashion is an extension of our philosophy — embrace your natural self, wear your heritage with pride. Every piece in our clothing line is inspired by the rich textile traditions of West Africa, reimagined for the modern Nigerian woman.</p>
         <p style="opacity:.75;line-height:1.8;font-size:.9rem;">We source our fabrics locally, supporting Nigerian artisans and fabric markets. From Ankara to Adire, our collections celebrate the diversity of African textiles.</p>
         <div style="display:flex;gap:2rem;margin-top:2rem;">
           <div style="text-align:center;">
@@ -118,7 +118,7 @@ require_once __DIR__ . '/includes/header.php';
           </div>
           <div style="text-align:center;">
             <div style="font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:var(--gyc-gold);">Made</div>
-            <div style="font-size:.75rem;opacity:.7;text-transform:uppercase;letter-spacing:.08em;">in Lagos</div>
+            <div style="font-size:.75rem;opacity:.7;text-transform:uppercase;letter-spacing:.08em;">in Calabar</div>
           </div>
           <div style="text-align:center;">
             <div style="font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:var(--gyc-gold);">Fast</div>
@@ -127,9 +127,9 @@ require_once __DIR__ . '/includes/header.php';
         </div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-        <img src="https://images.unsplash.com/photo-1590735213920-68192a487bc2?w=400&auto=format&fit=crop" alt="African print fashion"
+        <img src="https://images.pexels.com/photos/37994008/pexels-photo-37994008.jpeg?auto=compress&cs=tinysrgb&w=400" alt="African print fashion"
              style="width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:var(--gyc-radius-lg);">
-        <img src="https://images.unsplash.com/photo-1509631179647-0177331693ae?w=400&auto=format&fit=crop" alt="Fashion lookbook"
+        <img src="https://images.pexels.com/photos/37994020/pexels-photo-37994020.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Fashion lookbook"
              style="width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:var(--gyc-radius-lg);margin-top:2rem;">
       </div>
     </div>
@@ -187,7 +187,7 @@ require_once __DIR__ . '/includes/header.php';
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.5rem;" id="clothing-grid">
       <?php foreach ($clothingItems as $item): ?>
       <?php
-        $img     = $item['image'] ?? 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&auto=format&fit=crop';
+        $img     = $item['image'] ?? 'https://images.pexels.com/photos/32093798/pexels-photo-32093798.jpeg?auto=compress&cs=tinysrgb&w=400';
         $price   = formatPrice($item['price']);
         $oldPrice = !empty($item['compare_at_price']) && $item['compare_at_price'] > $item['price']
                     ? formatPrice($item['compare_at_price']) : null;
@@ -294,15 +294,15 @@ require_once __DIR__ . '/includes/header.php';
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;">
       <?php
       $looks = [
-        ['img'=>'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=600&auto=format&fit=crop',
+        ['img'=>'https://images.pexels.com/photos/20370167/pexels-photo-20370167.jpeg?auto=compress&cs=tinysrgb&w=600',
          'title'=>'The Ankara Queen',
-         'desc'=>'Box braids + vibrant Ankara co-ord set — peak Lagos energy.',
+         'desc'=>'Box braids + vibrant Ankara dress — pure Calabar energy.',
          'tag'=>'ankara'],
-        ['img'=>'https://images.unsplash.com/photo-1487222477894-8943e31ef7b2?w=600&auto=format&fit=crop',
+        ['img'=>'https://images.pexels.com/photos/37994018/pexels-photo-37994018.jpeg?auto=compress&cs=tinysrgb&w=600',
          'title'=>'Natural & Neutral',
          'desc'=>'Protective twists + earthy linen tones for your everyday look.',
          'tag'=>'coord-sets'],
-        ['img'=>'https://images.unsplash.com/photo-1581044777550-4cfa60707c03?w=600&auto=format&fit=crop',
+        ['img'=>'https://images.pexels.com/photos/37514997/pexels-photo-37514997.jpeg?auto=compress&cs=tinysrgb&w=600',
          'title'=>'The Gele Moment',
          'desc'=>'Knotless braids + a statement headwrap — ready for any occasion.',
          'tag'=>'headwraps'],
@@ -385,9 +385,9 @@ require_once __DIR__ . '/includes/header.php';
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:2rem;text-align:center;">
       <?php
       $perks = [
-        ['🚚','Fast Lagos Delivery','Same-day within VI, next-day across Lagos.'],
+        ['🚚','Fast Nationwide Delivery','Same-day in Calabar, 1–3 days across Nigeria.'],
         ['🔄','Easy Returns','7-day returns on unworn items — no questions asked.'],
-        ['🧵','Quality Fabrics','We source from trusted Lagos fabric markets.'],
+        ['🧵','Quality Fabrics','We source from trusted Nigerian fabric markets.'],
         ['📏','Custom Sizing','Need a custom size? Reach us on WhatsApp.'],
       ];
       foreach ($perks as $p):

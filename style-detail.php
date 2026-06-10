@@ -19,7 +19,7 @@ $related = getDB()->fetchAll(
 );
 
 $pageTitle       = htmlspecialchars($style['title']) . ' — Hair Style | GYC Naturals';
-$pageDescription = htmlspecialchars($style['description'] ?? 'Professional ' . $style['title'] . ' at GYC Naturals Lagos. Book online.');
+$pageDescription = htmlspecialchars($style['description'] ?? 'Professional ' . $style['title'] . ' at GYC Naturals Calabar. Book online.');
 $pageImage       = $style['image_url'];
 
 require_once __DIR__ . '/includes/header.php';
