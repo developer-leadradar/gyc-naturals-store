@@ -16,7 +16,7 @@ $items    = $summary['items'];
 
 $user = isLoggedIn() ? getCurrentUser() : null;
 
-$pageTitle = 'Checkout — GYC Naturals Lagos';
+$pageTitle = 'Checkout — GYC Naturals Calabar';
 require_once __DIR__ . '/includes/header.php';
 ?>
 
@@ -73,7 +73,7 @@ require_once __DIR__ . '/includes/header.php';
               <div class="form-group">
                 <label class="form-label">City <span class="required">*</span></label>
                 <input type="text" name="shipping_city" class="form-control" required
-                       placeholder="Lagos">
+                       placeholder="Calabar">
               </div>
               <div class="form-group">
                 <label class="form-label">State <span class="required">*</span></label>
@@ -83,7 +83,7 @@ require_once __DIR__ . '/includes/header.php';
                   $states = ['Abia','Adamawa','Akwa Ibom','Anambra','Bauchi','Bayelsa','Benue','Borno','Cross River','Delta','Ebonyi','Edo','Ekiti','Enugu','FCT – Abuja','Gombe','Imo','Jigawa','Kaduna','Kano','Katsina','Kebbi','Kogi','Kwara','Lagos','Nasarawa','Niger','Ogun','Ondo','Osun','Oyo','Plateau','Rivers','Sokoto','Taraba','Yobe','Zamfara'];
                   foreach ($states as $st):
                   ?>
-                  <option value="<?= $st ?>" <?= $st === 'Lagos' ? 'selected' : '' ?>><?= $st ?></option>
+                  <option value="<?= $st ?>" <?= $st === 'Cross River' ? 'selected' : '' ?>><?= $st ?></option>
                   <?php endforeach; ?>
                 </select>
               </div>

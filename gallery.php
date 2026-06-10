@@ -4,9 +4,9 @@ require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/includes/db.php';
 require_once __DIR__ . '/includes/functions.php';
 
-$pageTitle       = 'Style Gallery — Browse Hair Styles | GYC Naturals Lagos';
+$pageTitle       = 'Style Gallery — Browse Hair Styles | GYC Naturals Calabar';
 $pageDescription = 'Browse our full gallery of box braids, knotless braids, cornrows, Senegalese twists, weaves and natural hair styles. Book your favourite style online.';
-$pageKeywords    = 'box braids gallery Lagos, knotless braids styles, cornrow designs Nigeria, GYC Naturals gallery';
+$pageKeywords    = 'box braids gallery Calabar, knotless braids styles, cornrow designs Nigeria, GYC Naturals gallery';
 
 $categories     = getAllGalleryCategories(true);
 $activeCategory = sanitize($_GET['category'] ?? 'all');

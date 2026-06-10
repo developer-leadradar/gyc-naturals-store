@@ -228,7 +228,7 @@ require_once __DIR__ . '/includes/header.php';
         <div style="background:linear-gradient(135deg,var(--gyc-green-900),var(--gyc-green-700));border-radius:var(--gyc-radius-lg);padding:1.75rem;color:#fff;margin-bottom:1.5rem;text-align:center;">
           <i data-lucide="scissors" style="width:32px;height:32px;color:var(--gyc-gold);margin-bottom:.75rem;"></i>
           <h3 style="font-family:'Playfair Display',serif;font-size:1.1rem;margin-bottom:.5rem;">Book Your Style</h3>
-          <p style="font-size:.82rem;opacity:.8;margin-bottom:1.25rem;line-height:1.6;">Transform your crown at our Victoria Island salon.</p>
+          <p style="font-size:.82rem;opacity:.8;margin-bottom:1.25rem;line-height:1.6;">Transform your crown at our Calabar salon — Big Qua Mall, Ediba Road.</p>
           <a href="<?= SITE_URL ?>/book-appointment.php" class="btn btn-gold w-full" style="font-size:.85rem;">Book Appointment</a>
         </div>
 

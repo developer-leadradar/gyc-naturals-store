@@ -11,7 +11,7 @@ $shipping    = $summary['shipping'];
 $total       = $summary['total'];
 $itemCount   = $summary['itemCount'];
 
-$pageTitle = 'Your Bag — GYC Naturals Lagos';
+$pageTitle = 'Your Bag — GYC Naturals Calabar';
 
 require_once __DIR__ . '/includes/header.php';
 ?>
@@ -173,7 +173,7 @@ require_once __DIR__ . '/includes/header.php';
           <!-- Trust -->
           <div style="display:flex;flex-direction:column;gap:.4rem;font-size:.77rem;color:#666;">
             <div style="display:flex;align-items:center;gap:.4rem;"><i data-lucide="lock" style="width:13px;height:13px;color:var(--gyc-green-500);"></i>Secure checkout with Paystack</div>
-            <div style="display:flex;align-items:center;gap:.4rem;"><i data-lucide="truck" style="width:13px;height:13px;color:var(--gyc-green-500);"></i>Lagos delivery 1–2 business days</div>
+            <div style="display:flex;align-items:center;gap:.4rem;"><i data-lucide="truck" style="width:13px;height:13px;color:var(--gyc-green-500);"></i>Nationwide delivery 1–5 business days</div>
             <div style="display:flex;align-items:center;gap:.4rem;"><i data-lucide="refresh-ccw" style="width:13px;height:13px;color:var(--gyc-green-500);"></i>14-day returns policy</div>
           </div>
         </div>

@@ -20,7 +20,7 @@ $otherBundles = getDB()->fetchAll(
     [$bundle['id']]
 );
 
-$pageTitle       = htmlspecialchars($bundle['name']) . ' Bundle — GYC Naturals Lagos';
+$pageTitle       = htmlspecialchars($bundle['name']) . ' Bundle — GYC Naturals Calabar';
 $pageDescription = $bundle['description']
     ? htmlspecialchars(substr($bundle['description'], 0, 155))
     : 'Get the ' . $bundle['name'] . ' bundle at GYC Naturals and save on your hair care routine.';
@@ -155,7 +155,7 @@ require_once __DIR__ . '/includes/header.php';
 
         <!-- Trust badges -->
         <div style="display:flex;gap:1rem;flex-wrap:wrap;font-size:.78rem;color:#666;">
-          <span style="display:flex;align-items:center;gap:.35rem;"><i data-lucide="truck" style="width:14px;height:14px;color:var(--gyc-green-600);"></i>Fast Lagos delivery</span>
+          <span style="display:flex;align-items:center;gap:.35rem;"><i data-lucide="truck" style="width:14px;height:14px;color:var(--gyc-green-600);"></i>Nationwide delivery</span>
           <span style="display:flex;align-items:center;gap:.35rem;"><i data-lucide="shield-check" style="width:14px;height:14px;color:var(--gyc-green-600);"></i>100% natural</span>
           <span style="display:flex;align-items:center;gap:.35rem;"><i data-lucide="refresh-ccw" style="width:14px;height:14px;color:var(--gyc-green-600);"></i>14-day returns</span>
         </div>

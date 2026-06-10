@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $subject = 'Re: ' . $msg['subject'];
                 $html = '<p>Hi ' . htmlspecialchars($msg['name']) . ',</p>'
                       . '<p>' . nl2br(htmlspecialchars($body)) . '</p>'
-                      . '<p style="margin-top:1.5rem;color:#6B7280;font-size:.85em;">—<br>GYC Naturals Team<br>Victoria Island, Lagos</p>';
+                      . '<p style="margin-top:1.5rem;color:#6B7280;font-size:.85em;">—<br>GYC Naturals Team<br>Big Qua Mall, Calabar</p>';
                 sendEmail($msg['email'], $subject, $html);
                 $db->update('contact_messages', ['is_read' => 1], 'id=?', [$id]);
                 $_SESSION['flash'] = ['type' => 'success', 'message' => 'Reply sent to ' . $msg['email']];
