@@ -7,14 +7,14 @@ require_once __DIR__ . '/includes/functions.php';
 $orderNum = sanitize($_GET['order'] ?? '');
 
 if (!$orderNum) {
-    redirect(SITE_URL . '/shop.php');
+    redirect(isLoggedIn() ? SITE_URL . '/customer-dashboard.php' : SITE_URL . '/login.php');
 }
 
 $order = getOrderByNumber($orderNum);
 
 // Security: only show if logged in as this user, or if it's a guest order (no user_id)
 if (!$order) {
-    redirect(SITE_URL . '/shop.php');
+    redirect(isLoggedIn() ? SITE_URL . '/customer-dashboard.php' : SITE_URL . '/login.php');
 }
 if ($order['user_id'] && (!isLoggedIn() || $_SESSION['user_id'] != $order['user_id'])) {
     if (!isAdmin()) {
