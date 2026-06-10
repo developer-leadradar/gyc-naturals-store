@@ -159,7 +159,7 @@
 | "Made in Calabar" stat | Visible | ✅ | |
 | "Same-day in Calabar" delivery | Visible | ✅ | |
 | Lookbook | "pure Calabar energy" text | ✅ | |
-| Product filter — clothing only | ⏳ | ❌→✅ DEPLOY PENDING | Bug fixed: was querying `product_categories` not `categories` table |
+| Product filter — clothing only | ✅ | 2 products shown (Ankara Wrap Dress + Kente Print Headwrap) | Bug fixed: was querying `product_categories` not `categories` table |
 
 ---
 
@@ -199,7 +199,7 @@
 | /faq.php | ✅ | Calabar present, no stale refs |
 | /cart.php | ✅ | "Your Bag — GYC Naturals Calabar" |
 | /checkout.php | ✅ | Redirects to cart when empty (expected) |
-| /sitemap.php | ✅ DEPLOY PENDING | Fixed to query `categories` not `product_categories` |
+| /sitemap.php | ✅ | Fixed to query `categories` not `product_categories` |
 
 ---
 
@@ -216,8 +216,8 @@
 | 7 | "Chinwe" in testimonial | DB testimonial text | Updated via db-proxy | ✅ |
 | 8 | "Lagos" in Adaora testimonial | DB testimonial text | Updated via db-proxy → "Cross River State" | ✅ |
 | 9 | Blog titles referencing "Lagos Heat" | DB blog_posts titles | Updated via db-proxy → "Nigerian Heat" / "Calabar" | ✅ |
-| 10 | clothing.php showed all 12 products | Wrong table: `product_categories` (empty) vs `categories` | Fixed query in clothing.php | ✅ DEPLOY PENDING |
-| 11 | sitemap.php using wrong table | Same wrong table name | Fixed query in sitemap.php | ✅ DEPLOY PENDING |
+| 10 | clothing.php showed all 12 products | Wrong table: `product_categories` (empty) vs `categories` | Fixed query in clothing.php | ✅ |
+| 11 | sitemap.php using wrong table | Same wrong table name | Fixed query in sitemap.php | ✅ |
 
 ---
 
@@ -230,4 +230,4 @@
 - [x] Owner name: "Juliet Arah" everywhere
 - [x] Phone/WhatsApp: +2347037256585 everywhere
 - [x] Footer: Big Qua Mall address, "Made with love in Calabar 🇳🇬"
-- [ ] Clothing page filter: pending deployment of `product_categories` → `categories` fix
+- [x] Clothing page filter: confirmed live — 2 products only (Ankara Wrap Dress + Kente Print Headwrap)
