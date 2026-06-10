@@ -74,7 +74,7 @@ if (function_exists('imagettftext') && file_exists('C:/Windows/Fonts/arialbd.ttf
 } else {
     imagestring($og, 5, 200, 250, 'GYC NATURALS',  $white);
     imagestring($og, 4, 205, 280, 'Grow Your Crown', $gold);
-    imagestring($og, 3, 200, 310, 'Professional Hair Braiding · Lagos, Nigeria', $cream);
+    imagestring($og, 3, 200, 310, 'Professional Hair Braiding · Calabar, Nigeria', $cream);
 }
 imagejpeg($og, $base . 'og-default.jpg', 90);
 imagedestroy($og);

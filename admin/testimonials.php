@@ -80,7 +80,7 @@ $counts = [
     <div style="background:#fff;border:1.5px solid #E5E7EB;border-radius:12px;padding:1.5rem;display:flex;flex-direction:column;gap:1rem;">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
         <div class="form-group"><label class="form-label">Author Name *</label><input type="text" name="author_name" class="form-control" required value="<?= htmlspecialchars($editT['author_name']??'') ?>"></div>
-        <div class="form-group"><label class="form-label">Location</label><input type="text" name="author_location" class="form-control" value="<?= htmlspecialchars($editT['author_location']??'') ?>" placeholder="e.g. Victoria Island, Lagos"></div>
+        <div class="form-group"><label class="form-label">Location</label><input type="text" name="author_location" class="form-control" value="<?= htmlspecialchars($editT['author_location']??'') ?>" placeholder="e.g. Calabar, Cross River"></div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
         <div class="form-group">
