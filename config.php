@@ -70,7 +70,8 @@ ini_set('display_errors', $isProduction ? '0' : '1');
 
 date_default_timezone_set('Africa/Lagos');
 
-// Session (file-based for local MySQL)
+// Session — DB-backed on Vercel (sessions persist across ephemeral containers);
+// file-based locally where containers are not an issue.
 if (session_status() === PHP_SESSION_NONE) {
     session_set_cookie_params([
         'lifetime' => 86400,
@@ -79,5 +80,9 @@ if (session_status() === PHP_SESSION_NONE) {
         'httponly' => true,
         'samesite' => 'Lax',
     ]);
+    if ($isProduction && function_exists('curl_init')) {
+        require_once __DIR__ . '/includes/db-session-handler.php';
+        session_set_save_handler(new DbSessionHandler(), true);
+    }
     session_start();
 }

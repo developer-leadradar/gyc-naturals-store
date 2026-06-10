@@ -19,13 +19,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!$email || !$password) {
         $error = 'Email and password are required.';
     } else {
-        $user = login($email, $password);
-        if ($user && ($user['role'] === 'admin' || $user['role'] === 'super_admin')) {
-            redirect(SITE_URL . '/admin/index.php');
-            exit;
-        } elseif ($user) {
-            // Logged in but not admin — log them back out
-            logout();
+        if (login($email, $password)) {
+            if (isAdmin()) {
+                redirect(SITE_URL . '/admin/index.php');
+                exit;
+            }
+            // Logged in but not admin — clear session without redirect
+            unset($_SESSION['user_id'], $_SESSION['user_email'], $_SESSION['user_name'], $_SESSION['user_role']);
             $error = 'You do not have admin access.';
         } else {
             $error = 'Invalid email or password.';
