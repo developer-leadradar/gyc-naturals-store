@@ -6,14 +6,62 @@ function getDB() {
 }
 
 // ═══════════════════════════════════════════════════════
-// AUTHENTICATION
+// AUTHENTICATION — HMAC-signed cookie (stateless, works
+// across Vercel serverless containers; file sessions are
+// per-container and lost on the very next request)
 // ═══════════════════════════════════════════════════════
 
+function _authSecret(): string {
+    // Use the DB proxy secret as the signing key; it's already in env
+    $s = defined('DB_PROXY_SECRET') ? DB_PROXY_SECRET : '';
+    return $s ?: 'gyc_hmac_fallback_2025';
+}
+
+function _setAuthCookie(array $user, int $ttl = 86400): void {
+    $payload = base64_encode(json_encode([
+        'uid'   => (int)$user['id'],
+        'role'  => $user['role'],
+        'email' => $user['email'],
+        'name'  => ($user['first_name'] ?? '') . ' ' . ($user['last_name'] ?? ''),
+        'exp'   => time() + $ttl,
+    ]));
+    $token  = $payload . '.' . hash_hmac('sha256', $payload, _authSecret());
+    $secure = !empty(getenv('VERCEL')) || !empty(getenv('VERCEL_ENV'));
+    setcookie('gyc_auth', $token, [
+        'expires'  => time() + $ttl,
+        'path'     => '/',
+        'secure'   => $secure,
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ]);
+    $_COOKIE['gyc_auth'] = $token;  // available for the rest of this request
+}
+
+function _getAuthPayload(): ?array {
+    static $cache = false;
+    if ($cache !== false) return $cache;
+    $token = $_COOKIE['gyc_auth'] ?? '';
+    if (!$token) { $cache = null; return null; }
+    $parts = explode('.', $token, 2);
+    if (count($parts) !== 2) { $cache = null; return null; }
+    [$payload, $sig] = $parts;
+    if (!hash_equals(hash_hmac('sha256', $payload, _authSecret()), $sig)) {
+        $cache = null; return null;
+    }
+    $data = json_decode(base64_decode($payload), true);
+    if (!$data || ($data['exp'] ?? 0) < time()) { $cache = null; return null; }
+    $cache = $data;
+    return $data;
+}
+
 function isLoggedIn() {
-    return isset($_SESSION['user_id']);
+    if (_getAuthPayload() !== null) return true;
+    return isset($_SESSION['user_id']);          // local-dev fallback
 }
 
 function isAdmin() {
+    $p = _getAuthPayload();
+    if ($p) return in_array($p['role'], ['admin', 'super_admin'], true);
     return isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin';
 }
 
@@ -33,27 +81,31 @@ function requireAdmin() {
 }
 
 function getCurrentUser() {
-    if (!isLoggedIn()) return null;
-    $db = getDB();
-    return $db->fetchOne("SELECT * FROM users WHERE id = ?", [$_SESSION['user_id']]);
+    $p   = _getAuthPayload();
+    $uid = $p['uid'] ?? ($_SESSION['user_id'] ?? null);
+    if (!$uid) return null;
+    return getDB()->fetchOne("SELECT * FROM users WHERE id = ? AND is_active = 1", [$uid]);
 }
 
 function login($email, $password) {
     $db   = getDB();
     $user = $db->fetchOne("SELECT * FROM users WHERE email = ? AND is_active = 1", [$email]);
-    if ($user && password_verify($password, $user['password'])) {
-        $_SESSION['user_id']    = $user['id'];
-        $_SESSION['user_email'] = $user['email'];
-        $_SESSION['user_name']  = $user['first_name'] . ' ' . $user['last_name'];
-        $_SESSION['user_role']  = $user['role'];
-        return true;
-    }
-    return false;
+    if (!$user || !password_verify($password, $user['password'])) return false;
+    _setAuthCookie($user);
+    // Keep session vars for cart merge and local-dev compatibility
+    $_SESSION['user_id']    = $user['id'];
+    $_SESSION['user_email'] = $user['email'];
+    $_SESSION['user_name']  = ($user['first_name'] ?? '') . ' ' . ($user['last_name'] ?? '');
+    $_SESSION['user_role']  = $user['role'];
+    return true;
 }
 
 function logout() {
+    $secure = !empty(getenv('VERCEL')) || !empty(getenv('VERCEL_ENV'));
+    setcookie('gyc_auth', '', ['expires' => time() - 3600, 'path' => '/', 'secure' => $secure, 'httponly' => true, 'samesite' => 'Lax']);
+    unset($_COOKIE['gyc_auth']);
     session_destroy();
-    redirect(SITE_URL . '/index.php');
+    redirect(SITE_URL . '/');
 }
 
 function register($data) {
@@ -1011,6 +1063,7 @@ function sendEmail($to, $subject, $html) {
 // ═══════════════════════════════════════════════════════
 
 function redirect($url) {
+    if (session_status() === PHP_SESSION_ACTIVE) session_write_close();
     if (ob_get_level()) ob_end_clean();
     header("Location: $url");
     exit;
@@ -1092,33 +1145,51 @@ function isJsonRequest() {
         || (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest');
 }
 
-function csrfToken() {
-    if (empty($_SESSION['csrf_token'])) {
-        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+// ── CSRF — Double Submit Cookie pattern (stateless, no session required) ──────
+// A random token is stored in a non-HttpOnly cookie (gyc_csrf) AND embedded
+// in every form as a hidden field.  On submit, both values must match.
+// SameSite=Lax on the auth cookie already blocks most CSRF; this adds a
+// second layer that works even when SameSite is not honoured.
+
+function csrfToken(): string {
+    if (empty($_COOKIE['gyc_csrf'])) {
+        $token  = bin2hex(random_bytes(32));
+        $secure = !empty(getenv('VERCEL')) || !empty(getenv('VERCEL_ENV'));
+        setcookie('gyc_csrf', $token, [
+            'expires'  => time() + 7200,
+            'path'     => '/',
+            'secure'   => $secure,
+            'httponly' => false,   // readable by JS for AJAX forms
+            'samesite' => 'Lax',
+        ]);
+        $_COOKIE['gyc_csrf'] = $token;
     }
-    return $_SESSION['csrf_token'];
+    return $_COOKIE['gyc_csrf'];
 }
 
-/** Output a hidden <input> field with the CSRF token — use inside <form> tags */
-function csrfInput() {
+function csrfInput(): string {
     return '<input type="hidden" name="csrf_token" value="' . htmlspecialchars(csrfToken()) . '">';
 }
 
-/** Check CSRF from POST; redirect to referer on failure */
-function verifyCsrf($token = null) {
-    $t = $token ?? ($_POST['csrf_token'] ?? '');
-    if (empty($t) || !isset($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $t)) {
-        if (!empty($_SERVER['HTTP_REFERER'])) {
-            header('Location: ' . $_SERVER['HTTP_REFERER']);
-        } else {
-            header('Location: ' . SITE_URL . '/');
-        }
-        exit;
+function verifyCsrf($token = null): void {
+    $submitted = $token ?? ($_POST['csrf_token'] ?? '');
+    $cookie    = $_COOKIE['gyc_csrf'] ?? '';
+    // Accept if cookie and form field both present and equal
+    if ($cookie && $submitted && hash_equals($cookie, $submitted)) return;
+    // Fallback: session-based check (local dev / same-container)
+    if (!empty($_SESSION['csrf_token']) && $submitted && hash_equals($_SESSION['csrf_token'], $submitted)) return;
+    // Failed
+    if (!empty($_SERVER['HTTP_REFERER'])) {
+        header('Location: ' . $_SERVER['HTTP_REFERER']);
+    } else {
+        header('Location: ' . SITE_URL . '/');
     }
+    exit;
 }
 
-/** Silently verify CSRF; returns true/false without redirect — use in JSON APIs */
-function verifyCsrfSilent() {
-    $t = $_POST['csrf_token'] ?? ($_SERVER['HTTP_X_CSRF_TOKEN'] ?? '');
-    return !empty($t) && isset($_SESSION['csrf_token']) && hash_equals($_SESSION['csrf_token'], $t);
+function verifyCsrfSilent(): bool {
+    $t      = $_POST['csrf_token'] ?? ($_SERVER['HTTP_X_CSRF_TOKEN'] ?? '');
+    $cookie = $_COOKIE['gyc_csrf'] ?? '';
+    if ($cookie && $t && hash_equals($cookie, $t)) return true;
+    return !empty($_SESSION['csrf_token']) && $t && hash_equals($_SESSION['csrf_token'], $t);
 }
