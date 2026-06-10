@@ -127,7 +127,7 @@ $s = fn($k, $default = '') => htmlspecialchars($settings[$k] ?? $default);
         <div class="form-group"><label class="form-label">Phone Number</label><input type="text" name="site_phone" class="form-control" value="<?= $s('site_phone') ?>" placeholder="+234 xxx xxx xxxx"></div>
         <div class="form-group"><label class="form-label">WhatsApp Number</label><input type="text" name="site_whatsapp" class="form-control" value="<?= $s('site_whatsapp') ?>" placeholder="+234 xxx xxx xxxx"><p class="form-hint">Include country code. Used for WhatsApp links throughout the site.</p></div>
       </div>
-      <div class="form-group"><label class="form-label">Physical Address</label><input type="text" name="site_address" class="form-control" value="<?= $s('site_address','Victoria Island, Lagos, Nigeria') ?>"></div>
+      <div class="form-group"><label class="form-label">Physical Address</label><input type="text" name="site_address" class="form-control" value="<?= $s('site_address','Big Qua Mall, Ediba Road, Calabar, Cross River State') ?>"></div>
       <div class="form-group"><label class="form-label">Opening Hours</label><input type="text" name="opening_hours" class="form-control" value="<?= $s('opening_hours','Mon–Sat: 8:00 AM – 7:00 PM | Sun: 10:00 AM – 5:00 PM') ?>"></div>
       <button type="submit" class="btn btn-green">Save General Settings</button>
     </form>
