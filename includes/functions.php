@@ -358,6 +358,34 @@ function updateAppointmentStatus($id, $status, $notes = '') {
 
 function getAvailableSlots($date) {
     $db = getDB();
+
+    // Check for manually-configured slots first
+    $slots = $db->fetchAll(
+        "SELECT bs.*,
+                (SELECT COUNT(*) FROM appointments a
+                 WHERE a.slot_id = bs.id AND a.status != 'cancelled') as booked_count
+         FROM booking_slots bs
+         WHERE bs.slot_date = ? AND bs.is_available = 1
+         HAVING booked_count < bs.max_bookings
+         ORDER BY bs.start_time ASC",
+        [$date]
+    );
+    if (!empty($slots)) return $slots;
+
+    // Auto-generate daily slots (Mon–Sat 09:00–19:00, every 1.5 hrs, max 2 bookings each)
+    $dayOfWeek = (int) date('N', strtotime($date)); // 1=Mon … 7=Sun
+    if ($dayOfWeek === 7) return []; // Closed Sundays
+
+    $times = ['09:00:00','10:30:00','12:00:00','13:30:00','15:00:00','16:30:00','18:00:00'];
+    foreach ($times as $t) {
+        $db->insert('booking_slots', [
+            'slot_date'    => $date,
+            'start_time'   => $t,
+            'is_available' => 1,
+            'max_bookings' => 2,
+        ]);
+    }
+
     return $db->fetchAll(
         "SELECT bs.*,
                 (SELECT COUNT(*) FROM appointments a

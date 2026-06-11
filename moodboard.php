@@ -113,9 +113,15 @@ document.addEventListener('DOMContentLoaded', function () {
   const countLbl = document.getElementById('moodboard-count-label');
   const pluralEl = document.getElementById('moodboard-plural');
 
+  function getMoodboardSlugs() {
+    try { return JSON.parse(localStorage.getItem('gyc_moodboard') || '[]'); } catch(e) { return []; }
+  }
+  function saveMoodboardSlugs(slugs) {
+    localStorage.setItem('gyc_moodboard', JSON.stringify(slugs));
+  }
+
   function loadMoodboard() {
-    if (!window.GYC_MOODBOARD) return;
-    const slugs = GYC_MOODBOARD.getSlugs();
+    const slugs = getMoodboardSlugs();
     const count = slugs.length;
 
     // Update count labels
@@ -173,7 +179,8 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   window.removeMoodboardItem = function(slug, btn) {
-    if (window.GYC_MOODBOARD) GYC_MOODBOARD.remove(slug);
+    var slugs = getMoodboardSlugs();
+    saveMoodboardSlugs(slugs.filter(function(s) { return s !== slug; }));
     const item = btn ? btn.closest('.moodboard-item') : null;
     if (item) {
       item.style.opacity = '0';
@@ -188,7 +195,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // Clear all
   document.getElementById('clear-all-btn')?.addEventListener('click', function() {
     if (confirm('Clear your entire moodboard?')) {
-      if (window.GYC_MOODBOARD) GYC_MOODBOARD.clearAll();
+      saveMoodboardSlugs([]);
       loadMoodboard();
     }
   });
@@ -200,7 +207,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Share moodboard
   document.getElementById('share-moodboard-btn')?.addEventListener('click', function() {
-    const slugs = window.GYC_MOODBOARD ? GYC_MOODBOARD.getSlugs() : [];
+    const slugs = getMoodboardSlugs();
     const box   = document.getElementById('share-box');
     const urlEl = document.getElementById('share-url');
     if (box && urlEl) {
@@ -222,10 +229,13 @@ document.addEventListener('DOMContentLoaded', function () {
   // Check for ?styles= in URL (shared moodboard)
   const params = new URLSearchParams(window.location.search);
   const sharedStyles = params.get('styles');
-  if (sharedStyles && window.GYC_MOODBOARD) {
+  if (sharedStyles) {
+    var existing = getMoodboardSlugs();
     sharedStyles.split(',').filter(Boolean).forEach(function(s) {
-      GYC_MOODBOARD.add(s.trim());
+      s = s.trim();
+      if (s && !existing.includes(s)) existing.push(s);
     });
+    saveMoodboardSlugs(existing);
   }
 
   // Load

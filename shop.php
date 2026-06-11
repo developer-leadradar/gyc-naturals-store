@@ -4,8 +4,9 @@ require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/includes/db.php';
 require_once __DIR__ . '/includes/functions.php';
 
-// Filters from URL
-$activeCatSlug = sanitize($_GET['category'] ?? '');
+// Filters from URL — ?tab=bundles maps to bundles category
+$tabParam      = sanitize($_GET['tab'] ?? '');
+$activeCatSlug = sanitize($_GET['category'] ?? ($tabParam === 'bundles' ? 'bundles' : ''));
 $activeSort    = sanitize($_GET['sort']     ?? 'default');
 $activeConcern = sanitize($_GET['concern']  ?? '');
 $activeHair    = sanitize($_GET['hair']     ?? '');

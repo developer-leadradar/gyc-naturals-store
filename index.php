@@ -161,12 +161,6 @@ require_once __DIR__ . '/includes/header.php';
     </div>
 
   </div><!-- .hero-inner -->
-
-  <!-- Scroll indicator -->
-  <a href="#proverb-strip" class="hero-scroll-hint" aria-label="Scroll down">
-    <span class="hero-scroll-line"></span>
-    <i data-lucide="chevron-down" style="width:20px;height:20px;color:#fff;"></i>
-  </a>
 </section>
 
 <!-- ═══════════════════════════════════════════════════════
@@ -182,9 +176,8 @@ require_once __DIR__ . '/includes/header.php';
       <span class="proverb-translation">— <?= htmlspecialchars($proverb['translation']) ?></span>
       <span class="proverb-lang"><?= htmlspecialchars($proverb['language']) ?></span>
       <?php else: ?>
-      <span class="proverb-main">&ldquo;Irun jẹ ẹwa&rdquo;</span>
-      <span class="proverb-translation">— Hair is beauty</span>
-      <span class="proverb-lang">Yoruba</span>
+      <span class="proverb-main">&ldquo;Your hair is your crown. Wear it with pride.&rdquo;</span>
+      <span class="proverb-translation">— GYC Naturals, Calabar</span>
       <?php endif; ?>
     </blockquote>
   </div>
@@ -200,21 +193,34 @@ require_once __DIR__ . '/includes/header.php';
         <p class="section-eyebrow">Fresh from the Chair</p>
         <h2 class="section-title" id="styles-heading">Latest Styles</h2>
       </div>
-      <a href="<?= SITE_URL ?>/gallery.php" class="btn btn-outline-green">
-        View All Styles
-        <i data-lucide="arrow-right" style="width:16px;height:16px;"></i>
-      </a>
     </div>
 
     <!-- Filter chips -->
     <div class="filter-chips" role="tablist" aria-label="Filter styles by category">
-      <button class="chip chip--active" data-filter="all" role="tab" aria-selected="true">All Styles</button>
+      <button class="chip chip--active" data-filter="all" role="tab" aria-selected="true" onclick="filterHomeStyles('all',this)">All Styles</button>
       <?php foreach ($allGalCats as $cat): ?>
-      <button class="chip" data-filter="<?= htmlspecialchars($cat['slug']) ?>" role="tab" aria-selected="false">
+      <button class="chip" data-filter="<?= htmlspecialchars($cat['slug']) ?>" role="tab" aria-selected="false" onclick="filterHomeStyles('<?= htmlspecialchars($cat['slug']) ?>',this)">
         <?= htmlspecialchars($cat['name']) ?>
       </button>
       <?php endforeach; ?>
     </div>
+    <script>
+    function filterHomeStyles(filter, btn) {
+      document.querySelectorAll('.filter-chips .chip').forEach(function(c) {
+        c.classList.remove('chip--active');
+        c.setAttribute('aria-selected','false');
+      });
+      btn.classList.add('chip--active');
+      btn.setAttribute('aria-selected','true');
+      document.querySelectorAll('#home-gallery-grid .gallery-card').forEach(function(card) {
+        if (filter === 'all' || card.dataset.category === filter || card.dataset.category === '') {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+    </script>
 
     <!-- Gallery grid -->
     <div class="gallery-masonry" id="home-gallery-grid" role="tabpanel">
@@ -790,7 +796,11 @@ require_once __DIR__ . '/includes/header.php';
              alt="<?= htmlspecialchars($si['title']) ?>"
              loading="lazy" width="300" height="300">
         <div class="social-grid-overlay">
-          <i data-lucide="instagram" style="width:28px;height:28px;color:#fff;"></i>
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+          </svg>
         </div>
       </a>
       <?php endforeach; ?>
@@ -799,7 +809,11 @@ require_once __DIR__ . '/includes/header.php';
       <a href="https://instagram.com/<?= htmlspecialchars(getSetting('instagram_handle') ?: 'gycnaturals') ?>"
          target="_blank" rel="noopener"
          class="btn btn-outline-green btn-lg">
-        <i data-lucide="instagram" style="width:20px;height:20px;"></i>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+          <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+          <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+        </svg>
         Follow on Instagram
       </a>
     </div>

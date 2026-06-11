@@ -4,8 +4,9 @@ require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/functions.php';
 
-$cartCount     = getCartCount();
-$moodboardNote = ''; // Set to 'yes' for pages that show moodboard count via JS
+$cartCount      = getCartCount();
+$navWishCount   = (isLoggedIn() && !isAdmin()) ? (int)(getDB()->fetchOne("SELECT COUNT(*) as c FROM wishlist WHERE user_id=?", [$_SESSION['user_id'] ?? 0])['c'] ?? 0) : 0;
+$moodboardNote  = ''; // Set to 'yes' for pages that show moodboard count via JS
 
 // Page-specific OG defaults
 $ogTitle       = $ogTitle       ?? SITE_NAME . ' — Grow Your Crown';
@@ -79,7 +80,7 @@ csrfToken(); // ensure gyc_csrf cookie is set before HTML output begins
       <a href="<?= SITE_URL ?>/gallery.php"          class="<?= (strpos($_SERVER['REQUEST_URI'],'gallery')!==false&&strpos($_SERVER['REQUEST_URI'],'admin')===false)?'active':'' ?>">Gallery</a>
       <a href="<?= SITE_URL ?>/shop.php"             class="<?= strpos($_SERVER['REQUEST_URI'],'/shop')!==false&&strpos($_SERVER['REQUEST_URI'],'clothing')===false?'active':'' ?>">Shop</a>
       <a href="<?= SITE_URL ?>/clothing.php"         class="<?= strpos($_SERVER['REQUEST_URI'],'clothing')!==false?'active':'' ?>">Clothing</a>
-      <a href="<?= SITE_URL ?>/book-appointment.php" class="<?= strpos($_SERVER['REQUEST_URI'],'book')!==false?'active':'' ?>">Book</a>
+      <a href="<?= SITE_URL ?>/book-appointment.php" class="<?= strpos($_SERVER['REQUEST_URI'],'book')!==false?'active':'' ?>">Book GYC</a>
       <a href="<?= SITE_URL ?>/quiz.php"             class="<?= strpos($_SERVER['REQUEST_URI'],'quiz')!==false?'active':'' ?>">Hair Quiz</a>
       <a href="<?= SITE_URL ?>/blog.php"             class="<?= strpos($_SERVER['REQUEST_URI'],'blog')!==false?'active':'' ?>">Blog</a>
       <a href="<?= SITE_URL ?>/about.php"            class="<?= strpos($_SERVER['REQUEST_URI'],'about')!==false?'active':'' ?>">About</a>
@@ -97,8 +98,9 @@ csrfToken(); // ensure gyc_csrf cookie is set before HTML output begins
 
       <!-- Wishlist (logged in) -->
       <?php if (isLoggedIn() && !isAdmin()): ?>
-      <a href="<?= SITE_URL ?>/customer-dashboard.php?tab=wishlist" class="nav-icon-btn" aria-label="Wishlist" title="Wishlist">
+      <a href="<?= SITE_URL ?>/my-wishlist.php" class="nav-icon-btn" aria-label="Wishlist" title="Wishlist" style="position:relative;">
         <i data-lucide="heart" style="width:20px;height:20px;"></i>
+        <span class="nav-badge" id="wishlist-count" <?= $navWishCount > 0 ? '' : 'style="display:none"' ?>><?= $navWishCount ?></span>
       </a>
       <?php endif; ?>
 

@@ -21,10 +21,12 @@
 .hero-content {
   padding: 7rem 3rem 4rem 4rem;
   color: #fff;
+  text-align: center;
 }
 .hero-eyebrow {
   display: flex;
   align-items: center;
+  justify-content: center;
   font-size: 0.78rem;
   font-weight: 600;
   letter-spacing: 0.18em;
@@ -46,13 +48,14 @@
   color: rgba(255,255,255,0.75);
   line-height: 1.7;
   max-width: 440px;
-  margin-bottom: 2rem;
+  margin: 0 auto 2rem;
 }
 .hero-ctas {
   display: flex;
   gap: 1rem;
   flex-wrap: wrap;
   margin-bottom: 2.5rem;
+  justify-content: center;
 }
 .hero-stats {
   display: flex;

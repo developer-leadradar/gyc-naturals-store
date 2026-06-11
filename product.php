@@ -189,7 +189,28 @@ require_once __DIR__ . '/includes/header.php';
             <i data-lucide="shopping-bag" style="width:18px;height:18px;"></i>
             Add to Bag
           </button>
+          <button class="btn btn-green btn-lg"
+                  style="flex:1;justify-content:center;"
+                  onclick="buyNow(<?= $product['id'] ?>)">
+            <i data-lucide="zap" style="width:18px;height:18px;"></i>
+            Buy Now
+          </button>
         </div>
+        <script>
+        function buyNow(productId) {
+          var qty = parseInt(document.getElementById('qty-input')?.value || 1);
+          var btn = event.currentTarget;
+          btn.disabled = true;
+          fetch(window.GYC_URL + '/api/add-to-cart.php', {
+            method: 'POST',
+            headers: {'Content-Type':'application/x-www-form-urlencoded'},
+            body: 'product_id=' + productId + '&quantity=' + qty
+          }).then(r => r.json()).then(function(data) {
+            if (data.success) { window.location.href = window.GYC_URL + '/checkout.php'; }
+            else { btn.disabled = false; if (typeof showToast !== 'undefined') showToast(data.message || 'Error', 'error'); }
+          }).catch(function() { btn.disabled = false; });
+        }
+        </script>
         <?php endif; ?>
 
         <!-- Secondary actions -->

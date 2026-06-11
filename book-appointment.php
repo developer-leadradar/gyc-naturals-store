@@ -70,11 +70,71 @@ require_once __DIR__ . '/includes/header.php';
 
           <!-- PANEL 0: Choose Style -->
           <div class="booking-panel active" id="booking-panel-0">
-            <h2 style="font-family:'Playfair Display',serif;font-size:1.35rem;margin-bottom:0.5rem;">Choose Your Style</h2>
-            <p style="font-size:0.85rem;color:#666;margin-bottom:1.5rem;">Pick from our gallery or select "I'll decide in person"</p>
+            <h2 style="font-family:'Playfair Display',serif;font-size:1.35rem;margin-bottom:0.5rem;">What Are You Booking?</h2>
+            <p style="font-size:0.85rem;color:#666;margin-bottom:1.25rem;">Choose a service type, then pick your style below</p>
+
+            <!-- Service type selector -->
+            <input type="hidden" name="service_type" id="booking-service-type" value="braiding">
+            <?php
+            $serviceTypes = [
+              ['id'=>'braiding',   'icon'=>'layers',     'label'=>'Braiding & Protective',  'desc'=>'Knotless, box braids, cornrows, twists & more'],
+              ['id'=>'kids',       'icon'=>'users',      'label'=>'Kids\' Hair',             'desc'=>'Gentle styles for children'],
+              ['id'=>'natural',    'icon'=>'flower-2',   'label'=>'Natural Styles',          'desc'=>'Bantu knots, afro puffs, flat twists, wash & go'],
+              ['id'=>'treatment',  'icon'=>'droplets',   'label'=>'Scalp & Treatments',      'desc'=>'Deep conditioning, scalp detox & hair spa'],
+            ];
+            ?>
+            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem;margin-bottom:1.5rem;" id="service-type-grid">
+              <?php foreach ($serviceTypes as $svc): ?>
+              <button type="button" class="svc-type-btn <?= $svc['id'] === 'braiding' ? 'svc-type-btn--active' : '' ?>"
+                      data-svc="<?= $svc['id'] ?>"
+                      onclick="selectServiceType('<?= $svc['id'] ?>', this)"
+                      style="display:flex;align-items:center;gap:.75rem;padding:.85rem 1rem;background:#fff;border:1.5px solid <?= $svc['id']==='braiding' ? 'var(--gyc-green-600)' : 'var(--gyc-green-100)' ?>;border-radius:var(--gyc-radius-lg);cursor:pointer;text-align:left;width:100%;transition:border-color .15s,box-shadow .15s;">
+                <span style="width:38px;height:38px;border-radius:10px;background:<?= $svc['id']==='braiding' ? 'var(--gyc-green-100)' : '#F3F4F6' ?>;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                  <i data-lucide="<?= $svc['icon'] ?>" style="width:18px;height:18px;color:<?= $svc['id']==='braiding' ? 'var(--gyc-green-700)' : '#6B7280' ?>;"></i>
+                </span>
+                <span>
+                  <span style="display:block;font-size:.85rem;font-weight:700;color:var(--gyc-dark);"><?= $svc['label'] ?></span>
+                  <span style="display:block;font-size:.73rem;color:#888;line-height:1.3;"><?= $svc['desc'] ?></span>
+                </span>
+              </button>
+              <?php endforeach; ?>
+            </div>
+            <script>
+            function selectServiceType(svc, btn) {
+              document.querySelectorAll('.svc-type-btn').forEach(function(b) {
+                b.style.borderColor = 'var(--gyc-green-100)';
+                b.querySelector('span > span:first-child').style.background = '#F3F4F6';
+                b.querySelector('i').style.color = '#6B7280';
+              });
+              btn.style.borderColor = 'var(--gyc-green-600)';
+              btn.style.boxShadow = '0 0 0 3px rgba(22,101,52,0.1)';
+              btn.querySelector('span > span:first-child').style.background = 'var(--gyc-green-100)';
+              btn.querySelector('i').style.color = 'var(--gyc-green-700)';
+              document.getElementById('booking-service-type').value = svc;
+              // Show gallery only for braiding; for others hide it and select "decide in person"
+              var gallerySection = document.getElementById('gallery-style-section');
+              var filterRow      = document.getElementById('gallery-filter-row');
+              if (svc === 'braiding') {
+                if (gallerySection) gallerySection.style.display = '';
+                if (filterRow)      filterRow.style.display = '';
+              } else {
+                if (gallerySection) gallerySection.style.display = 'none';
+                if (filterRow)      filterRow.style.display = 'none';
+                var decideRadio = document.getElementById('gir-0');
+                if (decideRadio) decideRadio.checked = true;
+                document.getElementById('booking-style-id').value = '0';
+              }
+              // Pre-fill notes suggestion
+              var notesEl = document.querySelector('textarea[name="notes"]');
+              if (notesEl && !notesEl.value) {
+                var svcLabels = {braiding:'',kids:"Kids' hair appointment",natural:'Natural hair styling',treatment:'Scalp treatment / deep conditioning'};
+                notesEl.value = svcLabels[svc] || '';
+              }
+            }
+            </script>
 
             <!-- Quick category filter -->
-            <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1.25rem;overflow-x:auto;">
+            <div id="gallery-filter-row" style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1.25rem;overflow-x:auto;">
               <button type="button" class="chip chip--active" onclick="filterBookingStyles('all',this)">All</button>
               <?php foreach ($categories as $cat): ?>
               <button type="button" class="chip" onclick="filterBookingStyles('<?= htmlspecialchars($cat['slug']) ?>',this)">
@@ -82,6 +142,7 @@ require_once __DIR__ . '/includes/header.php';
               </button>
               <?php endforeach; ?>
             </div>
+            <div id="gallery-style-section">
 
             <div class="style-selector-grid" id="style-selector-grid">
               <!-- Decide in person option -->
@@ -105,6 +166,7 @@ require_once __DIR__ . '/includes/header.php';
               </label>
               <?php endforeach; ?>
             </div>
+            </div><!-- /gallery-style-section -->
 
             <div style="margin-top:1.5rem;">
               <button type="button" class="btn btn-green btn-lg" data-booking-next style="width:100%;justify-content:center;">

@@ -31,9 +31,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             getDB()->update('users', ['remember_token' => hash('sha256', $token)], 'id = ?', [$_SESSION['user_id']]);
         }
 
-        $dest = ($redirect && strpos($redirect, SITE_URL) === 0) ? $redirect : SITE_URL . '/customer-dashboard.php';
-        if (isAdmin()) $dest = SITE_URL . '/admin/index.php';
-        redirect($dest);
+        if (isAdmin()) {
+            logout();
+            $error = 'Admin accounts must sign in at the admin login page.';
+        } else {
+            $dest = ($redirect && strpos($redirect, SITE_URL) === 0) ? $redirect : SITE_URL . '/customer-dashboard.php';
+            redirect($dest);
+        }
     } else {
         $error = 'Incorrect email or password. Please try again.';
     }

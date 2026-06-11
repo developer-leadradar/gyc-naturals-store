@@ -179,8 +179,17 @@ function toggleWishlist(productId, btn) {
   .then(r => r.json())
   .then(function (data) {
     if (data.success) {
-      btn.classList.toggle('active', data.added);
-      showToast(data.added ? 'Added to wishlist!' : 'Removed from wishlist.', 'info');
+      var added = data.action === 'added';
+      btn.classList.toggle('active', added);
+      showToast(added ? 'Added to wishlist!' : 'Removed from wishlist.', 'info');
+      // Update nav wishlist badge
+      var badge = document.getElementById('wishlist-count');
+      if (badge) {
+        var cur = parseInt(badge.textContent) || 0;
+        var next = added ? cur + 1 : Math.max(0, cur - 1);
+        badge.textContent = next;
+        badge.style.display = next > 0 ? 'flex' : 'none';
+      }
     } else {
       if (data.redirect) window.location.href = data.redirect;
       else showToast(data.message || 'Login required.', 'error');
