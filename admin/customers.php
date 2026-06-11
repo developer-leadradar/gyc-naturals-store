@@ -39,7 +39,7 @@ if ($search) {
     $sql .= " AND (u.first_name LIKE ? OR u.last_name LIKE ? OR u.email LIKE ? OR u.phone LIKE ?)";
     $params = array_fill(0, 4, "%$search%");
 }
-$total      = (int)($db->fetchOne(str_replace("SELECT u.*,\n            (SELECT COUNT(*) FROM orders WHERE user_id = u.id) as order_count,\n            (SELECT COALESCE(SUM(total),0) FROM orders WHERE user_id = u.id AND payment_status='paid') as total_spent", "SELECT COUNT(*)", $sql), $params)['COUNT(*)'] ?? 0);
+$total      = (int)($db->fetchOne(str_replace("SELECT u.*,\n            (SELECT COUNT(*) FROM orders WHERE user_id = u.id) as order_count,\n            (SELECT COALESCE(SUM(total),0) FROM orders WHERE user_id = u.id AND payment_status='paid') as total_spent", "SELECT COUNT(*) AS total", $sql), $params)['total'] ?? 0);
 $sql       .= " ORDER BY u.created_at DESC LIMIT ? OFFSET ?";
 $params[]   = $limit;
 $params[]   = $offset;

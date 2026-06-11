@@ -84,7 +84,7 @@ $params = [];
 if ($statusFilter) { $sql .= " AND o.status = ?"; $params[] = $statusFilter; }
 if ($payFilter)    { $sql .= " AND o.payment_status = ?"; $params[] = $payFilter; }
 if ($search)       { $sql .= " AND (o.order_number LIKE ? OR o.shipping_first_name LIKE ? OR o.shipping_last_name LIKE ?)"; $params[] = "%$search%"; $params[] = "%$search%"; $params[] = "%$search%"; }
-$total = (int)($db->fetchOne(str_replace("SELECT o.*", "SELECT COUNT(*)", $sql), $params)['COUNT(*)'] ?? 0);
+$total = (int)($db->fetchOne(str_replace("SELECT o.*", "SELECT COUNT(*) AS total", $sql), $params)['total'] ?? 0);
 $sql  .= " ORDER BY o.created_at DESC LIMIT ? OFFSET ?";
 $params[] = $limit; $params[] = $offset;
 $orders   = $db->fetchAll($sql, $params);

@@ -75,7 +75,7 @@ if ($statusFilter) { $sql .= " AND a.status = ?"; $params[] = $statusFilter; }
 if ($search)       { $sql .= " AND (a.customer_name LIKE ? OR a.customer_phone LIKE ? OR a.appointment_number LIKE ?)"; for($x=0;$x<3;$x++) $params[] = "%$search%"; }
 if ($dateFilter)   { $sql .= " AND a.requested_date = ?"; $params[] = $dateFilter; }
 
-$total = (int)($db->fetchOne(str_replace("SELECT a.*, gi.title as style_name","SELECT COUNT(*)",$sql), $params)['COUNT(*)'] ?? 0);
+$total = (int)($db->fetchOne(str_replace("SELECT a.*, gi.title as style_name","SELECT COUNT(*) AS total",$sql), $params)['total'] ?? 0);
 $sql  .= " ORDER BY a.requested_date DESC, a.created_at DESC LIMIT ? OFFSET ?";
 $params[] = $limit; $params[] = $offset;
 $apts     = $db->fetchAll($sql, $params);

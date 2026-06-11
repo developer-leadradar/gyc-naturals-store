@@ -41,7 +41,7 @@ $params = [];
 if ($search)    { $sql .= " AND (gi.title LIKE ? OR gi.tags LIKE ?)"; $params[] = "%$search%"; $params[] = "%$search%"; }
 if ($catFilter) { $sql .= " AND gi.category_id = ?"; $params[] = (int)$catFilter; }
 
-$total      = (int)($db->fetchOne(str_replace("SELECT gi.*, gc.name as category_name", "SELECT COUNT(*)", $sql), $params)['COUNT(*)'] ?? 0);
+$total      = (int)($db->fetchOne(str_replace("SELECT gi.*, gc.name as category_name", "SELECT COUNT(*) AS total", $sql), $params)['total'] ?? 0);
 $sql       .= " ORDER BY gi.created_at DESC LIMIT ? OFFSET ?";
 $params[]   = $limit; $params[] = $offset;
 $images     = $db->fetchAll($sql, $params);
