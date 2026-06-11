@@ -13,6 +13,7 @@ $ogDescription = $ogDescription ?? 'Professional African hair braiding, natural 
 $ogImage       = $ogImage       ?? SITE_URL . '/assets/images/og-default.jpg';
 $ogUrl         = $ogUrl         ?? SITE_URL . $_SERVER['REQUEST_URI'];
 $pageTitle     = $pageTitle     ?? SITE_NAME;
+csrfToken(); // ensure gyc_csrf cookie is set before HTML output begins
 ?>
 <!DOCTYPE html>
 <html lang="en">
