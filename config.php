@@ -1,6 +1,9 @@
 <?php
 if (!defined('GYC_ACCESS')) { define('GYC_ACCESS', true); }
 
+// Buffer all output so setcookie() / header() work even after HTML output starts
+if (!ob_get_level()) ob_start();
+
 function _loadEnv($path) {
     if (!file_exists($path)) return;
     foreach (file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
