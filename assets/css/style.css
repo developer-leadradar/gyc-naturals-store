@@ -53,7 +53,7 @@ body {
   font-size: 1rem;
   line-height: 1.65;
   color: var(--gyc-dark);
-  background-color: var(--gyc-cream);
+  background-color: #ffffff;
   overflow-x: hidden;
 }
 
