@@ -280,8 +280,8 @@ require_once __DIR__ . '/includes/header.php';
     <div class="services-grid">
 
       <article class="service-card">
-        <div class="service-card-icon" style="background:linear-gradient(135deg,#52B788,#2D6A4F);">
-          <i data-lucide="layers" style="width:28px;height:28px;color:#fff;"></i>
+        <div style="height:175px;border-radius:12px;overflow:hidden;margin-bottom:1.25rem;">
+          <img src="https://images.pexels.com/photos/8514938/pexels-photo-8514938.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" alt="Knotless Braids" style="width:100%;height:100%;object-fit:cover;">
         </div>
         <h3 class="service-card-title">Knotless Braids</h3>
         <p class="service-card-desc">The gentlest braid install available. No knot at the base, no tension on your scalp. Natural-looking roots that last 8–10 weeks.</p>
@@ -297,8 +297,8 @@ require_once __DIR__ . '/includes/header.php';
       </article>
 
       <article class="service-card">
-        <div class="service-card-icon" style="background:linear-gradient(135deg,#C9A84C,#8B6914);">
-          <i data-lucide="git-branch" style="width:28px;height:28px;color:#fff;"></i>
+        <div style="height:175px;border-radius:12px;overflow:hidden;margin-bottom:1.25rem;">
+          <img src="https://images.pexels.com/photos/5657481/pexels-photo-5657481.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" alt="Box Braids" style="width:100%;height:100%;object-fit:cover;">
         </div>
         <h3 class="service-card-title">Box Braids</h3>
         <p class="service-card-desc">The timeless classic. Clean, even box sections from micro to jumbo. Worn straight, in a bun, or half-up — endlessly versatile.</p>
@@ -314,8 +314,8 @@ require_once __DIR__ . '/includes/header.php';
       </article>
 
       <article class="service-card">
-        <div class="service-card-icon" style="background:linear-gradient(135deg,#40916C,#1B4332);">
-          <i data-lucide="activity" style="width:28px;height:28px;color:#fff;"></i>
+        <div style="height:175px;border-radius:12px;overflow:hidden;margin-bottom:1.25rem;">
+          <img src="https://images.pexels.com/photos/34191088/pexels-photo-34191088.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" alt="Cornrows" style="width:100%;height:100%;object-fit:cover;">
         </div>
         <h3 class="service-card-title">Cornrows</h3>
         <p class="service-card-desc">From simple feed-in lines to intricate geometric designs. Neat edges, cultural pride, and maximum protective power in one style.</p>
@@ -331,8 +331,8 @@ require_once __DIR__ . '/includes/header.php';
       </article>
 
       <article class="service-card">
-        <div class="service-card-icon" style="background:linear-gradient(135deg,#74C69D,#2D6A4F);">
-          <i data-lucide="wind" style="width:28px;height:28px;color:#fff;"></i>
+        <div style="height:175px;border-radius:12px;overflow:hidden;margin-bottom:1.25rem;">
+          <img src="https://images.pexels.com/photos/5722771/pexels-photo-5722771.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" alt="Senegalese Twists" style="width:100%;height:100%;object-fit:cover;">
         </div>
         <h3 class="service-card-title">Senegalese Twists</h3>
         <p class="service-card-desc">Smooth, sleek rope-like twists using premium Kanekalon hair. Lightweight, long-lasting, and absolutely stunning at every length.</p>
@@ -348,8 +348,8 @@ require_once __DIR__ . '/includes/header.php';
       </article>
 
       <article class="service-card">
-        <div class="service-card-icon" style="background:linear-gradient(135deg,#D4A843,#9A6B00);">
-          <i data-lucide="flower-2" style="width:28px;height:28px;color:#fff;"></i>
+        <div style="height:175px;border-radius:12px;overflow:hidden;margin-bottom:1.25rem;">
+          <img src="https://images.pexels.com/photos/14792192/pexels-photo-14792192.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" alt="Natural Styles" style="width:100%;height:100%;object-fit:cover;">
         </div>
         <h3 class="service-card-title">Natural Styles</h3>
         <p class="service-card-desc">Bantu knots, afro puffs, flat twists, and wash-and-go styles that celebrate your natural texture exactly as it grows.</p>

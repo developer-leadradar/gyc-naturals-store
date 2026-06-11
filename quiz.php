@@ -40,7 +40,7 @@ require_once __DIR__ . '/includes/header.php';
           <div class="quiz-option">
             <input type="radio" name="hair_type" id="ht1" value="4C">
             <label for="ht1">
-              <span style="font-size:2rem;">🌀</span>
+              <img src="https://images.pexels.com/photos/11215202/pexels-photo-11215202.jpeg?auto=compress&cs=tinysrgb&w=120&h=120&fit=crop" alt="4C Coily hair" style="width:64px;height:64px;border-radius:50%;object-fit:cover;display:block;margin:0 auto 0.5rem;">
               <span>4C Coily</span>
               <small style="font-size:0.7rem;color:#888;display:block;">Tight zigzag coils, highly shrinks</small>
             </label>
@@ -48,7 +48,7 @@ require_once __DIR__ . '/includes/header.php';
           <div class="quiz-option">
             <input type="radio" name="hair_type" id="ht2" value="4B">
             <label for="ht2">
-              <span style="font-size:2rem;">✨</span>
+              <img src="https://images.pexels.com/photos/2520446/pexels-photo-2520446.jpeg?auto=compress&cs=tinysrgb&w=120&h=120&fit=crop" alt="4B Coily hair" style="width:64px;height:64px;border-radius:50%;object-fit:cover;display:block;margin:0 auto 0.5rem;">
               <span>4B Coily</span>
               <small style="font-size:0.7rem;color:#888;display:block;">Sharp Z-pattern, fluffy texture</small>
             </label>
@@ -56,7 +56,7 @@ require_once __DIR__ . '/includes/header.php';
           <div class="quiz-option">
             <input type="radio" name="hair_type" id="ht3" value="4A">
             <label for="ht3">
-              <span style="font-size:2rem;">💫</span>
+              <img src="https://images.pexels.com/photos/5085560/pexels-photo-5085560.jpeg?auto=compress&cs=tinysrgb&w=120&h=120&fit=crop" alt="4A Curly hair" style="width:64px;height:64px;border-radius:50%;object-fit:cover;display:block;margin:0 auto 0.5rem;">
               <span>4A Curly-Coily</span>
               <small style="font-size:0.7rem;color:#888;display:block;">S-shaped coils, defined pattern</small>
             </label>
@@ -64,7 +64,7 @@ require_once __DIR__ . '/includes/header.php';
           <div class="quiz-option">
             <input type="radio" name="hair_type" id="ht4" value="relaxed">
             <label for="ht4">
-              <span style="font-size:2rem;">💆</span>
+              <img src="https://images.pexels.com/photos/18790491/pexels-photo-18790491.jpeg?auto=compress&cs=tinysrgb&w=120&h=120&fit=crop" alt="Relaxed hair" style="width:64px;height:64px;border-radius:50%;object-fit:cover;display:block;margin:0 auto 0.5rem;">
               <span>Relaxed / Transitioning</span>
               <small style="font-size:0.7rem;color:#888;display:block;">Chemically processed or growing out</small>
             </label>
