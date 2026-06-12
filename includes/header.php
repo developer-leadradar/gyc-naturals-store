@@ -82,11 +82,7 @@ csrfToken(); // ensure gyc_csrf cookie is set before HTML output begins
       <a href="<?= SITE_URL ?>/clothing.php"         class="<?= strpos($_SERVER['REQUEST_URI'],'clothing')!==false?'active':'' ?>">Clothing</a>
       <a href="<?= SITE_URL ?>/book-appointment.php" class="<?= strpos($_SERVER['REQUEST_URI'],'book')!==false?'active':'' ?>">Book GYC</a>
       <a href="<?= SITE_URL ?>/quiz.php"             class="<?= strpos($_SERVER['REQUEST_URI'],'quiz')!==false?'active':'' ?>">Hair Quiz</a>
-      <a href="<?= SITE_URL ?>/blog.php"             class="<?= strpos($_SERVER['REQUEST_URI'],'blog')!==false?'active':'' ?>">Blog</a>
       <a href="<?= SITE_URL ?>/about.php"            class="<?= strpos($_SERVER['REQUEST_URI'],'about')!==false?'active':'' ?>">About</a>
-      <a href="<?= SITE_URL ?>/moodboard.php" id="nav-moodboard-link" style="display:none">
-        Saved <span id="nav-moodboard-count" class="nav-badge" style="position:static;display:inline-flex;margin-left:2px;"></span>
-      </a>
     </div>
 
     <!-- Actions -->
@@ -142,8 +138,6 @@ csrfToken(); // ensure gyc_csrf cookie is set before HTML output begins
     <a href="<?= SITE_URL ?>/clothing.php">Clothing</a>
     <a href="<?= SITE_URL ?>/book-appointment.php">Book Appointment</a>
     <a href="<?= SITE_URL ?>/quiz.php">Hair Quiz</a>
-    <a href="<?= SITE_URL ?>/moodboard.php">My Saved Looks</a>
-    <a href="<?= SITE_URL ?>/blog.php">Blog</a>
     <a href="<?= SITE_URL ?>/about.php">About</a>
     <a href="<?= SITE_URL ?>/contact.php">Contact</a>
     <?php if (isLoggedIn()): ?>

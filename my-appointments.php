@@ -21,8 +21,7 @@ require_once __DIR__ . '/includes/header.php';
 <div style="min-height:72px;"></div>
 <section style="padding:2.5rem 0 5rem;background:#F8FAF9;">
   <div class="container">
-    <div class="dash-grid">
-      <?php require __DIR__ . '/includes/dash-sidebar.php'; ?>
+    <div style="max-width:960px;margin:0 auto;">
       <div>
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
           <h1 style="font-family:'Playfair Display',serif;font-size:1.5rem;margin:0;">My Appointments</h1>

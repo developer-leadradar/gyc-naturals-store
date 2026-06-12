@@ -14,7 +14,6 @@ $allGalCats      = getAllGalleryCategories(true);
 $featuredProds   = getFeaturedProducts(4);
 $bundles         = getAllBundles();
 $testimonials    = getAllTestimonials(true);
-$blogPosts       = getBlogPosts(3);
 
 // Before/After pair from gallery (images that have before_image_url)
 $beforeAfterImages = getDB()->fetchAll(
@@ -579,12 +578,12 @@ require_once __DIR__ . '/includes/header.php';
 <section class="section-clothing" aria-labelledby="clothing-heading">
   <div class="section-clothing-inner">
     <div class="clothing-text-col">
-      <p class="section-eyebrow" style="color:#C9A84C;">African Fashion</p>
+      <p class="section-eyebrow" style="color:#C9A84C;">The Boutique</p>
       <h2 class="section-title" id="clothing-heading" style="color:#fff;">
-        Wear Your<br><span class="text-gold">Heritage</span>
+        Dress With<br><span class="text-gold">Confidence</span>
       </h2>
       <p style="color:#B7E4C7;font-size:1rem;line-height:1.7;max-width:360px;margin-bottom:1.5rem;">
-        From vibrant ankara midi dresses to stunning kimono wraps — GYC Naturals brings you African fashion that celebrates who you are.
+        Everyday fashion for the modern Nigerian woman — carefully selected pieces for every occasion.
       </p>
       <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
         <a href="<?= SITE_URL ?>/shop.php?category=clothing" class="btn btn-gold btn-lg">
@@ -716,53 +715,6 @@ require_once __DIR__ . '/includes/header.php';
   </div>
 </section>
 
-<!-- ═══════════════════════════════════════════════════════
-     SECTION 12: BLOG PREVIEW
-════════════════════════════════════════════════════════ -->
-<?php if (!empty($blogPosts)): ?>
-<section class="section-blog" aria-labelledby="blog-heading">
-  <div class="container">
-    <div class="section-header">
-      <div>
-        <p class="section-eyebrow">Hair Knowledge</p>
-        <h2 class="section-title" id="blog-heading">From the Blog</h2>
-      </div>
-      <a href="<?= SITE_URL ?>/blog.php" class="btn btn-outline-green">
-        All Articles
-        <i data-lucide="arrow-right" style="width:16px;height:16px;"></i>
-      </a>
-    </div>
-    <div class="blog-grid">
-      <?php foreach ($blogPosts as $i => $post): ?>
-      <article class="blog-card <?= $i === 0 ? 'blog-card--featured' : '' ?>">
-        <a href="<?= SITE_URL ?>/blog-post.php?slug=<?= urlencode($post['slug']) ?>" class="blog-card-img-wrap">
-          <?php $blogFallbacks = [28383173,11641088,6960735,34191088]; $bpIdx = ($post['id'] - 1) % 4; ?>
-          <img src="<?= htmlspecialchars($post['featured_image'] ?? 'https://images.pexels.com/photos/'.$blogFallbacks[$bpIdx].'/pexels-photo-'.$blogFallbacks[$bpIdx].'.jpeg?auto=compress&cs=tinysrgb&w=800') ?>"
-               alt="<?= htmlspecialchars($post['title']) ?>"
-               loading="lazy" width="800" height="450" class="blog-card-img">
-        </a>
-        <div class="blog-card-body">
-          <span class="blog-tag"><?= htmlspecialchars($post['category'] ?? 'Hair Care') ?></span>
-          <h3 class="blog-card-title">
-            <a href="<?= SITE_URL ?>/blog-post.php?slug=<?= urlencode($post['slug']) ?>">
-              <?= htmlspecialchars($post['title']) ?>
-            </a>
-          </h3>
-          <p class="blog-card-excerpt"><?= htmlspecialchars($post['excerpt'] ?? '') ?></p>
-          <div class="blog-card-meta">
-            <span><i data-lucide="user" style="width:13px;height:13px;"></i> <?= htmlspecialchars($post['author'] ?? 'GYC Naturals') ?></span>
-            <span><i data-lucide="clock" style="width:13px;height:13px;"></i> <?= readTime($post['body'] ?? '') ?> min read</span>
-            <a href="<?= SITE_URL ?>/blog-post.php?slug=<?= urlencode($post['slug']) ?>" class="blog-read-more">
-              Read More <i data-lucide="arrow-right" style="width:13px;height:13px;"></i>
-            </a>
-          </div>
-        </div>
-      </article>
-      <?php endforeach; ?>
-    </div>
-  </div>
-</section>
-<?php endif; ?>
 
 <!-- ═══════════════════════════════════════════════════════
      SECTION 13: INSTAGRAM / SOCIAL STRIP
