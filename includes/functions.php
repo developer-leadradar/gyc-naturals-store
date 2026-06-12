@@ -359,17 +359,18 @@ function updateAppointmentStatus($id, $status, $notes = '') {
 function getAvailableSlots($date) {
     $db = getDB();
 
+    $slotQuery = "SELECT * FROM (
+                    SELECT bs.*,
+                           (SELECT COUNT(*) FROM appointments a
+                            WHERE a.slot_id = bs.id AND a.status != 'cancelled') AS booked_count
+                    FROM booking_slots bs
+                    WHERE bs.slot_date = ? AND bs.is_available = 1
+                  ) sub
+                  WHERE booked_count < max_bookings
+                  ORDER BY start_time ASC";
+
     // Check for manually-configured slots first
-    $slots = $db->fetchAll(
-        "SELECT bs.*,
-                (SELECT COUNT(*) FROM appointments a
-                 WHERE a.slot_id = bs.id AND a.status != 'cancelled') as booked_count
-         FROM booking_slots bs
-         WHERE bs.slot_date = ? AND bs.is_available = 1
-         HAVING booked_count < bs.max_bookings
-         ORDER BY bs.start_time ASC",
-        [$date]
-    );
+    $slots = $db->fetchAll($slotQuery, [$date]);
     if (!empty($slots)) return $slots;
 
     // Auto-generate daily slots (Mon–Sat 09:00–19:00, every 1.5 hrs, max 2 bookings each)
@@ -391,16 +392,7 @@ function getAvailableSlots($date) {
         ]);
     }
 
-    return $db->fetchAll(
-        "SELECT bs.*,
-                (SELECT COUNT(*) FROM appointments a
-                 WHERE a.slot_id = bs.id AND a.status != 'cancelled') as booked_count
-         FROM booking_slots bs
-         WHERE bs.slot_date = ? AND bs.is_available = 1
-         HAVING booked_count < bs.max_bookings
-         ORDER BY bs.start_time ASC",
-        [$date]
-    );
+    return $db->fetchAll($slotQuery, [$date]);
 }
 
 // ═══════════════════════════════════════════════════════
