@@ -42,6 +42,14 @@ $pages    = (int)ceil($total / $perPage);
 // Featured bundles
 $bundles = getAllBundles();
 
+// Wishlist product IDs for pre-filling heart states
+$wishlistProductIds = [];
+if (isLoggedIn()) {
+    $wlUser = getCurrentUser();
+    $wlRows = getDB()->fetchAll("SELECT product_id FROM wishlist WHERE user_id = ?", [$wlUser['id']]);
+    $wishlistProductIds = array_column($wlRows, 'product_id');
+}
+
 $pageTitle       = 'Shop Natural Hair Products — GYC Naturals Calabar';
 $pageDescription = 'Buy authentic African hair care products online. Shea butter, castor oil, growth serums, curl defining creams and more. Fast delivery across Nigeria.';
 
@@ -97,7 +105,7 @@ require_once __DIR__ . '/includes/header.php';
               <?php foreach ($categories as $cat): ?>
               <label style="display:flex;align-items:center;gap:.5rem;font-size:.85rem;cursor:pointer;">
                 <input type="radio" name="category" value="<?= $cat['slug'] ?>" <?= $activeCatSlug === $cat['slug'] ? 'checked' : '' ?> onchange="this.form.submit()">
-                <span><?= htmlspecialchars($cat['name']) ?> (<?= countProducts(['category_id' => $cat['id']]) ?>)</span>
+                <span><?= htmlspecialchars($cat['name']) ?> (<?= $cat['slug'] === 'kits-bundles' ? count($bundles) : countProducts(['category_id' => $cat['id']]) ?>)</span>
               </label>
               <?php endforeach; ?>
             </div>
@@ -252,11 +260,13 @@ require_once __DIR__ . '/includes/header.php';
         elseif ($prod['stock_quantity'] <= 5) $stockStatus = 'low';
         ?>
         <article class="product-card">
-          <a href="<?= SITE_URL ?>/product.php?slug=<?= urlencode($prod['slug']) ?>" class="product-card-img-wrap">
-            <img src="<?= htmlspecialchars($prod['image']) ?>"
-                 alt="<?= htmlspecialchars($prod['name']) ?>"
-                 loading="lazy"
-                 class="product-card-img">
+          <div class="product-card-img-wrap">
+            <a href="<?= SITE_URL ?>/product.php?slug=<?= urlencode($prod['slug']) ?>" style="display:block;width:100%;height:100%;">
+              <img src="<?= htmlspecialchars($prod['image']) ?>"
+                   alt="<?= htmlspecialchars($prod['name']) ?>"
+                   loading="lazy"
+                   class="product-card-img">
+            </a>
             <?php if ($prod['is_featured']): ?>
             <span class="product-badge product-badge--featured">⭐ Best Seller</span>
             <?php elseif ($stockStatus === 'low'): ?>
@@ -267,10 +277,10 @@ require_once __DIR__ . '/includes/header.php';
             <button class="product-wishlist <?= isLoggedIn() ? '' : 'login-req' ?>"
                     data-product-id="<?= $prod['id'] ?>"
                     aria-label="Save to wishlist"
-                    onclick="toggleWishlist(<?= $prod['id'] ?>, this); event.preventDefault();">
+                    onclick="toggleWishlist(<?= $prod['id'] ?>, this);">
               <i data-lucide="heart" style="width:16px;height:16px;"></i>
             </button>
-          </a>
+          </div>
           <div class="product-card-body">
             <?php if ($prod['category_name']): ?>
             <span class="product-tag"><?= htmlspecialchars($prod['category_name']) ?></span>
@@ -329,6 +339,16 @@ document.addEventListener('DOMContentLoaded', function () {
       addToCart(btn.dataset.productId, 1, btn);
     });
   });
+
+  // Pre-fill wishlist heart states for already-saved products
+  var savedIds = <?= json_encode(array_map('intval', $wishlistProductIds)) ?>;
+  if (savedIds.length) {
+    document.querySelectorAll('.product-wishlist[data-product-id]').forEach(function(btn) {
+      if (savedIds.indexOf(parseInt(btn.getAttribute('data-product-id'))) !== -1) {
+        btn.classList.add('active');
+      }
+    });
+  }
 });
 
 function toggleWishlist(productId, btn) {

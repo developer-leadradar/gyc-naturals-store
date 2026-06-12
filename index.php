@@ -606,7 +606,7 @@ require_once __DIR__ . '/includes/header.php';
     </div>
 
     <div class="section-footer-cta">
-      <a href="<?= SITE_URL ?>/testimonials.php" class="btn btn-outline-green">
+      <a href="<?= SITE_URL ?>/testimonials.php" class="btn btn-green">
         Read All Reviews
         <i data-lucide="arrow-right" style="width:16px;height:16px;"></i>
       </a>

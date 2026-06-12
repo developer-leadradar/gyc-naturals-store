@@ -6,6 +6,29 @@ require_once __DIR__ . '/includes/header.php';
 $db    = getDB();
 $error = '';
 
+function resizeToDataUrl($tmpFile, $mime, $maxDim = 800, $quality = 82) {
+    if (!extension_loaded('gd') || !function_exists('imagecreatefromjpeg')) {
+        return 'data:' . $mime . ';base64,' . base64_encode(file_get_contents($tmpFile));
+    }
+    switch ($mime) {
+        case 'image/jpeg': case 'image/jpg': $src = @imagecreatefromjpeg($tmpFile); break;
+        case 'image/png':  $src = @imagecreatefrompng($tmpFile); break;
+        case 'image/webp': $src = function_exists('imagecreatefromwebp') ? @imagecreatefromwebp($tmpFile) : false; break;
+        default: $src = false;
+    }
+    if (!$src) return 'data:' . $mime . ';base64,' . base64_encode(file_get_contents($tmpFile));
+    $origW = imagesx($src); $origH = imagesy($src);
+    $ratio = min($maxDim / $origW, $maxDim / $origH, 1.0);
+    $newW = max(1,(int)round($origW*$ratio)); $newH = max(1,(int)round($origH*$ratio));
+    $dst = imagecreatetruecolor($newW, $newH);
+    $white = imagecolorallocate($dst,255,255,255); imagefill($dst,0,0,$white);
+    imagecopyresampled($dst,$src,0,0,0,0,$newW,$newH,$origW,$origH);
+    imagedestroy($src);
+    ob_start(); imagejpeg($dst, null, $quality); $data = ob_get_clean();
+    imagedestroy($dst);
+    return 'data:image/jpeg;base64,' . base64_encode($data);
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = sanitize($_POST['action'] ?? '');
     $id     = (int)($_POST['id'] ?? 0);
@@ -25,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ];
         if (!empty($_FILES['image_file']['name']) && $_FILES['image_file']['error'] === UPLOAD_ERR_OK) {
             $mime          = mime_content_type($_FILES['image_file']['tmp_name']) ?: 'image/jpeg';
-            $data['image'] = 'data:' . $mime . ';base64,' . base64_encode(file_get_contents($_FILES['image_file']['tmp_name']));
+            $data['image'] = resizeToDataUrl($_FILES['image_file']['tmp_name'], $mime);
         } elseif (!empty($_POST['image_url'])) {
             $data['image'] = trim($_POST['image_url']);
         }

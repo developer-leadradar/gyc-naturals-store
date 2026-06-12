@@ -37,15 +37,17 @@ require_once __DIR__ . '/includes/header.php';
         <div class="products-grid">
           <?php foreach ($wishlistItems as $prod): ?>
           <article class="product-card">
-            <a href="<?= SITE_URL ?>/product.php?slug=<?= urlencode($prod['slug']) ?>" class="product-card-img-wrap">
-              <img src="<?= htmlspecialchars($prod['image']) ?>" alt="<?= htmlspecialchars($prod['name']) ?>" loading="lazy" class="product-card-img">
-              <button class="product-wishlist saved"
+            <div class="product-card-img-wrap">
+              <a href="<?= SITE_URL ?>/product.php?slug=<?= urlencode($prod['slug']) ?>" style="display:block;width:100%;height:100%;">
+                <img src="<?= htmlspecialchars($prod['image']) ?>" alt="<?= htmlspecialchars($prod['name']) ?>" loading="lazy" class="product-card-img">
+              </a>
+              <button class="product-wishlist active"
                       data-product-id="<?= $prod['id'] ?>"
-                      onclick="removeWishlist(<?= $prod['id'] ?>, this); event.preventDefault();"
+                      onclick="removeWishlist(<?= $prod['id'] ?>, this);"
                       title="Remove from wishlist">
-                <i data-lucide="heart" style="width:16px;height:16px;fill:var(--gyc-terra);color:var(--gyc-terra);"></i>
+                <i data-lucide="heart" style="width:16px;height:16px;fill:currentColor;"></i>
               </button>
-            </a>
+            </div>
             <div class="product-card-body">
               <?php if ($prod['category_name']): ?>
               <span class="product-tag"><?= htmlspecialchars($prod['category_name']) ?></span>

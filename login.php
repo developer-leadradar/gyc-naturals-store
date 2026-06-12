@@ -55,9 +55,10 @@ require_once __DIR__ . '/includes/header.php';
 
       <!-- Logo -->
       <div style="text-align:center;margin-bottom:2rem;">
-        <a href="<?= SITE_URL ?>">
-          <img src="<?= SITE_URL ?>/assets/images/gyc-logo-horizontal.svg" alt="GYC Naturals" style="height:48px;">
+        <a href="<?= SITE_URL ?>" style="display:inline-block;">
+          <img src="<?= SITE_URL ?>/assets/images/gyc-logo-horizontal.svg" alt="GYC Naturals" style="height:48px;display:block;margin:0 auto;">
         </a>
+        <div style="font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;color:var(--gyc-dark);margin-top:.5rem;">GYC Naturals</div>
       </div>
 
       <div class="auth-card">

@@ -83,7 +83,7 @@ require_once __DIR__ . '/includes/header.php';
     <!-- CTA after grid -->
     <div id="moodboard-cta" style="display:none;margin-top:3rem;text-align:center;padding:2.5rem;background:var(--gyc-dark);border-radius:var(--gyc-radius-lg);">
       <h3 style="font-family:'Playfair Display',serif;font-size:1.4rem;color:#fff;margin-bottom:.75rem;">Love what you see?</h3>
-      <p style="color:rgba(255,255,255,.72);margin-bottom:1.5rem;font-size:.92rem;">
+      <p style="color:rgba(255,255,255,.72);font-size:.92rem;text-align:center;max-width:500px;margin:0 auto 1.5rem;">
         Book an appointment and show your stylist this moodboard. We will recreate your favourite look.
       </p>
       <div style="display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap;">
@@ -150,10 +150,12 @@ document.addEventListener('DOMContentLoaded', function () {
           if (empty) empty.style.display = 'block';
           return;
         }
+        var fallbackImg = 'https://images.pexels.com/photos/8514938/pexels-photo-8514938.jpeg?auto=compress&cs=tinysrgb&w=400&h=500&fit=crop';
         grid.innerHTML = data.items.map(function (item) {
+          var imgSrc = (item.image_url && item.image_url !== 'null') ? item.image_url : fallbackImg;
           return '<div class="moodboard-item" data-slug="' + escHtml(item.slug) + '">'
             + '<a href="' + escHtml(window.GYC_URL + '/style-detail.php?slug=' + item.slug) + '">'
-            + '<img src="' + escHtml(item.image_url) + '" alt="' + escHtml(item.title) + '" loading="lazy">'
+            + '<img src="' + escHtml(imgSrc) + '" alt="' + escHtml(item.title) + '" loading="lazy">'
             + '</a>'
             + '<div style="position:absolute;bottom:0;left:0;right:0;padding:.75rem;background:linear-gradient(transparent,rgba(0,0,0,.65));color:#fff;">'
             + '<div style="font-size:.82rem;font-weight:600;margin-bottom:.25rem;">' + escHtml(item.title) + '</div>'

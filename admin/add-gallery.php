@@ -14,6 +14,42 @@ if ($isEdit && !$img) {
 $galCats = $db->fetchAll("SELECT * FROM gallery_categories WHERE is_active=1 ORDER BY name");
 $error   = '';
 
+function resizeToDataUrl($tmpFile, $mime, $maxDim = 800, $quality = 82) {
+    if (!extension_loaded('gd') || !function_exists('imagecreatefromjpeg')) {
+        return 'data:' . $mime . ';base64,' . base64_encode(file_get_contents($tmpFile));
+    }
+    switch ($mime) {
+        case 'image/jpeg': case 'image/jpg': $src = @imagecreatefromjpeg($tmpFile); break;
+        case 'image/png':  $src = @imagecreatefrompng($tmpFile); break;
+        case 'image/gif':  $src = @imagecreatefromgif($tmpFile); break;
+        case 'image/webp': $src = function_exists('imagecreatefromwebp') ? @imagecreatefromwebp($tmpFile) : false; break;
+        default: $src = false;
+    }
+    if (!$src) {
+        return 'data:' . $mime . ';base64,' . base64_encode(file_get_contents($tmpFile));
+    }
+    $origW = imagesx($src); $origH = imagesy($src);
+    $ratio = min($maxDim / $origW, $maxDim / $origH, 1.0);
+    $newW = max(1, (int)round($origW * $ratio));
+    $newH = max(1, (int)round($origH * $ratio));
+    $dst = imagecreatetruecolor($newW, $newH);
+    if ($mime === 'image/png') {
+        imagealphablending($dst, false); imagesavealpha($dst, true);
+        imagefill($dst, 0, 0, imagecolorallocatealpha($dst, 255, 255, 255, 127));
+    } else {
+        $white = imagecolorallocate($dst, 255, 255, 255);
+        imagefill($dst, 0, 0, $white);
+    }
+    imagecopyresampled($dst, $src, 0, 0, 0, 0, $newW, $newH, $origW, $origH);
+    imagedestroy($src);
+    ob_start();
+    if ($mime === 'image/png') { imagepng($dst, null, 8); $outMime = 'image/png'; }
+    else                       { imagejpeg($dst, null, $quality); $outMime = 'image/jpeg'; }
+    $data = ob_get_clean();
+    imagedestroy($dst);
+    return 'data:' . $outMime . ';base64,' . base64_encode($data);
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = [
         'title'           => trim(sanitize($_POST['title']           ?? '')),
@@ -33,13 +69,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $data['slug'] = strtolower(preg_replace('/[^a-z0-9]+/i', '-', $data['title']));
     }
 
-    // Handle image upload or URL (base64 data-URL — Vercel has no writable filesystem)
+    // Handle image upload or URL (resize + base64 data-URL — Vercel has no writable filesystem)
     $imageUrl = $img['image_url'] ?? '';
     if (!empty($_FILES['image']['name']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
         $mime     = mime_content_type($_FILES['image']['tmp_name']) ?: 'image/jpeg';
-        $imageUrl = 'data:' . $mime . ';base64,' . base64_encode(file_get_contents($_FILES['image']['tmp_name']));
+        $imageUrl = resizeToDataUrl($_FILES['image']['tmp_name'], $mime);
     } elseif (!empty($_POST['image_url'])) {
         $imageUrl = trim($_POST['image_url']);
+    } elseif (!empty($_FILES['image']['name']) && $_FILES['image']['error'] !== UPLOAD_ERR_OK) {
+        $error = 'Image upload failed (error code: ' . $_FILES['image']['error'] . '). Try a smaller file or use an image URL.';
     }
     $data['image_url'] = $imageUrl;
 
@@ -48,19 +86,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $afterUrl  = $img['after_image']  ?? '';
     if (!empty($_FILES['before_image']['name']) && $_FILES['before_image']['error'] === UPLOAD_ERR_OK) {
         $mime      = mime_content_type($_FILES['before_image']['tmp_name']) ?: 'image/jpeg';
-        $beforeUrl = 'data:' . $mime . ';base64,' . base64_encode(file_get_contents($_FILES['before_image']['tmp_name']));
+        $beforeUrl = resizeToDataUrl($_FILES['before_image']['tmp_name'], $mime);
     } elseif (!empty($_POST['before_url'])) { $beforeUrl = trim($_POST['before_url']); }
     if (!empty($_FILES['after_image']['name']) && $_FILES['after_image']['error'] === UPLOAD_ERR_OK) {
         $mime     = mime_content_type($_FILES['after_image']['tmp_name']) ?: 'image/jpeg';
-        $afterUrl = 'data:' . $mime . ';base64,' . base64_encode(file_get_contents($_FILES['after_image']['tmp_name']));
+        $afterUrl = resizeToDataUrl($_FILES['after_image']['tmp_name'], $mime);
     } elseif (!empty($_POST['after_url'])) { $afterUrl = trim($_POST['after_url']); }
     $data['before_image'] = $beforeUrl ?: null;
     $data['after_image']  = $afterUrl  ?: null;
 
     if (!$data['title']) {
         $error = 'Title is required.';
+    } elseif ($error) {
+        // upload error already set above
     } elseif (!$imageUrl) {
-        $error = 'Please provide a main image.';
+        $error = 'Please provide a main image (upload a file or paste a URL).';
     } else {
         if ($isEdit) {
             $db->update('gallery_images', $data, 'id=?', [$editId]);

@@ -82,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </button>
       </div>
     </div>
-    <button type="submit" class="btn btn-green w-full" style="margin-top:.5rem;font-size:.95rem;padding:.8rem;">
+    <button type="submit" class="btn btn-green" style="margin-top:.5rem;font-size:.95rem;padding:.8rem;width:100%;justify-content:center;display:flex;">
       Sign In to Admin
     </button>
   </form>

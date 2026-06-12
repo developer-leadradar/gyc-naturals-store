@@ -105,13 +105,18 @@ require_once __DIR__ . '/includes/header.php';
             function selectServiceType(svc, btn) {
               document.querySelectorAll('.svc-type-btn').forEach(function(b) {
                 b.style.borderColor = 'var(--gyc-green-100)';
-                b.querySelector('span > span:first-child').style.background = '#F3F4F6';
-                b.querySelector('i').style.color = '#6B7280';
+                b.style.boxShadow = '';
+                var iconBg = b.querySelector('span:first-child');
+                if (iconBg) iconBg.style.background = '#F3F4F6';
+                var iconEl = b.querySelector('i') || b.querySelector('svg');
+                if (iconEl) iconEl.style.color = '#6B7280';
               });
               btn.style.borderColor = 'var(--gyc-green-600)';
               btn.style.boxShadow = '0 0 0 3px rgba(22,101,52,0.1)';
-              btn.querySelector('span > span:first-child').style.background = 'var(--gyc-green-100)';
-              btn.querySelector('i').style.color = 'var(--gyc-green-700)';
+              var activeIconBg = btn.querySelector('span:first-child');
+              if (activeIconBg) activeIconBg.style.background = 'var(--gyc-green-100)';
+              var activeIcon = btn.querySelector('i') || btn.querySelector('svg');
+              if (activeIcon) activeIcon.style.color = 'var(--gyc-green-700)';
               document.getElementById('booking-service-type').value = svc;
               // Show gallery only for braiding; for others hide it and select "decide in person"
               var gallerySection = document.getElementById('gallery-style-section');
@@ -126,12 +131,24 @@ require_once __DIR__ . '/includes/header.php';
                 if (decideRadio) decideRadio.checked = true;
                 document.getElementById('booking-style-id').value = '0';
               }
-              // Pre-fill notes suggestion
+              // Show sub-category chips for the selected service
+              showSubcats(svc);
+            }
+
+            function showSubcats(svc) {
+              ['braiding','kids','natural','treatment'].forEach(function(s) {
+                var el = document.getElementById('subcats-' + s);
+                if (el) el.style.display = (s === svc && s !== 'braiding') ? 'block' : 'none';
+              });
+            }
+
+            function selectSubcat(text, chipBtn) {
+              chipBtn.closest('[id^="subcats-"]').querySelectorAll('.chip').forEach(function(c) {
+                c.classList.remove('chip--active');
+              });
+              chipBtn.classList.add('chip--active');
               var notesEl = document.querySelector('textarea[name="notes"]');
-              if (notesEl && !notesEl.value) {
-                var svcLabels = {braiding:'',kids:"Kids' hair appointment",natural:'Natural hair styling',treatment:'Scalp treatment / deep conditioning'};
-                notesEl.value = svcLabels[svc] || '';
-              }
+              if (notesEl) notesEl.value = text;
             }
             </script>
             <?php if ($defaultSvc !== 'braiding'): ?>
@@ -147,6 +164,45 @@ require_once __DIR__ . '/includes/header.php';
             });
             </script>
             <?php endif; ?>
+
+            <!-- Sub-category chips per service type -->
+            <div style="margin-bottom:1.25rem;">
+              <!-- Kids' Hair sub-categories -->
+              <div id="subcats-kids" style="display:<?= $defaultSvc==='kids' ? 'block' : 'none' ?>;">
+                <p style="font-size:.82rem;color:#555;font-weight:600;margin-bottom:.55rem;">What kind of style?</p>
+                <div style="display:flex;flex-wrap:wrap;gap:.45rem;">
+                  <button type="button" class="chip" onclick="selectSubcat('Cornrow style for kids', this)">Cornrows</button>
+                  <button type="button" class="chip" onclick="selectSubcat('Simple box braids for kids', this)">Box Braids</button>
+                  <button type="button" class="chip" onclick="selectSubcat('Beads and accessories styling for kids', this)">Beads &amp; Accessories</button>
+                  <button type="button" class="chip" onclick="selectSubcat('Two strand twists for kids', this)">Two Strand Twists</button>
+                  <button type="button" class="chip" onclick="selectSubcat('Natural styling for kids', this)">Natural Style</button>
+                  <button type="button" class="chip" onclick="selectSubcat('Ponytail styling for kids', this)">Ponytail</button>
+                </div>
+              </div>
+              <!-- Natural Styles sub-categories -->
+              <div id="subcats-natural" style="display:<?= $defaultSvc==='natural' ? 'block' : 'none' ?>;">
+                <p style="font-size:.82rem;color:#555;font-weight:600;margin-bottom:.55rem;">What natural style?</p>
+                <div style="display:flex;flex-wrap:wrap;gap:.45rem;">
+                  <button type="button" class="chip" onclick="selectSubcat('Bantu knots styling', this)">Bantu Knots</button>
+                  <button type="button" class="chip" onclick="selectSubcat('Afro puffs styling', this)">Afro Puffs</button>
+                  <button type="button" class="chip" onclick="selectSubcat('Flat twists styling', this)">Flat Twists</button>
+                  <button type="button" class="chip" onclick="selectSubcat('Wash and go styling', this)">Wash &amp; Go</button>
+                  <button type="button" class="chip" onclick="selectSubcat('Twist out styling', this)">Twist Out</button>
+                  <button type="button" class="chip" onclick="selectSubcat('Braid out styling', this)">Braid Out</button>
+                </div>
+              </div>
+              <!-- Scalp & Treatments sub-categories -->
+              <div id="subcats-treatment" style="display:<?= $defaultSvc==='treatment' ? 'block' : 'none' ?>;">
+                <p style="font-size:.82rem;color:#555;font-weight:600;margin-bottom:.55rem;">What treatment?</p>
+                <div style="display:flex;flex-wrap:wrap;gap:.45rem;">
+                  <button type="button" class="chip" onclick="selectSubcat('Deep conditioning treatment', this)">Deep Conditioning</button>
+                  <button type="button" class="chip" onclick="selectSubcat('Scalp detox treatment', this)">Scalp Detox</button>
+                  <button type="button" class="chip" onclick="selectSubcat('Hot oil treatment', this)">Hot Oil Treatment</button>
+                  <button type="button" class="chip" onclick="selectSubcat('Full hair spa treatment', this)">Hair Spa</button>
+                  <button type="button" class="chip" onclick="selectSubcat('Protein treatment for damaged hair', this)">Protein Treatment</button>
+                </div>
+              </div>
+            </div>
 
             <!-- Quick category filter -->
             <div id="gallery-filter-row" style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1.25rem;overflow-x:auto;">
