@@ -173,8 +173,7 @@ require_once __DIR__ . '/includes/header.php';
     <blockquote class="proverb-text" id="proverb-quote">
       <?php if ($proverb): ?>
       <span class="proverb-main">&ldquo;<?= htmlspecialchars($proverb['text']) ?>&rdquo;</span>
-      <span class="proverb-translation">— <?= htmlspecialchars($proverb['translation']) ?></span>
-      <span class="proverb-lang"><?= htmlspecialchars($proverb['language']) ?></span>
+      <span class="proverb-translation"><?= htmlspecialchars($proverb['translation']) ?></span>
       <?php else: ?>
       <span class="proverb-main">&ldquo;Your hair is your crown. Wear it with pride.&rdquo;</span>
       <span class="proverb-translation">— GYC Naturals, Calabar</span>

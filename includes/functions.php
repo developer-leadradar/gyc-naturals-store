@@ -155,7 +155,7 @@ function getAllSettings() {
 
 function getProverbOfTheDay() {
     $json = getSetting('proverbs');
-    if (!$json) return ['text' => 'Irun jẹ ẹwa', 'translation' => 'Hair is beauty', 'language' => 'Yoruba'];
+    if (!$json) return ['text' => 'Your hair is your crown. Wear it with pride.', 'translation' => '— GYC Naturals, Calabar', 'language' => ''];
     $proverbs = json_decode($json, true);
     if (empty($proverbs)) return null;
     $index = date('z') % count($proverbs);
