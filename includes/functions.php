@@ -376,11 +376,16 @@ function getAvailableSlots($date) {
     $dayOfWeek = (int) date('N', strtotime($date)); // 1=Mon … 7=Sun
     if ($dayOfWeek === 7) return []; // Closed Sundays
 
-    $times = ['09:00:00','10:30:00','12:00:00','13:30:00','15:00:00','16:30:00','18:00:00'];
-    foreach ($times as $t) {
+    $slots_config = [
+        ['09:00:00','10:30:00'],['10:30:00','12:00:00'],['12:00:00','13:30:00'],
+        ['13:30:00','15:00:00'],['15:00:00','16:30:00'],['16:30:00','18:00:00'],
+        ['18:00:00','19:30:00'],
+    ];
+    foreach ($slots_config as [$start, $end]) {
         $db->insert('booking_slots', [
             'slot_date'    => $date,
-            'start_time'   => $t,
+            'start_time'   => $start,
+            'end_time'     => $end,
             'is_available' => 1,
             'max_bookings' => 2,
         ]);
