@@ -6,7 +6,7 @@ require_once __DIR__ . '/includes/functions.php';
 
 // Filters from URL — ?tab=bundles maps to bundles category
 $tabParam      = sanitize($_GET['tab'] ?? '');
-$activeCatSlug = sanitize($_GET['category'] ?? ($tabParam === 'bundles' ? 'bundles' : ''));
+$activeCatSlug = sanitize($_GET['category'] ?? ($tabParam === 'bundles' ? 'kits-bundles' : ''));
 $activeSort    = sanitize($_GET['sort']     ?? 'default');
 $activeConcern = sanitize($_GET['concern']  ?? '');
 $activeHair    = sanitize($_GET['hair']     ?? '');
