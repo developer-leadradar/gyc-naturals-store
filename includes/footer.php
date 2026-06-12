@@ -47,8 +47,7 @@ $waLink    = getWhatsAppFloat();
           <li><a href="<?= SITE_URL ?>/shop.php">Shop Products</a></li>
           <li><a href="<?= SITE_URL ?>/book-appointment.php">Book Appointment</a></li>
           <li><a href="<?= SITE_URL ?>/quiz.php">Hair Quiz</a></li>
-          <li><a href="<?= SITE_URL ?>/moodboard.php">My Saved Looks</a></li>
-          <li><a href="<?= SITE_URL ?>/blog.php">Hair Tips & Blog</a></li>
+          <li><a href="<?= SITE_URL ?>/moodboard.php">My Moodboard</a></li>
           <li><a href="<?= SITE_URL ?>/clothing.php">Clothing Line</a></li>
         </ul>
       </div>
@@ -135,6 +134,7 @@ $waLink    = getWhatsAppFloat();
 </div>
 
 <!-- Main JS -->
+<script>window.GYC_LOGGED_IN = <?= isLoggedIn() ? 'true' : 'false' ?>;</script>
 <script src="<?= SITE_URL ?>/assets/js/main.js" defer></script>
 
 <script>

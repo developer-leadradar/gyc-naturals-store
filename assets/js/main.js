@@ -239,6 +239,10 @@ function isSaved(slug) {
   return getMoodboard().includes(slug);
 }
 function toggleMoodboard(slug, btn) {
+  if (!window.GYC_LOGGED_IN) {
+    window.location.href = (window.GYC_URL || '') + '/login.php?redirect=' + encodeURIComponent(window.location.pathname + window.location.search);
+    return;
+  }
   const items = getMoodboard();
   const idx   = items.indexOf(slug);
   if (idx === -1) {

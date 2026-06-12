@@ -5,9 +5,11 @@ require_once __DIR__ . '/includes/db.php';
 require_once __DIR__ . '/includes/functions.php';
 
 // Pre-selected style from URL
-$preStyleId = (int)($_GET['style_id'] ?? 0);
-$preStyle   = $preStyleId ? getDB()->fetchOne("SELECT * FROM gallery_images WHERE id=? AND is_active=1", [$preStyleId]) : null;
-$preService = sanitize($_GET['service'] ?? '');
+$preStyleId    = (int)($_GET['style_id'] ?? 0);
+$preStyle      = $preStyleId ? getDB()->fetchOne("SELECT * FROM gallery_images WHERE id=? AND is_active=1", [$preStyleId]) : null;
+$preService    = sanitize($_GET['service'] ?? '');
+$validServices = ['braiding', 'kids', 'natural', 'treatment'];
+$defaultSvc    = in_array($preService, $validServices) ? $preService : 'braiding';
 
 // All gallery images for style chooser
 $allStyles  = getGalleryImages([], 20);
@@ -74,7 +76,7 @@ require_once __DIR__ . '/includes/header.php';
             <p style="font-size:0.85rem;color:#666;margin-bottom:1.25rem;">Choose a service type, then pick your style below</p>
 
             <!-- Service type selector -->
-            <input type="hidden" name="service_type" id="booking-service-type" value="braiding">
+            <input type="hidden" name="service_type" id="booking-service-type" value="<?= $defaultSvc ?>">
             <?php
             $serviceTypes = [
               ['id'=>'braiding',   'icon'=>'layers',     'label'=>'Braiding & Protective',  'desc'=>'Knotless, box braids, cornrows, twists & more'],
@@ -85,12 +87,12 @@ require_once __DIR__ . '/includes/header.php';
             ?>
             <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem;margin-bottom:1.5rem;" id="service-type-grid">
               <?php foreach ($serviceTypes as $svc): ?>
-              <button type="button" class="svc-type-btn <?= $svc['id'] === 'braiding' ? 'svc-type-btn--active' : '' ?>"
+              <button type="button" class="svc-type-btn <?= $svc['id'] === $defaultSvc ? 'svc-type-btn--active' : '' ?>"
                       data-svc="<?= $svc['id'] ?>"
                       onclick="selectServiceType('<?= $svc['id'] ?>', this)"
-                      style="display:flex;align-items:center;gap:.75rem;padding:.85rem 1rem;background:#fff;border:1.5px solid <?= $svc['id']==='braiding' ? 'var(--gyc-green-600)' : 'var(--gyc-green-100)' ?>;border-radius:var(--gyc-radius-lg);cursor:pointer;text-align:left;width:100%;transition:border-color .15s,box-shadow .15s;">
-                <span style="width:38px;height:38px;border-radius:10px;background:<?= $svc['id']==='braiding' ? 'var(--gyc-green-100)' : '#F3F4F6' ?>;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                  <i data-lucide="<?= $svc['icon'] ?>" style="width:18px;height:18px;color:<?= $svc['id']==='braiding' ? 'var(--gyc-green-700)' : '#6B7280' ?>;"></i>
+                      style="display:flex;align-items:center;gap:.75rem;padding:.85rem 1rem;background:#fff;border:1.5px solid <?= $svc['id']===$defaultSvc ? 'var(--gyc-green-600)' : 'var(--gyc-green-100)' ?>;border-radius:var(--gyc-radius-lg);cursor:pointer;text-align:left;width:100%;transition:border-color .15s,box-shadow .15s;">
+                <span style="width:38px;height:38px;border-radius:10px;background:<?= $svc['id']===$defaultSvc ? 'var(--gyc-green-100)' : '#F3F4F6' ?>;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                  <i data-lucide="<?= $svc['icon'] ?>" style="width:18px;height:18px;color:<?= $svc['id']===$defaultSvc ? 'var(--gyc-green-700)' : '#6B7280' ?>;"></i>
                 </span>
                 <span>
                   <span style="display:block;font-size:.85rem;font-weight:700;color:var(--gyc-dark);"><?= $svc['label'] ?></span>
@@ -132,6 +134,19 @@ require_once __DIR__ . '/includes/header.php';
               }
             }
             </script>
+            <?php if ($defaultSvc !== 'braiding'): ?>
+            <script>
+            document.addEventListener('DOMContentLoaded', function() {
+              var gallerySection = document.getElementById('gallery-style-section');
+              var filterRow      = document.getElementById('gallery-filter-row');
+              if (gallerySection) gallerySection.style.display = 'none';
+              if (filterRow)      filterRow.style.display = 'none';
+              var decideRadio = document.getElementById('gir-0');
+              if (decideRadio) decideRadio.checked = true;
+              document.getElementById('booking-style-id').value = '0';
+            });
+            </script>
+            <?php endif; ?>
 
             <!-- Quick category filter -->
             <div id="gallery-filter-row" style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1.25rem;overflow-x:auto;">

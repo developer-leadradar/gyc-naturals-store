@@ -5,8 +5,9 @@ require_once __DIR__ . '/includes/db.php';
 require_once __DIR__ . '/includes/functions.php';
 
 // Filters from URL — ?tab=bundles maps to bundles category
-$tabParam      = sanitize($_GET['tab'] ?? '');
-$activeCatSlug = sanitize($_GET['category'] ?? ($tabParam === 'bundles' ? 'kits-bundles' : ''));
+$tabParam       = sanitize($_GET['tab'] ?? '');
+$activeCatSlug  = sanitize($_GET['category'] ?? ($tabParam === 'bundles' ? 'kits-bundles' : ''));
+$showingBundles = ($activeCatSlug === 'kits-bundles');
 $activeSort    = sanitize($_GET['sort']     ?? 'default');
 $activeConcern = sanitize($_GET['concern']  ?? '');
 $activeHair    = sanitize($_GET['hair']     ?? '');
@@ -166,7 +167,9 @@ require_once __DIR__ . '/includes/header.php';
       <!-- Sort & count bar -->
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:.75rem;">
         <div>
-          <?php if ($searchQ): ?>
+          <?php if ($showingBundles): ?>
+          <p style="font-size:.88rem;color:#666;margin:0;"><?= count($bundles) ?> bundle<?= count($bundles) !== 1 ? 's' : '' ?></p>
+          <?php elseif ($searchQ): ?>
           <h2 style="font-size:1rem;font-weight:600;color:var(--gyc-dark);margin:0;">
             Results for "<em><?= htmlspecialchars($searchQ) ?></em>" — <?= $total ?> product<?= $total !== 1 ? 's' : '' ?>
           </h2>
@@ -189,7 +192,45 @@ require_once __DIR__ . '/includes/header.php';
         </form>
       </div>
 
-      <?php if (empty($products)): ?>
+      <?php if ($showingBundles): ?>
+      <!-- Kits & Bundles view -->
+      <?php if (empty($bundles)): ?>
+      <div style="text-align:center;padding:4rem 2rem;background:#fff;border-radius:var(--gyc-radius-lg);border:1.5px solid var(--gyc-green-100);">
+        <i data-lucide="package" style="width:52px;height:52px;margin-bottom:1rem;opacity:.35;"></i>
+        <h3 style="font-family:'Playfair Display',serif;margin-bottom:.5rem;">No bundles yet</h3>
+        <p style="color:#888;font-size:.9rem;margin-bottom:1.25rem;">Check back soon for curated hair care bundles.</p>
+        <a href="<?= SITE_URL ?>/shop.php" class="btn btn-green">Browse All Products</a>
+      </div>
+      <?php else: ?>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.5rem;">
+        <?php foreach ($bundles as $bundle):
+          $bPrice = getBundlePrice($bundle['id']);
+        ?>
+        <div style="background:#fff;border:1.5px solid var(--gyc-green-100);border-radius:var(--gyc-radius-lg);overflow:hidden;display:flex;flex-direction:column;">
+          <a href="<?= SITE_URL ?>/bundle.php?slug=<?= urlencode($bundle['slug']) ?>" style="display:block;height:190px;overflow:hidden;background:var(--gyc-green-100);">
+            <img src="<?= htmlspecialchars($bundle['image'] ?? '') ?>" alt="<?= htmlspecialchars($bundle['name']) ?>" loading="lazy" style="width:100%;height:100%;object-fit:cover;">
+          </a>
+          <div style="padding:1.1rem 1.1rem 1.25rem;flex:1;display:flex;flex-direction:column;">
+            <?php if ($bPrice && $bPrice['discount_pct'] > 0): ?>
+            <span style="font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gyc-gold-700);margin-bottom:.25rem;">Save <?= round($bPrice['discount_pct']) ?>%</span>
+            <?php endif; ?>
+            <h3 style="font-family:'Playfair Display',serif;font-size:1rem;margin:0 0 .4rem;line-height:1.3;flex:1;">
+              <a href="<?= SITE_URL ?>/bundle.php?slug=<?= urlencode($bundle['slug']) ?>" style="color:var(--gyc-dark);text-decoration:none;"><?= htmlspecialchars($bundle['name']) ?></a>
+            </h3>
+            <?php if ($bPrice): ?>
+            <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.75rem;">
+              <span style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--gyc-green-700);font-weight:700;"><?= formatPrice($bPrice['total']) ?></span>
+              <span style="text-decoration:line-through;color:#bbb;font-size:.8rem;"><?= formatPrice($bPrice['subtotal']) ?></span>
+            </div>
+            <?php endif; ?>
+            <a href="<?= SITE_URL ?>/bundle.php?slug=<?= urlencode($bundle['slug']) ?>" class="btn btn-gold btn-sm" style="width:100%;justify-content:center;">Shop Bundle</a>
+          </div>
+        </div>
+        <?php endforeach; ?>
+      </div>
+      <?php endif; ?>
+
+      <?php elseif (empty($products)): ?>
       <!-- Empty state -->
       <div style="text-align:center;padding:4rem 2rem;background:#fff;border-radius:var(--gyc-radius-lg);border:1.5px solid var(--gyc-green-100);">
         <i data-lucide="search-x" style="width:52px;height:52px;margin-bottom:1rem;opacity:.35;"></i>
@@ -275,43 +316,6 @@ require_once __DIR__ . '/includes/header.php';
         ?>
       </nav>
       <?php endif; ?>
-      <?php endif; ?>
-
-      <!-- Bundles strip -->
-      <?php if (!empty($bundles) && !$searchQ): ?>
-      <div style="margin-top:4rem;">
-        <div class="section-header" style="margin-bottom:1.5rem;">
-          <h2 style="font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--gyc-dark);">Bundle &amp; Save</h2>
-          <p style="font-size:.88rem;color:#666;">Get more of what your hair loves, at a better price.</p>
-        </div>
-        <div class="bundles-scroll">
-          <?php foreach ($bundles as $bundle):
-            $bPrice = getBundlePrice($bundle['id']);
-          ?>
-          <div class="bundle-card">
-            <a href="<?= SITE_URL ?>/bundle.php?slug=<?= urlencode($bundle['slug']) ?>" class="bundle-card-img-wrap" style="display:block;height:200px;overflow:hidden;background:var(--gyc-green-100);border-radius:var(--gyc-radius) var(--gyc-radius) 0 0;">
-              <img src="<?= htmlspecialchars($bundle['image'] ?? '') ?>" alt="<?= htmlspecialchars($bundle['name']) ?>" loading="lazy" style="width:100%;height:100%;object-fit:cover;">
-            </a>
-            <div style="padding:1.1rem 1.1rem 1.25rem;">
-              <?php if ($bPrice && $bPrice['discount_pct'] > 0): ?>
-              <span style="font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gyc-gold-700);">Save <?= round($bPrice['discount_pct']) ?>%</span>
-              <?php endif; ?>
-              <h3 style="font-family:'Playfair Display',serif;font-size:1.05rem;margin:.25rem 0 .4rem;line-height:1.25;">
-                <a href="<?= SITE_URL ?>/bundle.php?slug=<?= urlencode($bundle['slug']) ?>" style="color:var(--gyc-dark);text-decoration:none;"><?= htmlspecialchars($bundle['name']) ?></a>
-              </h3>
-              <p style="font-size:.8rem;color:#666;margin-bottom:.75rem;line-height:1.4;"><?= htmlspecialchars($bundle['short_description'] ?? '') ?></p>
-              <?php if ($bPrice): ?>
-              <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.75rem;">
-                <span style="font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--gyc-green-700);font-weight:700;"><?= formatPrice($bPrice['total']) ?></span>
-                <span style="text-decoration:line-through;color:#bbb;font-size:.82rem;"><?= formatPrice($bPrice['subtotal']) ?></span>
-              </div>
-              <?php endif; ?>
-              <a href="<?= SITE_URL ?>/bundle.php?slug=<?= urlencode($bundle['slug']) ?>" class="btn btn-gold btn-sm" style="width:100%;justify-content:center;">Shop Bundle</a>
-            </div>
-          </div>
-          <?php endforeach; ?>
-        </div>
-      </div>
       <?php endif; ?>
 
     </div>

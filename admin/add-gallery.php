@@ -33,16 +33,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $data['slug'] = strtolower(preg_replace('/[^a-z0-9]+/i', '-', $data['title']));
     }
 
-    // Handle image upload or URL
+    // Handle image upload or URL (base64 data-URL — Vercel has no writable filesystem)
     $imageUrl = $img['image_url'] ?? '';
-    if (!empty($_FILES['image']['name'])) {
-        $dir = __DIR__ . '/../uploads/gallery/';
-        if (!is_dir($dir)) mkdir($dir, 0755, true);
-        $ext   = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
-        $fname = 'gal_' . time() . '_' . rand(100,999) . '.' . $ext;
-        if (move_uploaded_file($_FILES['image']['tmp_name'], $dir . $fname)) {
-            $imageUrl = SITE_URL . '/uploads/gallery/' . $fname;
-        }
+    if (!empty($_FILES['image']['name']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+        $mime     = mime_content_type($_FILES['image']['tmp_name']) ?: 'image/jpeg';
+        $imageUrl = 'data:' . $mime . ';base64,' . base64_encode(file_get_contents($_FILES['image']['tmp_name']));
     } elseif (!empty($_POST['image_url'])) {
         $imageUrl = trim($_POST['image_url']);
     }
@@ -51,22 +46,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Handle before/after
     $beforeUrl = $img['before_image'] ?? '';
     $afterUrl  = $img['after_image']  ?? '';
-    if (!empty($_FILES['before_image']['name'])) {
-        $dir = __DIR__ . '/../uploads/gallery/';
-        if (!is_dir($dir)) mkdir($dir, 0755, true);
-        $ext   = strtolower(pathinfo($_FILES['before_image']['name'], PATHINFO_EXTENSION));
-        $fname = 'gal_before_' . time() . '.' . $ext;
-        if (move_uploaded_file($_FILES['before_image']['tmp_name'], $dir . $fname)) {
-            $beforeUrl = SITE_URL . '/uploads/gallery/' . $fname;
-        }
+    if (!empty($_FILES['before_image']['name']) && $_FILES['before_image']['error'] === UPLOAD_ERR_OK) {
+        $mime      = mime_content_type($_FILES['before_image']['tmp_name']) ?: 'image/jpeg';
+        $beforeUrl = 'data:' . $mime . ';base64,' . base64_encode(file_get_contents($_FILES['before_image']['tmp_name']));
     } elseif (!empty($_POST['before_url'])) { $beforeUrl = trim($_POST['before_url']); }
-    if (!empty($_FILES['after_image']['name'])) {
-        $dir = __DIR__ . '/../uploads/gallery/';
-        $ext   = strtolower(pathinfo($_FILES['after_image']['name'], PATHINFO_EXTENSION));
-        $fname = 'gal_after_' . time() . '.' . $ext;
-        if (move_uploaded_file($_FILES['after_image']['tmp_name'], $dir . $fname)) {
-            $afterUrl = SITE_URL . '/uploads/gallery/' . $fname;
-        }
+    if (!empty($_FILES['after_image']['name']) && $_FILES['after_image']['error'] === UPLOAD_ERR_OK) {
+        $mime     = mime_content_type($_FILES['after_image']['tmp_name']) ?: 'image/jpeg';
+        $afterUrl = 'data:' . $mime . ';base64,' . base64_encode(file_get_contents($_FILES['after_image']['tmp_name']));
     } elseif (!empty($_POST['after_url'])) { $afterUrl = trim($_POST['after_url']); }
     $data['before_image'] = $beforeUrl ?: null;
     $data['after_image']  = $afterUrl  ?: null;

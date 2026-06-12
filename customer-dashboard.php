@@ -61,6 +61,12 @@ require_once __DIR__ . '/includes/header.php';
           <div style="font-family:'Playfair Display',serif;font-size:1.5rem;color:#fff;font-weight:700;"><?= $wishlistCount['c'] ?? 0 ?></div>
           <div style="font-size:.72rem;color:rgba(255,255,255,.65);text-transform:uppercase;letter-spacing:.08em;">Wishlist</div>
         </div>
+        <div style="text-align:center;background:rgba(255,255,255,.12);border-radius:var(--gyc-radius);padding:.75rem 1.25rem;">
+          <a href="<?= SITE_URL ?>/moodboard.php" style="text-decoration:none;">
+            <div id="dash-moodboard-count" style="font-family:'Playfair Display',serif;font-size:1.5rem;color:#fff;font-weight:700;">0</div>
+            <div style="font-size:.72rem;color:rgba(255,255,255,.65);text-transform:uppercase;letter-spacing:.08em;">Saved Styles</div>
+          </a>
+        </div>
       </div>
     </div>
 
@@ -175,5 +181,17 @@ require_once __DIR__ . '/includes/header.php';
 
   </div>
 </section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var el = document.getElementById('dash-moodboard-count');
+  if (el) {
+    try {
+      var saved = JSON.parse(localStorage.getItem('gyc_moodboard') || '[]');
+      el.textContent = Array.isArray(saved) ? saved.length : 0;
+    } catch(e) { el.textContent = 0; }
+  }
+});
+</script>
 
 <?php require_once __DIR__ . '/includes/footer.php'; ?>

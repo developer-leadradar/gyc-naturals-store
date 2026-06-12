@@ -23,7 +23,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'is_featured'         => isset($_POST['is_featured']) ? 1 : 0,
             'display_order'       => (int)($_POST['display_order'] ?? 99),
         ];
-        if (!empty($_POST['image_url'])) $data['image'] = trim($_POST['image_url']);
+        if (!empty($_FILES['image_file']['name']) && $_FILES['image_file']['error'] === UPLOAD_ERR_OK) {
+            $mime          = mime_content_type($_FILES['image_file']['tmp_name']) ?: 'image/jpeg';
+            $data['image'] = 'data:' . $mime . ';base64,' . base64_encode(file_get_contents($_FILES['image_file']['tmp_name']));
+        } elseif (!empty($_POST['image_url'])) {
+            $data['image'] = trim($_POST['image_url']);
+        }
         if ($id) {
             $db->update('bundles', $data, 'id=?', [$id]);
             // Update items
@@ -75,7 +80,7 @@ $products = $db->fetchAll("SELECT id, name, price FROM products WHERE is_active=
   <h2 style="font-size:1rem;font-weight:700;"><?= $editBundle ? 'Edit Bundle' : 'New Bundle' ?></h2>
 </div>
 
-<form method="POST">
+<form method="POST" enctype="multipart/form-data">
   <input type="hidden" name="action" value="save">
   <input type="hidden" name="id" value="<?= $editId ?>">
   <div style="display:grid;grid-template-columns:1fr 300px;gap:1.5rem;align-items:start;">
@@ -88,7 +93,14 @@ $products = $db->fetchAll("SELECT id, name, price FROM products WHERE is_active=
           <div class="form-group"><label class="form-label">Discount %</label><input type="number" name="discount_percentage" class="form-control" min="0" max="90" step="0.5" value="<?= htmlspecialchars($editBundle['discount_percentage']??10) ?>"></div>
         </div>
         <div class="form-group"><label class="form-label">Description</label><textarea name="description" class="form-control" rows="2"><?= htmlspecialchars($editBundle['description']??'') ?></textarea></div>
-        <div class="form-group"><label class="form-label">Image URL</label><input type="url" name="image_url" class="form-control" value="<?= htmlspecialchars($editBundle['image']??'') ?>" placeholder="https://…"></div>
+        <div class="form-group">
+          <label class="form-label">Bundle Image</label>
+          <?php if (!empty($editBundle['image'])): ?>
+          <img src="<?= htmlspecialchars($editBundle['image']) ?>" alt="" style="width:100%;height:110px;object-fit:cover;border-radius:8px;margin-bottom:.5rem;">
+          <?php endif; ?>
+          <input type="file" name="image_file" class="form-control" accept="image/*" style="margin-bottom:.5rem;">
+          <input type="url" name="image_url" class="form-control" placeholder="Or paste image URL…" value="<?= htmlspecialchars($editBundle['image']??'') ?>">
+        </div>
       </div>
       <!-- Bundle items -->
       <div style="background:#fff;border:1.5px solid #E5E7EB;border-radius:12px;padding:1.5rem;">

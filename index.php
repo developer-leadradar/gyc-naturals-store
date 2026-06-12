@@ -267,114 +267,61 @@ require_once __DIR__ . '/includes/header.php';
 ════════════════════════════════════════════════════════ -->
 <section class="section-services" aria-labelledby="services-heading">
   <div class="container">
-    <div class="section-header">
+    <div class="section-header" style="margin-bottom:2rem;">
       <div>
         <p class="section-eyebrow">What We Do</p>
         <h2 class="section-title" id="services-heading">Our Services</h2>
       </div>
-      <a href="<?= SITE_URL ?>/services.php" class="btn btn-outline-green">All Services</a>
+      <a href="<?= SITE_URL ?>/book-appointment.php" class="btn btn-outline-green">Book Appointment</a>
     </div>
 
-    <div class="services-grid">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;">
 
-      <article class="service-card">
-        <div style="height:175px;border-radius:12px;overflow:hidden;margin-bottom:1.25rem;">
-          <img src="https://images.pexels.com/photos/8514938/pexels-photo-8514938.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" alt="Knotless Braids" style="width:100%;height:100%;object-fit:cover;">
+      <article style="background:#fff;border:1.5px solid var(--gyc-green-100);border-radius:var(--gyc-radius-lg);overflow:hidden;display:flex;flex-direction:column;">
+        <div style="height:190px;overflow:hidden;flex-shrink:0;">
+          <img src="https://images.pexels.com/photos/8514938/pexels-photo-8514938.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" alt="Braiding & Protective" loading="lazy" style="width:100%;height:100%;object-fit:cover;">
         </div>
-        <h3 class="service-card-title">Knotless Braids</h3>
-        <p class="service-card-desc">The gentlest braid install available. No knot at the base, no tension on your scalp. Natural-looking roots that last 8–10 weeks.</p>
-        <ul class="service-card-features">
-          <li><i data-lucide="check" style="width:14px;height:14px;color:#52B788;"></i> Zero tension on edges</li>
-          <li><i data-lucide="check" style="width:14px;height:14px;color:#52B788;"></i> Small, medium, or jumbo sizes</li>
-          <li><i data-lucide="check" style="width:14px;height:14px;color:#52B788;"></i> With or without curled ends</li>
-        </ul>
-        <div class="service-card-footer">
-          <span class="service-card-price">from <strong>₦20,000</strong></span>
-          <a href="<?= SITE_URL ?>/book-appointment.php?service=knotless" class="btn btn-gold btn-sm">Book Now</a>
+        <div style="padding:.75rem 1rem 1.1rem;flex:1;display:flex;flex-direction:column;">
+          <h3 style="font-family:'Playfair Display',serif;font-size:.95rem;font-weight:700;margin:0 0 .4rem;color:var(--gyc-dark);">Braiding &amp; Protective</h3>
+          <p style="font-size:.8rem;color:#666;line-height:1.5;margin:0 0 .85rem;flex:1;">Knotless braids, box braids, cornrows, Senegalese twists &amp; faux locs — every protective style.</p>
+          <a href="<?= SITE_URL ?>/book-appointment.php?service=braiding" class="btn btn-gold btn-sm" style="width:100%;justify-content:center;">Book Now</a>
         </div>
       </article>
 
-      <article class="service-card">
-        <div style="height:175px;border-radius:12px;overflow:hidden;margin-bottom:1.25rem;">
-          <img src="https://images.pexels.com/photos/5657481/pexels-photo-5657481.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" alt="Box Braids" style="width:100%;height:100%;object-fit:cover;">
+      <article style="background:#fff;border:1.5px solid var(--gyc-green-100);border-radius:var(--gyc-radius-lg);overflow:hidden;display:flex;flex-direction:column;">
+        <div style="height:190px;overflow:hidden;flex-shrink:0;">
+          <img src="https://images.pexels.com/photos/34191088/pexels-photo-34191088.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" alt="Kids' Hair" loading="lazy" style="width:100%;height:100%;object-fit:cover;">
         </div>
-        <h3 class="service-card-title">Box Braids</h3>
-        <p class="service-card-desc">The timeless classic. Clean, even box sections from micro to jumbo. Worn straight, in a bun, or half-up — endlessly versatile.</p>
-        <ul class="service-card-features">
-          <li><i data-lucide="check" style="width:14px;height:14px;color:#52B788;"></i> Micro, small, medium, jumbo</li>
-          <li><i data-lucide="check" style="width:14px;height:14px;color:#52B788;"></i> Lasts 6–8 weeks</li>
-          <li><i data-lucide="check" style="width:14px;height:14px;color:#52B788;"></i> Any length available</li>
-        </ul>
-        <div class="service-card-footer">
-          <span class="service-card-price">from <strong>₦12,000</strong></span>
-          <a href="<?= SITE_URL ?>/book-appointment.php?service=box-braids" class="btn btn-gold btn-sm">Book Now</a>
+        <div style="padding:.75rem 1rem 1.1rem;flex:1;display:flex;flex-direction:column;">
+          <h3 style="font-family:'Playfair Display',serif;font-size:.95rem;font-weight:700;margin:0 0 .4rem;color:var(--gyc-dark);">Kids' Hair</h3>
+          <p style="font-size:.8rem;color:#666;line-height:1.5;margin:0 0 .85rem;flex:1;">Gentle, child-friendly styles. We take our time so every little one leaves happy and looking beautiful.</p>
+          <a href="<?= SITE_URL ?>/book-appointment.php?service=kids" class="btn btn-gold btn-sm" style="width:100%;justify-content:center;">Book Now</a>
         </div>
       </article>
 
-      <article class="service-card">
-        <div style="height:175px;border-radius:12px;overflow:hidden;margin-bottom:1.25rem;">
-          <img src="https://images.pexels.com/photos/34191088/pexels-photo-34191088.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" alt="Cornrows" style="width:100%;height:100%;object-fit:cover;">
+      <article style="background:#fff;border:1.5px solid var(--gyc-green-100);border-radius:var(--gyc-radius-lg);overflow:hidden;display:flex;flex-direction:column;">
+        <div style="height:190px;overflow:hidden;flex-shrink:0;">
+          <img src="https://images.pexels.com/photos/14792192/pexels-photo-14792192.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" alt="Natural Styles" loading="lazy" style="width:100%;height:100%;object-fit:cover;">
         </div>
-        <h3 class="service-card-title">Cornrows</h3>
-        <p class="service-card-desc">From simple feed-in lines to intricate geometric designs. Neat edges, cultural pride, and maximum protective power in one style.</p>
-        <ul class="service-card-features">
-          <li><i data-lucide="check" style="width:14px;height:14px;color:#52B788;"></i> Feed-in technique</li>
-          <li><i data-lucide="check" style="width:14px;height:14px;color:#52B788;"></i> Tribal & geometric patterns</li>
-          <li><i data-lucide="check" style="width:14px;height:14px;color:#52B788;"></i> Child-safe options available</li>
-        </ul>
-        <div class="service-card-footer">
-          <span class="service-card-price">from <strong>₦8,000</strong></span>
-          <a href="<?= SITE_URL ?>/book-appointment.php?service=cornrows" class="btn btn-gold btn-sm">Book Now</a>
+        <div style="padding:.75rem 1rem 1.1rem;flex:1;display:flex;flex-direction:column;">
+          <h3 style="font-family:'Playfair Display',serif;font-size:.95rem;font-weight:700;margin:0 0 .4rem;color:var(--gyc-dark);">Natural Styles</h3>
+          <p style="font-size:.8rem;color:#666;line-height:1.5;margin:0 0 .85rem;flex:1;">Bantu knots, afro puffs, flat twists &amp; wash-and-go styles that celebrate your natural texture.</p>
+          <a href="<?= SITE_URL ?>/book-appointment.php?service=natural" class="btn btn-gold btn-sm" style="width:100%;justify-content:center;">Book Now</a>
         </div>
       </article>
 
-      <article class="service-card">
-        <div style="height:175px;border-radius:12px;overflow:hidden;margin-bottom:1.25rem;">
-          <img src="https://images.pexels.com/photos/5722771/pexels-photo-5722771.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" alt="Senegalese Twists" style="width:100%;height:100%;object-fit:cover;">
+      <article style="background:#fff;border:1.5px solid var(--gyc-green-100);border-radius:var(--gyc-radius-lg);overflow:hidden;display:flex;flex-direction:column;">
+        <div style="height:190px;overflow:hidden;flex-shrink:0;">
+          <img src="https://images.pexels.com/photos/5722771/pexels-photo-5722771.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" alt="Scalp & Treatments" loading="lazy" style="width:100%;height:100%;object-fit:cover;">
         </div>
-        <h3 class="service-card-title">Senegalese Twists</h3>
-        <p class="service-card-desc">Smooth, sleek rope-like twists using premium Kanekalon hair. Lightweight, long-lasting, and absolutely stunning at every length.</p>
-        <ul class="service-card-features">
-          <li><i data-lucide="check" style="width:14px;height:14px;color:#52B788;"></i> Premium Kanekalon hair</li>
-          <li><i data-lucide="check" style="width:14px;height:14px;color:#52B788;"></i> Lasts 4–6 weeks</li>
-          <li><i data-lucide="check" style="width:14px;height:14px;color:#52B788;"></i> Waist length available</li>
-        </ul>
-        <div class="service-card-footer">
-          <span class="service-card-price">from <strong>₦15,000</strong></span>
-          <a href="<?= SITE_URL ?>/book-appointment.php?service=twists" class="btn btn-gold btn-sm">Book Now</a>
+        <div style="padding:.75rem 1rem 1.1rem;flex:1;display:flex;flex-direction:column;">
+          <h3 style="font-family:'Playfair Display',serif;font-size:.95rem;font-weight:700;margin:0 0 .4rem;color:var(--gyc-dark);">Scalp &amp; Treatments</h3>
+          <p style="font-size:.8rem;color:#666;line-height:1.5;margin:0 0 .85rem;flex:1;">Deep conditioning, scalp detox &amp; hair spa treatments to restore health and shine to your hair.</p>
+          <a href="<?= SITE_URL ?>/book-appointment.php?service=treatment" class="btn btn-gold btn-sm" style="width:100%;justify-content:center;">Book Now</a>
         </div>
       </article>
 
-      <article class="service-card">
-        <div style="height:175px;border-radius:12px;overflow:hidden;margin-bottom:1.25rem;">
-          <img src="https://images.pexels.com/photos/14792192/pexels-photo-14792192.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" alt="Natural Styles" style="width:100%;height:100%;object-fit:cover;">
-        </div>
-        <h3 class="service-card-title">Natural Styles</h3>
-        <p class="service-card-desc">Bantu knots, afro puffs, flat twists, and wash-and-go styles that celebrate your natural texture exactly as it grows.</p>
-        <ul class="service-card-features">
-          <li><i data-lucide="check" style="width:14px;height:14px;color:#52B788;"></i> Bantu knots & knot-outs</li>
-          <li><i data-lucide="check" style="width:14px;height:14px;color:#52B788;"></i> Deep conditioning included</li>
-          <li><i data-lucide="check" style="width:14px;height:14px;color:#52B788;"></i> All natural hair textures</li>
-        </ul>
-        <div class="service-card-footer">
-          <span class="service-card-price">from <strong>₦5,000</strong></span>
-          <a href="<?= SITE_URL ?>/book-appointment.php?service=natural" class="btn btn-gold btn-sm">Book Now</a>
-        </div>
-      </article>
-
-      <article class="service-card service-card--dark">
-        <div class="service-card-icon" style="background:rgba(255,255,255,0.15);">
-          <i data-lucide="scissors" style="width:28px;height:28px;color:#C9A84C;"></i>
-        </div>
-        <h3 class="service-card-title" style="color:#fff;">Not sure what to book?</h3>
-        <p class="service-card-desc" style="color:#B7E4C7;">Take our 4-step hair consultation quiz and we will recommend the perfect style for your hair type, lifestyle, and goals.</p>
-        <a href="<?= SITE_URL ?>/quiz.php" class="btn btn-gold btn-lg" style="margin-top:1rem;width:100%;justify-content:center;">
-          <i data-lucide="sparkles" style="width:18px;height:18px;"></i>
-          Take the Hair Quiz
-        </a>
-      </article>
-
-    </div><!-- .services-grid -->
+    </div>
   </div>
 </section>
 

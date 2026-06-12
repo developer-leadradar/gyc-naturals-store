@@ -28,12 +28,24 @@ $items = $db->fetchAll(
     $slugs
 );
 
+// Fallback images by style_type when image_url is empty
+$fallbacks = [
+    'braiding'  => 'https://images.pexels.com/photos/8514938/pexels-photo-8514938.jpeg?auto=compress&cs=tinysrgb&w=400&h=500&fit=crop',
+    'natural'   => 'https://images.pexels.com/photos/14792192/pexels-photo-14792192.jpeg?auto=compress&cs=tinysrgb&w=400&h=500&fit=crop',
+    'kids'      => 'https://images.pexels.com/photos/34191088/pexels-photo-34191088.jpeg?auto=compress&cs=tinysrgb&w=400&h=500&fit=crop',
+    'treatment' => 'https://images.pexels.com/photos/5722771/pexels-photo-5722771.jpeg?auto=compress&cs=tinysrgb&w=400&h=500&fit=crop',
+];
+$defaultFallback = 'https://images.pexels.com/photos/8514938/pexels-photo-8514938.jpeg?auto=compress&cs=tinysrgb&w=400&h=500&fit=crop';
+
 // Preserve requested order and add formatted price
 $ordered = [];
 foreach ($slugs as $slug) {
     foreach ($items as $item) {
         if ($item['slug'] === $slug) {
             $item['price_from_fmt'] = $item['price_from'] ? formatPrice($item['price_from']) : null;
+            if (empty($item['image_url'])) {
+                $item['image_url'] = $fallbacks[$item['style_type'] ?? ''] ?? $defaultFallback;
+            }
             $ordered[] = $item;
             break;
         }
