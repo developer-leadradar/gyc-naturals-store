@@ -193,32 +193,6 @@ require_once __DIR__ . '/includes/header.php';
       </div>
     </div>
 
-    <!-- Filter chips -->
-    <div class="filter-chips" role="tablist" aria-label="Filter styles by category">
-      <button class="chip chip--active" data-filter="all" role="tab" aria-selected="true" onclick="filterHomeStyles('all',this)">All Styles</button>
-      <?php foreach ($allGalCats as $cat): ?>
-      <button class="chip" data-filter="<?= htmlspecialchars($cat['slug']) ?>" role="tab" aria-selected="false" onclick="filterHomeStyles('<?= htmlspecialchars($cat['slug']) ?>',this)">
-        <?= htmlspecialchars($cat['name']) ?>
-      </button>
-      <?php endforeach; ?>
-    </div>
-    <script>
-    function filterHomeStyles(filter, btn) {
-      document.querySelectorAll('.filter-chips .chip').forEach(function(c) {
-        c.classList.remove('chip--active');
-        c.setAttribute('aria-selected','false');
-      });
-      btn.classList.add('chip--active');
-      btn.setAttribute('aria-selected','true');
-      document.querySelectorAll('#home-gallery-grid .gallery-card').forEach(function(card) {
-        if (filter === 'all' || card.dataset.category === filter || card.dataset.category === '') {
-          card.style.display = '';
-        } else {
-          card.style.display = 'none';
-        }
-      });
-    }
-    </script>
 
     <!-- Gallery grid -->
     <div class="gallery-masonry" id="home-gallery-grid" role="tabpanel">

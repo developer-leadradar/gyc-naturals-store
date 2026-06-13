@@ -11,7 +11,26 @@ if ($isEdit && !$img) {
     redirect(SITE_URL . '/admin/gallery.php');
     exit;
 }
-$galCats = $db->fetchAll("SELECT * FROM gallery_categories WHERE is_active=1 ORDER BY name");
+$galCats = $db->fetchAll("SELECT * FROM gallery_categories WHERE is_active=1 ORDER BY service_type ASC, display_order ASC, name ASC");
+
+// Service-type labels (shared with gallery.php and book-appointment.php)
+$svcLabels = [
+    'braiding'  => 'Braiding & Protective',
+    'kids'      => "Kids' Hair",
+    'natural'   => 'Natural Styles',
+    'treatment' => 'Scalp & Treatments',
+];
+
+// Determine current service from existing category (when editing) or default to braiding
+$currentSvc = 'braiding';
+if ($isEdit && !empty($img['category_id'])) {
+    foreach ($galCats as $gc) {
+        if ((int)$gc['id'] === (int)$img['category_id']) {
+            $currentSvc = $gc['service_type'] ?: 'braiding';
+            break;
+        }
+    }
+}
 $error   = '';
 
 function resizeToDataUrl($tmpFile, $mime, $maxDim = 800, $quality = 82) {
@@ -52,18 +71,15 @@ function resizeToDataUrl($tmpFile, $mime, $maxDim = 800, $quality = 82) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = [
-        'title'           => trim(sanitize($_POST['title']           ?? '')),
-        'slug'            => trim(sanitize($_POST['slug']            ?? '')),
-        'description'     => trim(sanitize($_POST['description']    ?? '')),
-        'category_id'     => (int)($_POST['category_id'] ?? 0) ?: null,
-        'hair_type'       => trim(sanitize($_POST['hair_type']      ?? '')),
-        'duration_hours'  => trim(sanitize($_POST['duration_hours'] ?? '')),
-        'price_from'      => $_POST['price_from'] ? (float)$_POST['price_from'] : null,
-        'tags'            => trim(sanitize($_POST['tags']           ?? '')),
-        'is_active'       => isset($_POST['is_active']) ? 1 : 0,
-        'is_featured'     => isset($_POST['is_featured']) ? 1 : 0,
-        'allow_moodboard' => isset($_POST['allow_moodboard']) ? 1 : 0,
-        'display_order'   => (int)($_POST['display_order'] ?? 99),
+        'title'          => trim(sanitize($_POST['title']           ?? '')),
+        'slug'           => trim(sanitize($_POST['slug']            ?? '')),
+        'description'    => trim(sanitize($_POST['description']    ?? '')),
+        'category_id'    => (int)($_POST['category_id'] ?? 0) ?: null,
+        'duration_hours' => $_POST['duration_hours'] !== '' ? (float)$_POST['duration_hours'] : null,
+        'price_from'     => $_POST['price_from'] !== '' ? (float)$_POST['price_from'] : null,
+        'is_active'      => isset($_POST['is_active']) ? 1 : 0,
+        'is_featured'    => isset($_POST['is_featured']) ? 1 : 0,
+        'display_order'  => (int)($_POST['display_order'] ?? 99),
     ];
     if (!$data['slug'] && $data['title']) {
         $data['slug'] = strtolower(preg_replace('/[^a-z0-9]+/i', '-', $data['title']));
@@ -90,19 +106,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     $data['image_url'] = $imageUrl;
 
-    // Handle before/after
-    $beforeUrl = $img['before_image'] ?? '';
-    $afterUrl  = $img['after_image']  ?? '';
+    // Handle before/after image
+    $beforeUrl = $img['before_image_url'] ?? '';
     if (!empty($_FILES['before_image']['name']) && $_FILES['before_image']['error'] === UPLOAD_ERR_OK) {
         $mime      = mime_content_type($_FILES['before_image']['tmp_name']) ?: 'image/jpeg';
         $beforeUrl = resizeToDataUrl($_FILES['before_image']['tmp_name'], $mime);
     } elseif (!empty($_POST['before_url'])) { $beforeUrl = trim($_POST['before_url']); }
-    if (!empty($_FILES['after_image']['name']) && $_FILES['after_image']['error'] === UPLOAD_ERR_OK) {
-        $mime     = mime_content_type($_FILES['after_image']['tmp_name']) ?: 'image/jpeg';
-        $afterUrl = resizeToDataUrl($_FILES['after_image']['tmp_name'], $mime);
-    } elseif (!empty($_POST['after_url'])) { $afterUrl = trim($_POST['after_url']); }
-    $data['before_image'] = $beforeUrl ?: null;
-    $data['after_image']  = $afterUrl  ?: null;
+    $data['before_image_url'] = $beforeUrl ?: null;
 
     if (!$data['title']) {
         $error = 'Title is required.';
@@ -149,29 +159,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
         <div class="form-group">
+          <label class="form-label">Service <span style="color:var(--gyc-terra);">*</span></label>
+          <select id="svc-select" class="form-control" required onchange="filterCategoriesBySvc(this.value)">
+            <?php foreach ($svcLabels as $svKey => $svLabel): ?>
+            <option value="<?= $svKey ?>" <?= $currentSvc === $svKey ? 'selected' : '' ?>><?= htmlspecialchars($svLabel) ?></option>
+            <?php endforeach; ?>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Category <span style="color:var(--gyc-terra);">*</span></label>
+          <select name="category_id" id="cat-select" class="form-control" required>
+            <option value="">— Pick a category —</option>
+            <?php foreach ($galCats as $gc): ?>
+            <option value="<?= $gc['id'] ?>" data-svc="<?= htmlspecialchars($gc['service_type'] ?? '') ?>"
+                    <?= ($img['category_id'] ?? 0) == $gc['id'] ? 'selected' : '' ?>>
+              <?= htmlspecialchars($gc['name']) ?>
+            </option>
+            <?php endforeach; ?>
+          </select>
+        </div>
+        <div class="form-group">
           <label class="form-label">Slug</label>
           <input type="text" name="slug" id="gal-slug" class="form-control"
                  value="<?= htmlspecialchars($img['slug'] ?? '') ?>"
                  oninput="this.dataset.manual='true'">
         </div>
         <div class="form-group">
-          <label class="form-label">Category</label>
-          <select name="category_id" class="form-control">
-            <option value="">— Uncategorised —</option>
-            <?php foreach ($galCats as $gc): ?>
-            <option value="<?= $gc['id'] ?>" <?= ($img['category_id'] ?? 0) == $gc['id'] ? 'selected' : '' ?>><?= htmlspecialchars($gc['name']) ?></option>
-            <?php endforeach; ?>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Hair Type</label>
-          <input type="text" name="hair_type" class="form-control"
-                 value="<?= htmlspecialchars($img['hair_type'] ?? '') ?>" placeholder="e.g. 4C Natural">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Duration</label>
-          <input type="text" name="duration_hours" class="form-control"
-                 value="<?= htmlspecialchars($img['duration_hours'] ?? '') ?>" placeholder="e.g. 5–7 hours">
+          <label class="form-label">Duration (hours)</label>
+          <input type="number" step="0.5" min="0" name="duration_hours" class="form-control"
+                 value="<?= htmlspecialchars($img['duration_hours'] ?? '') ?>" placeholder="e.g. 5">
         </div>
         <div class="form-group">
           <label class="form-label">Price From (₦)</label>
@@ -188,35 +204,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <label class="form-label">Description</label>
         <textarea name="description" class="form-control" rows="3" placeholder="Style description…"><?= htmlspecialchars($img['description'] ?? '') ?></textarea>
       </div>
-      <div class="form-group">
-        <label class="form-label">Tags <span style="font-size:.72rem;color:#9CA3AF;">(comma-separated)</span></label>
-        <input type="text" name="tags" class="form-control"
-               value="<?= htmlspecialchars($img['tags'] ?? '') ?>"
-               placeholder="box braids, knotless, medium, brown">
-      </div>
     </div>
+    <script>
+    function filterCategoriesBySvc(svc) {
+      var sel = document.getElementById('cat-select');
+      var picked = sel.value;
+      var keep = false;
+      Array.from(sel.options).forEach(function(opt) {
+        if (!opt.value) { opt.hidden = false; return; }
+        var match = opt.getAttribute('data-svc') === svc;
+        opt.hidden = !match;
+        if (opt.value === picked && match) keep = true;
+      });
+      if (!keep) sel.value = '';
+    }
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      filterCategoriesBySvc(document.getElementById('svc-select').value);
+    });
+    </script>
 
-    <!-- Before/After -->
+    <!-- Before image -->
     <div style="background:#fff;border:1.5px solid #E5E7EB;border-radius:12px;padding:1.5rem;">
-      <h2 style="font-size:.92rem;font-weight:700;margin-bottom:1.25rem;">Before / After Images (optional)</h2>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
-        <div>
-          <label class="form-label">Before Image</label>
-          <?php $beforeIsData = strpos($img['before_image'] ?? '', 'data:') === 0; ?>
-          <?php if (!empty($img['before_image'])): ?><img src="<?= htmlspecialchars($img['before_image']) ?>" style="width:100%;height:120px;object-fit:cover;border-radius:8px;margin-bottom:.5rem;"><?php endif; ?>
-          <input type="file" name="before_image" id="before-file-input" class="form-control" accept="image/*">
-          <div id="before-resize-status" style="font-size:.72rem;color:#6B7280;margin-top:.3rem;display:none;"></div>
-          <input type="url" name="before_url" class="form-control" style="margin-top:.5rem;" placeholder="Or paste URL…" value="<?= $beforeIsData ? '' : htmlspecialchars($img['before_image'] ?? '') ?>">
-        </div>
-        <div>
-          <label class="form-label">After Image</label>
-          <?php $afterIsData = strpos($img['after_image'] ?? '', 'data:') === 0; ?>
-          <?php if (!empty($img['after_image'])): ?><img src="<?= htmlspecialchars($img['after_image']) ?>" style="width:100%;height:120px;object-fit:cover;border-radius:8px;margin-bottom:.5rem;"><?php endif; ?>
-          <input type="file" name="after_image" id="after-file-input" class="form-control" accept="image/*">
-          <div id="after-resize-status" style="font-size:.72rem;color:#6B7280;margin-top:.3rem;display:none;"></div>
-          <input type="url" name="after_url" class="form-control" style="margin-top:.5rem;" placeholder="Or paste URL…" value="<?= $afterIsData ? '' : htmlspecialchars($img['after_image'] ?? '') ?>">
-        </div>
-      </div>
+      <h2 style="font-size:.92rem;font-weight:700;margin-bottom:1.25rem;">"Before" Image (optional)</h2>
+      <?php $beforeIsData = strpos($img['before_image_url'] ?? '', 'data:') === 0; ?>
+      <?php if (!empty($img['before_image_url'])): ?>
+      <img src="<?= htmlspecialchars($img['before_image_url']) ?>" style="width:100%;max-width:220px;aspect-ratio:1;object-fit:cover;border-radius:8px;margin-bottom:.5rem;display:block;">
+      <?php endif; ?>
+      <input type="file" name="before_image" id="before-file-input" class="form-control" accept="image/*">
+      <div id="before-resize-status" style="font-size:.72rem;color:#6B7280;margin-top:.3rem;display:none;"></div>
+      <input type="url" name="before_url" class="form-control" style="margin-top:.5rem;" placeholder="Or paste URL…" value="<?= $beforeIsData ? '' : htmlspecialchars($img['before_image_url'] ?? '') ?>">
     </div>
   </div>
 
@@ -230,9 +247,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       </label>
       <label style="display:flex;align-items:center;gap:.5rem;font-size:.84rem;cursor:pointer;margin-bottom:.6rem;">
         <input type="checkbox" name="is_featured" <?= ($img['is_featured'] ?? 0) ? 'checked' : '' ?>> Featured (homepage)
-      </label>
-      <label style="display:flex;align-items:center;gap:.5rem;font-size:.84rem;cursor:pointer;">
-        <input type="checkbox" name="allow_moodboard" <?= ($img['allow_moodboard'] ?? 1) ? 'checked' : '' ?>> Allow in moodboard
       </label>
       <hr style="margin:1.25rem 0;border-color:#E5E7EB;">
       <button type="submit" class="btn btn-green w-full"><?= $isEdit ? 'Save Changes' : 'Add to Gallery' ?></button>
@@ -307,7 +321,6 @@ function attachResizer(inputId, statusId, maxDim, quality) {
 }
 attachResizer('image-file-input', 'image-resize-status', 1200, 0.82);
 attachResizer('before-file-input', 'before-resize-status', 900, 0.8);
-attachResizer('after-file-input',  'after-resize-status',  900, 0.8);
 </script>
 
 <?php require_once __DIR__ . '/includes/footer.php'; ?>

@@ -8,7 +8,14 @@ $pageTitle       = 'Style Gallery — Browse Hair Styles | GYC Naturals Calabar'
 $pageDescription = 'Browse our full gallery of box braids, knotless braids, cornrows, Senegalese twists, weaves and natural hair styles. Book your favourite style online.';
 $pageKeywords    = 'box braids gallery Calabar, knotless braids styles, cornrow designs Nigeria, GYC Naturals gallery';
 
-$categories     = getAllGalleryCategories(true);
+// Gallery page only shows actual hair styles — exclude Scalp & Treatments (not styles)
+$galleryServices = ['braiding', 'kids', 'natural'];
+$categories      = array_filter(
+    getAllGalleryCategories(true),
+    function($c) use ($galleryServices) {
+        return in_array($c['service_type'] ?? '', $galleryServices, true);
+    }
+);
 $activeCategory = sanitize($_GET['category'] ?? 'all');
 $activeCatObj   = null;
 
@@ -19,7 +26,12 @@ if ($activeCategory !== 'all') {
 }
 
 $filters = [];
-if ($activeCatObj) $filters['category_slug'] = $activeCategory;
+if ($activeCatObj) {
+    $filters['category_slug'] = $activeCategory;
+} else {
+    // "All Styles" view — still need to keep treatment images out
+    $filters['service_types_in'] = $galleryServices;
+}
 
 $perPage = 12;
 $page    = max(1, (int)($_GET['page'] ?? 1));

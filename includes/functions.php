@@ -190,6 +190,11 @@ function getGalleryImages($filters = [], $limit = null, $offset = 0) {
         $sql .= " AND gc.service_type = ?";
         $params[] = $filters['service_type'];
     }
+    if (!empty($filters['service_types_in']) && is_array($filters['service_types_in'])) {
+        $in   = implode(',', array_fill(0, count($filters['service_types_in']), '?'));
+        $sql .= " AND gc.service_type IN ($in)";
+        foreach ($filters['service_types_in'] as $st) { $params[] = $st; }
+    }
     if (!empty($filters['featured'])) {
         $sql .= " AND gi.is_featured = 1";
     }
@@ -250,6 +255,15 @@ function countGalleryImages($filters = []) {
     if (!empty($filters['style_type'])) {
         $sql .= " AND gi.style_type = ?";
         $params[] = $filters['style_type'];
+    }
+    if (!empty($filters['service_types_in']) && is_array($filters['service_types_in'])) {
+        $in   = implode(',', array_fill(0, count($filters['service_types_in']), '?'));
+        $sql .= " AND gc.service_type IN ($in)";
+        foreach ($filters['service_types_in'] as $st) { $params[] = $st; }
+    }
+    if (!empty($filters['service_type'])) {
+        $sql .= " AND gc.service_type = ?";
+        $params[] = $filters['service_type'];
     }
     $result = $db->fetchOne($sql, $params);
     return $result ? (int)$result['total'] : 0;
