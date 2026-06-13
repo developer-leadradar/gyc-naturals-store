@@ -938,9 +938,10 @@ blockquote.proverb-text {
 @media (max-width: 1023px) {
   .hero-inner { grid-template-columns: 1fr; }
   .hero-masonry { display: none; }
-  .hero-content { padding: 6rem 2rem 3rem; text-align: center; }
+  .hero-content { padding: 6rem 1.25rem 3rem; text-align: center; min-width: 0; }
   .hero-ctas { justify-content: center; }
-  .hero-stats { justify-content: center; }
+  .hero-stats { justify-content: center; flex-wrap: wrap; gap: 1rem; }
+  .hero-stat-divider { display: none; }
   .services-grid { grid-template-columns: repeat(2, 1fr); }
   .products-grid { grid-template-columns: repeat(2, 1fr); }
   .testimonials-grid { grid-template-columns: repeat(2, 1fr); }

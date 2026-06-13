@@ -40,6 +40,13 @@
    MOBILE  < 768px
 ═══════════════════════════════════════════════════ */
 @media (max-width: 767px) {
+  /* Prevent horizontal overflow on any mobile page */
+  html, body { overflow-x: hidden; }
+  img, video, iframe { max-width: 100%; height: auto; }
+  table { display: block; overflow-x: auto; }
+  /* Default grid items to min-width:0 so long content doesn't blow out tracks */
+  [class*="grid"] > *, .booking-stepper > * { min-width: 0; }
+
   .section    { padding: 2.5rem 0; }
   .section-lg { padding: 3rem 0; }
 
