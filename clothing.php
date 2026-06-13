@@ -20,7 +20,7 @@ require_once __DIR__ . '/includes/header.php';
 
 <!-- HERO -->
 <section style="position:relative;overflow:hidden;min-height:480px;display:flex;align-items:center;background:#1a1a2e;">
-  <div style="position:absolute;inset:0;background-image:url('https://images.pexels.com/photos/3762875/pexels-photo-3762875.jpeg?auto=compress&cs=tinysrgb&w=1400');background-size:cover;background-position:center top;opacity:.38;"></div>
+  <div style="position:absolute;inset:0;background-image:url('https://images.pexels.com/photos/2916450/pexels-photo-2916450.jpeg?auto=compress&cs=tinysrgb&w=1400');background-size:cover;background-position:center top;opacity:.45;"></div>
   <div style="position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,var(--gyc-gold),var(--gyc-terra),var(--gyc-green-600),var(--gyc-gold));"></div>
 
   <div class="container" style="position:relative;z-index:2;padding:5rem 0;">
@@ -92,9 +92,9 @@ require_once __DIR__ . '/includes/header.php';
         </div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-        <img src="https://images.pexels.com/photos/1036623/pexels-photo-1036623.jpeg?auto=compress&cs=tinysrgb&w=400"
+        <img src="https://images.pexels.com/photos/2916450/pexels-photo-2916450.jpeg?auto=compress&cs=tinysrgb&w=600"
              alt="Fashion boutique" style="width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:var(--gyc-radius-lg);" loading="lazy">
-        <img src="https://images.pexels.com/photos/2862259/pexels-photo-2862259.jpeg?auto=compress&cs=tinysrgb&w=400"
+        <img src="https://images.pexels.com/photos/2065200/pexels-photo-2065200.jpeg?auto=compress&cs=tinysrgb&w=600"
              alt="Fashion boutique" style="width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:var(--gyc-radius-lg);margin-top:1.5rem;" loading="lazy">
       </div>
     </div>
@@ -131,7 +131,7 @@ require_once __DIR__ . '/includes/header.php';
     <?php else: ?>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.5rem;">
       <?php foreach ($clothingItems as $item):
-        $img      = $item['image'] ?? 'https://images.pexels.com/photos/1036623/pexels-photo-1036623.jpeg?auto=compress&cs=tinysrgb&w=400';
+        $img      = $item['image'] ?? 'https://images.pexels.com/photos/2916450/pexels-photo-2916450.jpeg?auto=compress&cs=tinysrgb&w=400';
         $price    = formatPrice($item['price']);
         $oldPrice = (!empty($item['compare_at_price']) && $item['compare_at_price'] > $item['price']) ? formatPrice($item['compare_at_price']) : null;
         $inStock  = ($item['stock_quantity'] ?? 1) > 0;

@@ -70,14 +70,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Handle image upload or URL (resize + base64 data-URL — Vercel has no writable filesystem)
-    $imageUrl = $img['image_url'] ?? '';
+    $imageUrl    = $img['image_url'] ?? '';
+    $uploadErrs  = [
+        UPLOAD_ERR_INI_SIZE   => 'File exceeds PHP upload_max_filesize.',
+        UPLOAD_ERR_FORM_SIZE  => 'File exceeds form MAX_FILE_SIZE.',
+        UPLOAD_ERR_PARTIAL    => 'File was only partially uploaded.',
+        UPLOAD_ERR_NO_TMP_DIR => 'Server has no temp directory.',
+        UPLOAD_ERR_CANT_WRITE => 'Server could not write the upload.',
+        UPLOAD_ERR_EXTENSION  => 'A PHP extension stopped the upload.',
+    ];
     if (!empty($_FILES['image']['name']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
         $mime     = mime_content_type($_FILES['image']['tmp_name']) ?: 'image/jpeg';
         $imageUrl = resizeToDataUrl($_FILES['image']['tmp_name'], $mime);
+    } elseif (!empty($_FILES['image']['name']) && $_FILES['image']['error'] !== UPLOAD_ERR_OK) {
+        $msg   = $uploadErrs[$_FILES['image']['error']] ?? ('Unknown error #' . $_FILES['image']['error']);
+        $error = 'Image upload failed: ' . $msg . ' Try a smaller file or use an image URL.';
     } elseif (!empty($_POST['image_url'])) {
         $imageUrl = trim($_POST['image_url']);
-    } elseif (!empty($_FILES['image']['name']) && $_FILES['image']['error'] !== UPLOAD_ERR_OK) {
-        $error = 'Image upload failed (error code: ' . $_FILES['image']['error'] . '). Try a smaller file or use an image URL.';
     }
     $data['image_url'] = $imageUrl;
 
@@ -193,15 +202,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
         <div>
           <label class="form-label">Before Image</label>
+          <?php $beforeIsData = strpos($img['before_image'] ?? '', 'data:') === 0; ?>
           <?php if (!empty($img['before_image'])): ?><img src="<?= htmlspecialchars($img['before_image']) ?>" style="width:100%;height:120px;object-fit:cover;border-radius:8px;margin-bottom:.5rem;"><?php endif; ?>
-          <input type="file" name="before_image" class="form-control" accept="image/*">
-          <input type="url" name="before_url" class="form-control" style="margin-top:.5rem;" placeholder="Or paste URL…" value="<?= htmlspecialchars($img['before_image'] ?? '') ?>">
+          <input type="file" name="before_image" id="before-file-input" class="form-control" accept="image/*">
+          <div id="before-resize-status" style="font-size:.72rem;color:#6B7280;margin-top:.3rem;display:none;"></div>
+          <input type="url" name="before_url" class="form-control" style="margin-top:.5rem;" placeholder="Or paste URL…" value="<?= $beforeIsData ? '' : htmlspecialchars($img['before_image'] ?? '') ?>">
         </div>
         <div>
           <label class="form-label">After Image</label>
+          <?php $afterIsData = strpos($img['after_image'] ?? '', 'data:') === 0; ?>
           <?php if (!empty($img['after_image'])): ?><img src="<?= htmlspecialchars($img['after_image']) ?>" style="width:100%;height:120px;object-fit:cover;border-radius:8px;margin-bottom:.5rem;"><?php endif; ?>
-          <input type="file" name="after_image" class="form-control" accept="image/*">
-          <input type="url" name="after_url" class="form-control" style="margin-top:.5rem;" placeholder="Or paste URL…" value="<?= htmlspecialchars($img['after_image'] ?? '') ?>">
+          <input type="file" name="after_image" id="after-file-input" class="form-control" accept="image/*">
+          <div id="after-resize-status" style="font-size:.72rem;color:#6B7280;margin-top:.3rem;display:none;"></div>
+          <input type="url" name="after_url" class="form-control" style="margin-top:.5rem;" placeholder="Or paste URL…" value="<?= $afterIsData ? '' : htmlspecialchars($img['after_image'] ?? '') ?>">
         </div>
       </div>
     </div>
@@ -227,15 +240,74 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <!-- Main image -->
     <div style="background:#fff;border:1.5px solid #E5E7EB;border-radius:12px;padding:1.5rem;">
       <h2 style="font-size:.92rem;font-weight:700;margin-bottom:1.25rem;">Main Image <span style="color:var(--gyc-terra);">*</span></h2>
-      <?php if (!empty($img['image_url'])): ?>
-      <img src="<?= htmlspecialchars($img['image_url']) ?>" alt="" style="width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:8px;margin-bottom:.75rem;">
+      <?php
+      $existingImg     = $img['image_url'] ?? '';
+      $existingIsData  = strpos($existingImg, 'data:') === 0;
+      ?>
+      <?php if (!empty($existingImg)): ?>
+      <img src="<?= htmlspecialchars($existingImg) ?>" alt="" style="width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:8px;margin-bottom:.75rem;" id="current-image-preview">
       <?php endif; ?>
-      <input type="file" name="image" class="form-control" accept="image/*" style="margin-bottom:.5rem;">
-      <input type="url" name="image_url" class="form-control" placeholder="Or paste URL…" value="<?= htmlspecialchars($img['image_url'] ?? '') ?>">
+      <input type="file" name="image" id="image-file-input" class="form-control" accept="image/*" style="margin-bottom:.5rem;">
+      <div id="image-resize-status" style="font-size:.78rem;color:#6B7280;margin-bottom:.5rem;display:none;"></div>
+      <input type="url" name="image_url" class="form-control" placeholder="Or paste URL…"
+             value="<?= $existingIsData ? '' : htmlspecialchars($existingImg) ?>">
+      <p style="font-size:.72rem;color:#9CA3AF;margin-top:.4rem;">Large photos are auto-resized to 1200px in your browser before upload.</p>
     </div>
   </div>
 
 </div>
 </form>
+
+<script>
+// Client-side resize for image uploads — keeps payloads under Vercel's 4.5MB body limit.
+function attachResizer(inputId, statusId, maxDim, quality) {
+  var input = document.getElementById(inputId);
+  if (!input) return;
+  input.addEventListener('change', function() {
+    var file = input.files[0];
+    if (!file || !file.type.startsWith('image/')) return;
+    var status = document.getElementById(statusId);
+    if (status) { status.style.display = 'block'; status.textContent = 'Processing image…'; status.style.color = '#6B7280'; }
+    var reader = new FileReader();
+    reader.onload = function(ev) {
+      var img = new Image();
+      img.onload = function() {
+        var w = img.width, h = img.height;
+        var ratio = Math.min(maxDim / w, maxDim / h, 1);
+        w = Math.round(w * ratio); h = Math.round(h * ratio);
+        var canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        canvas.toBlob(function(blob) {
+          if (!blob) {
+            if (status) { status.textContent = 'Could not process image. Try a different file.'; status.style.color = '#DC2626'; }
+            return;
+          }
+          var resized = new File([blob], (file.name.replace(/\.[^.]+$/, '') || 'image') + '.jpg', { type: 'image/jpeg' });
+          var dt = new DataTransfer();
+          dt.items.add(resized);
+          input.files = dt.files;
+          if (status) {
+            var kb = Math.round(blob.size / 1024);
+            status.textContent = 'Ready (' + w + '×' + h + ', ' + kb + ' KB).';
+            status.style.color = '#16A34A';
+          }
+          // Live preview
+          var preview = document.getElementById(inputId.replace('-file-input','') + '-preview') || document.getElementById('current-image-preview');
+          if (preview) preview.src = URL.createObjectURL(blob);
+        }, 'image/jpeg', quality);
+      };
+      img.onerror = function() {
+        if (status) { status.textContent = 'Could not read image. Try a JPG or PNG.'; status.style.color = '#DC2626'; }
+      };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+attachResizer('image-file-input', 'image-resize-status', 1200, 0.82);
+attachResizer('before-file-input', 'before-resize-status', 900, 0.8);
+attachResizer('after-file-input',  'after-resize-status',  900, 0.8);
+</script>
 
 <?php require_once __DIR__ . '/includes/footer.php'; ?>

@@ -171,6 +171,14 @@ document.addEventListener('DOMContentLoaded', function () {
             + '</div>';
         }).join('');
         if (typeof lucide !== 'undefined') lucide.createIcons();
+        // Mark dynamically-inserted images as visible (lazy-load init in footer ran before these existed)
+        grid.querySelectorAll('img[loading="lazy"]').forEach(function(img) {
+          img.classList.add('instantly-visible');
+          img.addEventListener('error', function() {
+            img.src = fallbackImg;
+            img.classList.add('instantly-visible');
+          });
+        });
       })
       .catch(function () {
         // Fallback — show slugs without images

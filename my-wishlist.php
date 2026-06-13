@@ -44,8 +44,9 @@ require_once __DIR__ . '/includes/header.php';
               <button class="product-wishlist active"
                       data-product-id="<?= $prod['id'] ?>"
                       onclick="removeWishlist(<?= $prod['id'] ?>, this);"
-                      title="Remove from wishlist">
-                <i data-lucide="heart" style="width:16px;height:16px;fill:currentColor;"></i>
+                      title="Remove from wishlist"
+                      style="z-index:3;">
+                <i data-lucide="heart" style="width:16px;height:16px;"></i>
               </button>
             </div>
             <div class="product-card-body">

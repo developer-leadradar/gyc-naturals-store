@@ -11,9 +11,16 @@ $preService    = sanitize($_GET['service'] ?? '');
 $validServices = ['braiding', 'kids', 'natural', 'treatment'];
 $defaultSvc    = in_array($preService, $validServices) ? $preService : 'braiding';
 
-// All gallery images for style chooser
-$allStyles  = getGalleryImages([], 20);
-$categories = getAllGalleryCategories(true);
+// Gallery data grouped by service type for the booking style chooser
+$validBookSvcs = ['braiding','kids','natural','treatment'];
+$categoriesBySvc = [];
+$stylesBySvc     = [];
+foreach ($validBookSvcs as $sv) {
+    $categoriesBySvc[$sv] = getAllGalleryCategories(true, $sv);
+    $stylesBySvc[$sv]     = getGalleryImages(['service_type' => $sv], 80);
+}
+$categories = $categoriesBySvc[$defaultSvc] ?? [];
+$allStyles  = $stylesBySvc[$defaultSvc] ?? [];
 
 // Min date = tomorrow
 $minDate = date('Y-m-d', strtotime('+1 day'));
@@ -118,126 +125,75 @@ require_once __DIR__ . '/includes/header.php';
               var activeIcon = btn.querySelector('i') || btn.querySelector('svg');
               if (activeIcon) activeIcon.style.color = 'var(--gyc-green-700)';
               document.getElementById('booking-service-type').value = svc;
-              // Show gallery only for braiding; for others hide it and select "decide in person"
-              var gallerySection = document.getElementById('gallery-style-section');
-              var filterRow      = document.getElementById('gallery-filter-row');
-              if (svc === 'braiding') {
-                if (gallerySection) gallerySection.style.display = '';
-                if (filterRow)      filterRow.style.display = '';
-              } else {
-                if (gallerySection) gallerySection.style.display = 'none';
-                if (filterRow)      filterRow.style.display = 'none';
-                var decideRadio = document.getElementById('gir-0');
-                if (decideRadio) decideRadio.checked = true;
-                document.getElementById('booking-style-id').value = '0';
-              }
-              // Show sub-category chips for the selected service
-              showSubcats(svc);
+              // Swap the per-service gallery block (chips + style grid)
+              document.querySelectorAll('.svc-gallery-block').forEach(function(blk) {
+                blk.style.display = (blk.getAttribute('data-svc') === svc) ? 'block' : 'none';
+              });
+              // Clear current style selection — user must pick again per service
+              document.querySelectorAll('input[name="gallery_image_id"]').forEach(function(r) { r.checked = false; });
+              var firstRadio = document.querySelector('.svc-gallery-block[data-svc="' + svc + '"] input[name="gallery_image_id"][value="0"]');
+              if (firstRadio) firstRadio.checked = true;
+              var styleHidden = document.getElementById('booking-style-id');
+              if (styleHidden) styleHidden.value = '0';
             }
 
-            function showSubcats(svc) {
-              ['braiding','kids','natural','treatment'].forEach(function(s) {
-                var el = document.getElementById('subcats-' + s);
-                if (el) el.style.display = (s === svc && s !== 'braiding') ? 'block' : 'none';
-              });
-            }
-
-            function selectSubcat(text, chipBtn) {
-              chipBtn.closest('[id^="subcats-"]').querySelectorAll('.chip').forEach(function(c) {
-                c.classList.remove('chip--active');
-              });
+            function filterStylesIn(svc, slug, chipBtn) {
+              var block = document.getElementById('svc-gallery-' + svc);
+              if (!block) return;
+              block.querySelectorAll('.svc-filter-row .chip').forEach(function(c) { c.classList.remove('chip--active'); });
               chipBtn.classList.add('chip--active');
-              var notesEl = document.querySelector('textarea[name="notes"]');
-              if (notesEl) notesEl.value = text;
+              block.querySelectorAll('.style-selector-item').forEach(function(item) {
+                if (item.classList.contains('style-selector-item--decide')) return;
+                var match = (slug === 'all') || (item.getAttribute('data-cat-slug') === slug);
+                item.style.display = match ? '' : 'none';
+              });
             }
             </script>
-            <?php if ($defaultSvc !== 'braiding'): ?>
-            <script>
-            document.addEventListener('DOMContentLoaded', function() {
-              var gallerySection = document.getElementById('gallery-style-section');
-              var filterRow      = document.getElementById('gallery-filter-row');
-              if (gallerySection) gallerySection.style.display = 'none';
-              if (filterRow)      filterRow.style.display = 'none';
-              var decideRadio = document.getElementById('gir-0');
-              if (decideRadio) decideRadio.checked = true;
-              document.getElementById('booking-style-id').value = '0';
-            });
-            </script>
-            <?php endif; ?>
+            <!-- Per-service gallery (filter chips + style grid) — one block per service type, JS toggles visibility -->
+            <?php foreach ($validBookSvcs as $svKey):
+              $svCats   = $categoriesBySvc[$svKey] ?? [];
+              $svStyles = $stylesBySvc[$svKey]     ?? [];
+              $isActive = ($svKey === $defaultSvc);
+            ?>
+            <div class="svc-gallery-block" data-svc="<?= $svKey ?>" id="svc-gallery-<?= $svKey ?>" style="display:<?= $isActive ? 'block' : 'none' ?>;">
 
-            <!-- Sub-category chips per service type -->
-            <div style="margin-bottom:1.25rem;">
-              <!-- Kids' Hair sub-categories -->
-              <div id="subcats-kids" style="display:<?= $defaultSvc==='kids' ? 'block' : 'none' ?>;">
-                <p style="font-size:.82rem;color:#555;font-weight:600;margin-bottom:.55rem;">What kind of style?</p>
-                <div style="display:flex;flex-wrap:wrap;gap:.45rem;">
-                  <button type="button" class="chip" onclick="selectSubcat('Cornrow style for kids', this)">Cornrows</button>
-                  <button type="button" class="chip" onclick="selectSubcat('Simple box braids for kids', this)">Box Braids</button>
-                  <button type="button" class="chip" onclick="selectSubcat('Beads and accessories styling for kids', this)">Beads &amp; Accessories</button>
-                  <button type="button" class="chip" onclick="selectSubcat('Two strand twists for kids', this)">Two Strand Twists</button>
-                  <button type="button" class="chip" onclick="selectSubcat('Natural styling for kids', this)">Natural Style</button>
-                  <button type="button" class="chip" onclick="selectSubcat('Ponytail styling for kids', this)">Ponytail</button>
-                </div>
+              <?php if (!empty($svCats)): ?>
+              <div class="svc-filter-row" style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1.25rem;overflow-x:auto;">
+                <button type="button" class="chip chip--active" onclick="filterStylesIn('<?= $svKey ?>','all',this)">All</button>
+                <?php foreach ($svCats as $cat): ?>
+                <button type="button" class="chip" onclick="filterStylesIn('<?= $svKey ?>','<?= htmlspecialchars($cat['slug']) ?>',this)">
+                  <?= htmlspecialchars($cat['name']) ?>
+                </button>
+                <?php endforeach; ?>
               </div>
-              <!-- Natural Styles sub-categories -->
-              <div id="subcats-natural" style="display:<?= $defaultSvc==='natural' ? 'block' : 'none' ?>;">
-                <p style="font-size:.82rem;color:#555;font-weight:600;margin-bottom:.55rem;">What natural style?</p>
-                <div style="display:flex;flex-wrap:wrap;gap:.45rem;">
-                  <button type="button" class="chip" onclick="selectSubcat('Bantu knots styling', this)">Bantu Knots</button>
-                  <button type="button" class="chip" onclick="selectSubcat('Afro puffs styling', this)">Afro Puffs</button>
-                  <button type="button" class="chip" onclick="selectSubcat('Flat twists styling', this)">Flat Twists</button>
-                  <button type="button" class="chip" onclick="selectSubcat('Wash and go styling', this)">Wash &amp; Go</button>
-                  <button type="button" class="chip" onclick="selectSubcat('Twist out styling', this)">Twist Out</button>
-                  <button type="button" class="chip" onclick="selectSubcat('Braid out styling', this)">Braid Out</button>
-                </div>
-              </div>
-              <!-- Scalp & Treatments sub-categories -->
-              <div id="subcats-treatment" style="display:<?= $defaultSvc==='treatment' ? 'block' : 'none' ?>;">
-                <p style="font-size:.82rem;color:#555;font-weight:600;margin-bottom:.55rem;">What treatment?</p>
-                <div style="display:flex;flex-wrap:wrap;gap:.45rem;">
-                  <button type="button" class="chip" onclick="selectSubcat('Deep conditioning treatment', this)">Deep Conditioning</button>
-                  <button type="button" class="chip" onclick="selectSubcat('Scalp detox treatment', this)">Scalp Detox</button>
-                  <button type="button" class="chip" onclick="selectSubcat('Hot oil treatment', this)">Hot Oil Treatment</button>
-                  <button type="button" class="chip" onclick="selectSubcat('Full hair spa treatment', this)">Hair Spa</button>
-                  <button type="button" class="chip" onclick="selectSubcat('Protein treatment for damaged hair', this)">Protein Treatment</button>
-                </div>
-              </div>
-            </div>
+              <?php endif; ?>
 
-            <!-- Quick category filter -->
-            <div id="gallery-filter-row" style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1.25rem;overflow-x:auto;">
-              <button type="button" class="chip chip--active" onclick="filterBookingStyles('all',this)">All</button>
-              <?php foreach ($categories as $cat): ?>
-              <button type="button" class="chip" onclick="filterBookingStyles('<?= htmlspecialchars($cat['slug']) ?>',this)">
-                <?= htmlspecialchars($cat['name']) ?>
-              </button>
-              <?php endforeach; ?>
-            </div>
-            <div id="gallery-style-section">
-
-            <div class="style-selector-grid" id="style-selector-grid">
-              <!-- Decide in person option -->
-              <label class="style-selector-item style-selector-item--decide">
-                <input type="radio" name="gallery_image_id" id="gir-0" value="0" <?= !$preStyleId ? 'checked' : '' ?>>
-                <div class="style-selector-card" style="display:flex;align-items:center;justify-content:center;flex-direction:column;gap:0.5rem;background:var(--gyc-green-100);min-height:120px;">
-                  <i data-lucide="help-circle" style="width:28px;height:28px;color:var(--gyc-green-700);"></i>
-                  <span style="font-size:0.85rem;font-weight:600;color:var(--gyc-green-700);text-align:center;">I'll decide in person</span>
-                </div>
-              </label>
-              <?php foreach ($allStyles as $style): ?>
-              <label class="style-selector-item" data-cat-slug="<?= htmlspecialchars($style['category_slug'] ?? '') ?>">
-                <input type="radio" name="gallery_image_id" value="<?= $style['id'] ?>" <?= $preStyleId == $style['id'] ? 'checked' : '' ?>>
-                <div class="style-selector-card">
-                  <img src="<?= htmlspecialchars($style['image_url']) ?>" alt="<?= htmlspecialchars($style['title']) ?>" loading="lazy" style="width:100%;height:110px;object-fit:cover;border-radius:8px 8px 0 0;">
-                  <div style="padding:0.5rem;font-size:0.75rem;font-weight:600;text-align:center;line-height:1.3;">
-                    <?= htmlspecialchars($style['title']) ?>
-                    <?php if ($style['price_from']): ?><br><span style="color:var(--gyc-green-600);font-size:0.7rem;">from <?= formatPrice($style['price_from']) ?></span><?php endif; ?>
+              <div class="style-selector-grid">
+                <label class="style-selector-item style-selector-item--decide">
+                  <input type="radio" name="gallery_image_id" value="0" <?= ($isActive && !$preStyleId) ? 'checked' : '' ?>>
+                  <div class="style-selector-card" style="display:flex;align-items:center;justify-content:center;flex-direction:column;gap:0.5rem;background:var(--gyc-green-100);min-height:120px;">
+                    <i data-lucide="help-circle" style="width:28px;height:28px;color:var(--gyc-green-700);"></i>
+                    <span style="font-size:0.85rem;font-weight:600;color:var(--gyc-green-700);text-align:center;">I'll decide in person</span>
                   </div>
-                </div>
-              </label>
-              <?php endforeach; ?>
+                </label>
+                <?php foreach ($svStyles as $style): ?>
+                <label class="style-selector-item" data-cat-slug="<?= htmlspecialchars($style['category_slug'] ?? '') ?>">
+                  <input type="radio" name="gallery_image_id" value="<?= $style['id'] ?>" <?= $preStyleId == $style['id'] ? 'checked' : '' ?>>
+                  <div class="style-selector-card">
+                    <img src="<?= htmlspecialchars($style['image_url']) ?>" alt="<?= htmlspecialchars($style['title']) ?>" loading="lazy" style="width:100%;height:110px;object-fit:cover;border-radius:8px 8px 0 0;">
+                    <div style="padding:0.5rem;font-size:0.75rem;font-weight:600;text-align:center;line-height:1.3;">
+                      <?= htmlspecialchars($style['title']) ?>
+                      <?php if ($style['price_from']): ?><br><span style="color:var(--gyc-green-600);font-size:0.7rem;">from <?= formatPrice($style['price_from']) ?></span><?php endif; ?>
+                    </div>
+                  </div>
+                </label>
+                <?php endforeach; ?>
+                <?php if (empty($svStyles)): ?>
+                <p style="grid-column:1/-1;text-align:center;color:#888;font-size:.85rem;padding:1rem;">No styles yet for this service. Pick "I'll decide in person".</p>
+                <?php endif; ?>
+              </div>
             </div>
-            </div><!-- /gallery-style-section -->
+            <?php endforeach; ?>
 
             <div style="margin-top:1.5rem;">
               <button type="button" class="btn btn-green btn-lg" data-booking-next style="width:100%;justify-content:center;">

@@ -22,52 +22,100 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $db->update('gallery_images', ['is_featured' => $cur ? 0 : 1], 'id=?', [$id]);
         $_SESSION['flash'] = ['type' => 'success', 'message' => 'Featured status updated.'];
     }
-    redirect(SITE_URL . '/admin/gallery.php');
+    $back = '/admin/gallery.php';
+    if (!empty($_POST['service']) && in_array($_POST['service'], ['braiding','kids','natural','treatment'], true)) {
+        $back .= '?service=' . $_POST['service'];
+    }
+    redirect(SITE_URL . $back);
     exit;
 }
 
 // ── Filters ──
-$search    = sanitize($_GET['q']        ?? '');
-$catFilter = sanitize($_GET['category'] ?? '');
-$limit     = 24;
-$page      = max(1, (int)($_GET['page'] ?? 1));
-$offset    = ($page - 1) * $limit;
+$search       = sanitize($_GET['q']        ?? '');
+$catFilter    = sanitize($_GET['category'] ?? '');
+$svcFilter    = sanitize($_GET['service']  ?? 'braiding');
+$validSvcs    = ['braiding','kids','natural','treatment'];
+if (!in_array($svcFilter, $validSvcs, true)) $svcFilter = 'braiding';
+$svcLabels    = [
+    'braiding'  => 'Braiding & Protective',
+    'kids'      => "Kids' Hair",
+    'natural'   => 'Natural Styles',
+    'treatment' => 'Scalp & Treatments',
+];
+$limit        = 48;
+$page         = max(1, (int)($_GET['page'] ?? 1));
+$offset       = ($page - 1) * $limit;
 
-$sql    = "SELECT gi.*, gc.name as category_name
+$sql    = "SELECT gi.*, gc.name as category_name, gc.service_type
            FROM gallery_images gi
            LEFT JOIN gallery_categories gc ON gi.category_id = gc.id
-           WHERE 1=1";
-$params = [];
-if ($search)    { $sql .= " AND (gi.title LIKE ? OR gi.tags LIKE ?)"; $params[] = "%$search%"; $params[] = "%$search%"; }
+           WHERE 1=1 AND gc.service_type = ?";
+$params = [$svcFilter];
+if ($search)    { $sql .= " AND gi.title ILIKE ?"; $params[] = "%$search%"; }
 if ($catFilter) { $sql .= " AND gi.category_id = ?"; $params[] = (int)$catFilter; }
 
-$total      = (int)($db->fetchOne(str_replace("SELECT gi.*, gc.name as category_name", "SELECT COUNT(*) AS total", $sql), $params)['total'] ?? 0);
-$sql       .= " ORDER BY gi.created_at DESC LIMIT ? OFFSET ?";
+$total      = (int)($db->fetchOne(str_replace("SELECT gi.*, gc.name as category_name, gc.service_type", "SELECT COUNT(*) AS total", $sql), $params)['total'] ?? 0);
+$sql       .= " ORDER BY gc.display_order ASC, gi.display_order ASC, gi.created_at DESC LIMIT ? OFFSET ?";
 $params[]   = $limit; $params[] = $offset;
 $images     = $db->fetchAll($sql, $params);
 $totalPages = (int)ceil($total / $limit);
-$galCats    = $db->fetchAll("SELECT * FROM gallery_categories ORDER BY name");
+
+// Categories filtered by selected service (for the dropdown)
+$svcCats = $db->fetchAll("SELECT * FROM gallery_categories WHERE service_type = ? ORDER BY display_order ASC", [$svcFilter]);
+
+// Counts per service type for tab badges
+$svcCounts = [];
+foreach ($validSvcs as $s) {
+    $svcCounts[$s] = (int)($db->fetchOne(
+        "SELECT COUNT(*) AS c FROM gallery_images gi LEFT JOIN gallery_categories gc ON gi.category_id = gc.id WHERE gc.service_type = ?",
+        [$s]
+    )['c'] ?? 0);
+}
 ?>
 
 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:.75rem;">
-  <span style="font-size:.85rem;color:#9CA3AF;"><?= $total ?> image<?= $total !== 1 ? 's' : '' ?></span>
+  <div>
+    <h1 style="font-size:1.1rem;font-weight:700;margin:0 0 .25rem;color:#111;">Gallery — <?= htmlspecialchars($svcLabels[$svcFilter]) ?></h1>
+    <span style="font-size:.85rem;color:#9CA3AF;"><?= $total ?> style<?= $total !== 1 ? 's' : '' ?> in this service</span>
+  </div>
   <a href="<?= SITE_URL ?>/admin/add-gallery.php" class="btn btn-green btn-sm">
     <i data-lucide="plus" style="width:15px;height:15px;"></i> Add Style Image
   </a>
 </div>
 
-<!-- Filters -->
+<!-- Service-type tabs -->
+<div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.25rem;border-bottom:1.5px solid #E5E7EB;padding-bottom:0;">
+  <?php foreach ($validSvcs as $s):
+    $active = $s === $svcFilter;
+  ?>
+  <a href="?service=<?= $s ?>"
+     style="padding:.6rem 1rem;font-size:.84rem;font-weight:600;color:<?= $active ? 'var(--gyc-green-700)' : '#6B7280' ?>;text-decoration:none;border-bottom:2.5px solid <?= $active ? 'var(--gyc-green-700)' : 'transparent' ?>;margin-bottom:-1.5px;display:flex;align-items:center;gap:.4rem;">
+    <?= htmlspecialchars($svcLabels[$s]) ?>
+    <span style="background:<?= $active ? 'var(--gyc-green-100)' : '#F3F4F6' ?>;color:<?= $active ? 'var(--gyc-green-700)' : '#9CA3AF' ?>;padding:.05rem .45rem;border-radius:99px;font-size:.7rem;"><?= $svcCounts[$s] ?></span>
+  </a>
+  <?php endforeach; ?>
+</div>
+
+<!-- Sub-category overview (clickable filter) -->
+<div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1.25rem;">
+  <a href="?service=<?= $svcFilter ?>"
+     style="padding:.3rem .7rem;font-size:.75rem;font-weight:600;border-radius:99px;text-decoration:none;background:<?= !$catFilter ? 'var(--gyc-green-700)' : '#F3F4F6' ?>;color:<?= !$catFilter ? '#fff' : '#374151' ?>;">All</a>
+  <?php foreach ($svcCats as $sc): ?>
+  <a href="?service=<?= $svcFilter ?>&category=<?= $sc['id'] ?>"
+     style="padding:.3rem .7rem;font-size:.75rem;font-weight:600;border-radius:99px;text-decoration:none;background:<?= $catFilter == $sc['id'] ? 'var(--gyc-green-700)' : '#F3F4F6' ?>;color:<?= $catFilter == $sc['id'] ? '#fff' : '#374151' ?>;">
+    <?= htmlspecialchars($sc['name']) ?>
+  </a>
+  <?php endforeach; ?>
+</div>
+
+<!-- Search -->
 <form method="GET" style="display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:1.5rem;">
-  <input type="text" name="q" class="form-control" placeholder="Search title or tags…" value="<?= htmlspecialchars($search) ?>" style="height:34px;padding:.35rem .7rem;width:200px;">
-  <select name="category" class="form-control" style="height:34px;padding:.35rem .7rem;">
-    <option value="">All Categories</option>
-    <?php foreach ($galCats as $gc): ?>
-    <option value="<?= $gc['id'] ?>" <?= $catFilter == $gc['id'] ? 'selected' : '' ?>><?= htmlspecialchars($gc['name']) ?></option>
-    <?php endforeach; ?>
-  </select>
-  <button type="submit" class="btn btn-outline-green btn-sm" style="height:34px;">Filter</button>
+  <input type="hidden" name="service" value="<?= htmlspecialchars($svcFilter) ?>">
+  <?php if ($catFilter): ?><input type="hidden" name="category" value="<?= (int)$catFilter ?>"><?php endif; ?>
+  <input type="text" name="q" class="form-control" placeholder="Search title…" value="<?= htmlspecialchars($search) ?>" style="height:34px;padding:.35rem .7rem;width:200px;">
+  <button type="submit" class="btn btn-outline-green btn-sm" style="height:34px;">Search</button>
   <?php if ($search || $catFilter): ?>
-  <a href="<?= SITE_URL ?>/admin/gallery.php" class="btn btn-sm" style="height:34px;background:#F3F4F6;color:#374151;">Clear</a>
+  <a href="?service=<?= $svcFilter ?>" class="btn btn-sm" style="height:34px;background:#F3F4F6;color:#374151;">Clear</a>
   <?php endif; ?>
 </form>
 
@@ -108,7 +156,7 @@ $galCats    = $db->fetchAll("SELECT * FROM gallery_categories ORDER BY name");
       <div style="display:flex;gap:.35rem;flex-wrap:wrap;">
         <a href="<?= SITE_URL ?>/admin/add-gallery.php?id=<?= $img['id'] ?>"
            style="flex:1;padding:.3rem;border-radius:6px;background:#EFF6FF;color:#3B82F6;font-size:.72rem;text-align:center;text-decoration:none;">Edit</a>
-        <form method="POST" style="display:contents;">
+        <form method="POST" style="display:contents;"><input type="hidden" name="service" value="<?= htmlspecialchars($svcFilter) ?>">
           <input type="hidden" name="action" value="toggle">
           <input type="hidden" name="id" value="<?= $img['id'] ?>">
           <button type="submit" style="flex:1;padding:.3rem;border-radius:6px;background:<?= $img['is_active'] ? '#ECFDF5' : '#F9FAFB' ?>;color:<?= $img['is_active'] ? '#065F46' : '#9CA3AF' ?>;font-size:.72rem;border:none;cursor:pointer;">
@@ -116,6 +164,7 @@ $galCats    = $db->fetchAll("SELECT * FROM gallery_categories ORDER BY name");
           </button>
         </form>
         <form method="POST" onsubmit="return confirm('Delete this image?');" style="display:contents;">
+          <input type="hidden" name="service" value="<?= htmlspecialchars($svcFilter) ?>">
           <input type="hidden" name="action" value="delete">
           <input type="hidden" name="id" value="<?= $img['id'] ?>">
           <button type="submit" style="padding:.3rem .45rem;border-radius:6px;background:#FEF2F2;color:#EF4444;font-size:.72rem;border:none;cursor:pointer;">✕</button>

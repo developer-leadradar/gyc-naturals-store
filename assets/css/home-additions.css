@@ -396,8 +396,10 @@ blockquote.proverb-text {
   transition: all var(--gyc-transition);
   color: #888;
 }
-.product-wishlist:hover,
+.product-wishlist:hover { color: #E53E3E; background: #fff; }
 .product-wishlist.active { color: #E53E3E; background: #fff; }
+.product-wishlist.active svg,
+.product-wishlist.active i { color: #E53E3E !important; fill: #E53E3E !important; }
 .product-card-body { padding: 1rem 1.1rem 1.1rem; }
 .product-tag {
   font-size: 0.7rem;
@@ -433,7 +435,9 @@ blockquote.proverb-text {
   justify-content: space-between;
   gap: 0.5rem;
   margin-top: 0.75rem;
+  flex-wrap: wrap;
 }
+.product-card-footer .btn { flex-shrink: 0; }
 .product-price {
   font-family: 'Playfair Display', serif;
   font-size: 1.1rem;

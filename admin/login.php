@@ -52,11 +52,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
 <div class="login-card">
   <!-- Logo -->
-  <div style="text-align:center;margin-bottom:2rem;">
-    <img src="<?= SITE_URL ?>/assets/images/gyc-logo-horizontal.svg" alt="GYC Naturals" style="height:44px;width:auto;"
+  <div style="text-align:center;margin-bottom:1.5rem;">
+    <img src="<?= SITE_URL ?>/assets/images/gyc-logo-horizontal.svg" alt="GYC Naturals" style="height:52px;width:auto;display:block;margin:0 auto;"
          onerror="this.style.display='none'">
-    <div style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--gyc-dark);margin-top:.5rem;">GYC Naturals</div>
-    <div style="font-size:.78rem;color:#9CA3AF;margin-top:.2rem;text-transform:uppercase;letter-spacing:.12em;">Admin Panel</div>
+    <div style="font-size:.72rem;color:#9CA3AF;margin-top:.6rem;text-transform:uppercase;letter-spacing:.12em;">Admin Panel</div>
   </div>
 
   <?php if ($error): ?>

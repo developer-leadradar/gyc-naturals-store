@@ -186,6 +186,10 @@ function getGalleryImages($filters = [], $limit = null, $offset = 0) {
         $sql .= " AND gi.style_type = ?";
         $params[] = $filters['style_type'];
     }
+    if (!empty($filters['service_type'])) {
+        $sql .= " AND gc.service_type = ?";
+        $params[] = $filters['service_type'];
+    }
     if (!empty($filters['featured'])) {
         $sql .= " AND gi.is_featured = 1";
     }
@@ -218,11 +222,19 @@ function getFeaturedGalleryImages($limit = 6) {
     return getGalleryImages(['featured' => true], $limit);
 }
 
-function getAllGalleryCategories($activeOnly = true) {
-    $db  = getDB();
-    $sql = "SELECT * FROM gallery_categories" . ($activeOnly ? " WHERE is_active = 1" : "");
-    $sql .= " ORDER BY display_order ASC";
-    return $db->fetchAll($sql);
+function getAllGalleryCategories($activeOnly = true, $serviceType = null) {
+    $db     = getDB();
+    $where  = [];
+    $params = [];
+    if ($activeOnly) { $where[] = "is_active = 1"; }
+    if ($serviceType !== null) {
+        $where[]  = "service_type = ?";
+        $params[] = $serviceType;
+    }
+    $sql = "SELECT * FROM gallery_categories";
+    if ($where) $sql .= " WHERE " . implode(' AND ', $where);
+    $sql .= " ORDER BY display_order ASC, name ASC";
+    return $db->fetchAll($sql, $params);
 }
 
 function countGalleryImages($filters = []) {
