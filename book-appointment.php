@@ -58,11 +58,9 @@ require_once __DIR__ . '/includes/header.php';
           $stepLabels = ['Choose Style', 'Pick Date & Time', 'Your Details'];
           foreach ($stepLabels as $si => $label):
           ?>
-          <div class="booking-step-item <?= $si === 0 ? 'active' : '' ?>" data-step="<?= $si ?>">
-            <div style="display:flex;align-items:center;gap:0.5rem;">
-              <span style="width:28px;height:28px;border-radius:50%;background:<?= $si === 0 ? 'var(--gyc-green-700)' : 'var(--gyc-green-100)' ?>;color:<?= $si === 0 ? '#fff' : 'var(--gyc-green-700)' ?>;font-size:0.8rem;font-weight:700;display:flex;align-items:center;justify-content:center;"><?= $si+1 ?></span>
-              <span style="font-size:0.82rem;font-weight:600;color:var(--gyc-dark);"><?= htmlspecialchars($label) ?></span>
-            </div>
+          <div class="booking-step-item<?= $si === 0 ? ' active' : '' ?>" data-step="<?= $si ?>">
+            <span class="booking-step-num"><?= $si+1 ?></span>
+            <span class="booking-step-label"><?= htmlspecialchars($label) ?></span>
           </div>
           <?php if ($si < 2): ?>
           <div class="booking-step-line" style="flex:1;height:1px;background:var(--gyc-green-100);margin:0 0.75rem;"></div>

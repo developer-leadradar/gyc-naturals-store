@@ -135,8 +135,21 @@ require_once __DIR__ . '/includes/header.php';
     <!-- Hero masonry gallery -->
     <div class="hero-masonry" aria-hidden="true">
       <?php
-      $heroImages = array_slice($featuredGallery ?: [], 0, 6);
-      $positions  = ['tall','wide','sq','tall','sq','wide'];
+      $heroImages   = array_slice($featuredGallery ?: [], 0, 6);
+      $positions    = ['tall','wide','sq','tall','sq','wide'];
+      // Pad missing slots with verified Pexels fallbacks so the 6-tile grid is always complete
+      $heroFallback = [
+        ['url' => 'https://images.pexels.com/photos/31473242/pexels-photo-31473242.jpeg?auto=compress&cs=tinysrgb&w=500', 'title' => 'Tribal braids'],
+        ['url' => 'https://images.pexels.com/photos/14883868/pexels-photo-14883868.jpeg?auto=compress&cs=tinysrgb&w=500', 'title' => 'Knotless braids'],
+        ['url' => 'https://images.pexels.com/photos/37115258/pexels-photo-37115258.jpeg?auto=compress&cs=tinysrgb&w=500', 'title' => 'Feed-in cornrows'],
+        ['url' => 'https://images.pexels.com/photos/17463802/pexels-photo-17463802.jpeg?auto=compress&cs=tinysrgb&w=500', 'title' => 'Butterfly locs'],
+        ['url' => 'https://images.pexels.com/photos/11268995/pexels-photo-11268995.jpeg?auto=compress&cs=tinysrgb&w=500', 'title' => 'Braids with beads'],
+        ['url' => 'https://images.pexels.com/photos/5706984/pexels-photo-5706984.jpeg?auto=compress&cs=tinysrgb&w=500', 'title' => 'Goddess braids'],
+      ];
+      while (count($heroImages) < 6) {
+          $fb               = $heroFallback[count($heroImages)];
+          $heroImages[]     = ['image_url' => $fb['url'], 'title' => $fb['title']];
+      }
       foreach ($heroImages as $i => $img):
           $pos = $positions[$i % count($positions)] ?? 'sq';
       ?>
@@ -144,19 +157,11 @@ require_once __DIR__ . '/includes/header.php';
         <img src="<?= htmlspecialchars($img['image_url']) ?>"
              alt="<?= htmlspecialchars($img['title']) ?>"
              loading="<?= $i < 2 ? 'eager' : 'lazy' ?>"
-             width="400" height="500">
+             width="400" height="500"
+             onerror="this.src='<?= htmlspecialchars($heroFallback[$i]['url']) ?>'">
         <div class="hero-tile-caption"><?= htmlspecialchars($img['title']) ?></div>
       </div>
       <?php endforeach; ?>
-      <?php
-      $heroFallback = [31473242,14883868,37115258,17463802,5722771,11268995];
-      if (empty($heroImages)):
-          foreach ($heroFallback as $idx => $pid): $pos = $positions[$idx % count($positions)]; ?>
-          <div class="hero-tile hero-tile--<?= $pos ?>">
-            <img src="https://images.pexels.com/photos/<?= $pid ?>/pexels-photo-<?= $pid ?>.jpeg?auto=compress&cs=tinysrgb&w=500"
-                 alt="African braided hair style" loading="lazy" width="400" height="500">
-          </div>
-          <?php endforeach; endif; ?>
     </div>
 
   </div><!-- .hero-inner -->
