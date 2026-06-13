@@ -85,15 +85,13 @@ $editCat = $editId ? $db->fetchOne("SELECT * FROM categories WHERE id=?", [$edit
               <a href="?edit=<?= $cat['id'] ?>" style="padding:.3rem .6rem;border-radius:6px;background:#EFF6FF;color:#3B82F6;font-size:.75rem;text-decoration:none;">
                 <i data-lucide="pencil" style="width:13px;height:13px;"></i>
               </a>
-              <?php if ($cat['product_count'] == 0): ?>
-              <form method="POST" onsubmit="return confirm('Delete this category?');" style="display:inline;">
+              <form method="POST" onsubmit="return confirm(<?= $cat['product_count'] > 0 ? "'This category has " . $cat['product_count'] . " product(s). They will become uncategorised. Delete anyway?'" : "'Delete this category?'" ?>);" style="display:inline;">
                 <input type="hidden" name="action" value="delete">
                 <input type="hidden" name="id" value="<?= $cat['id'] ?>">
                 <button type="submit" style="padding:.3rem .6rem;border-radius:6px;background:#FEF2F2;color:#EF4444;border:none;cursor:pointer;">
                   <i data-lucide="trash-2" style="width:13px;height:13px;"></i>
                 </button>
               </form>
-              <?php endif; ?>
             </div>
           </td>
         </tr>

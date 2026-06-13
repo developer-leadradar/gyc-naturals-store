@@ -222,7 +222,7 @@ require_once __DIR__ . '/includes/header.php';
           $nextSteps = [
             ['check-circle', 'var(--gyc-green-600)', 'Booking received', 'Your request is in our system with reference <strong>' . htmlspecialchars($aptNum) . '</strong>.'],
             ['phone', '#F59E0B', 'We contact you within 24 hours', 'Our team will call or WhatsApp you on <strong>' . htmlspecialchars($appointment['customer_phone']) . '</strong> to confirm the exact date and time.'],
-            ['credit-card', 'var(--gyc-gold-600)', $depositVerified ? 'Deposit received — slot secured' : 'Deposit secures your slot', $depositVerified ? 'Your ₦' . number_format($depositAmount) . ' deposit has been received. Your appointment is confirmed.' : 'A 30% deposit will be requested to lock in your time slot.'],
+            ['credit-card', 'var(--gyc-gold-500)', $depositVerified ? 'Deposit received — slot secured' : 'Deposit secures your slot', $depositVerified ? 'Your ₦' . number_format($depositAmount) . ' deposit has been received. Your appointment is confirmed.' : 'A 30% deposit will be requested to lock in your time slot.'],
             ['scissors', 'var(--gyc-green-700)', 'Arrive at the salon', 'Come in with clean, detangled hair. Bring any hair products you prefer us to use.'],
           ];
           foreach ($nextSteps as $i => $ns):

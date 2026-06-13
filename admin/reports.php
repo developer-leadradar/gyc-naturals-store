@@ -115,7 +115,7 @@ $catRevenue = $db->fetchAll(
   <!-- Line / bar chart -->
   <div style="background:#fff;border:1.5px solid #E5E7EB;border-radius:12px;padding:1.5rem;">
     <h2 style="font-size:.9rem;font-weight:700;margin-bottom:1.25rem;color:#1C1F1A;">Daily Revenue (₦)</h2>
-    <canvas id="dailyChart" height="200"></canvas>
+    <canvas id="dailyChart" style="display:block;width:100%;height:240px;"></canvas>
   </div>
 
   <!-- Order status donut (CSS) -->
@@ -197,61 +197,64 @@ $catRevenue = $db->fetchAll(
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  const canvas = document.getElementById('dailyChart');
+  const canvas  = document.getElementById('dailyChart');
   if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-
   const labels  = <?= json_encode(array_column($dailyData, 'label')) ?>;
   const revenue = <?= json_encode(array_column($dailyData, 'revenue')) ?>;
-  const maxRev  = Math.max(...revenue, 1);
-  const W = canvas.offsetWidth || 600;
-  const H = 200;
-  canvas.width = W; canvas.height = H;
 
-  const padL = 52, padR = 15, padT = 20, padB = 36;
-  const cW = W - padL - padR;
-  const cH = H - padT - padB;
-  const n  = labels.length;
+  function draw() {
+    const ctx     = canvas.getContext('2d');
+    const dpr     = window.devicePixelRatio || 1;
+    const cssW    = canvas.clientWidth || canvas.parentElement.clientWidth || 600;
+    const cssH    = canvas.clientHeight || 240;
+    canvas.width  = Math.round(cssW * dpr);
+    canvas.height = Math.round(cssH * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, cssW, cssH);
 
-  // Grid lines
-  for (let i = 0; i <= 4; i++) {
-    const y = padT + cH - (cH * i / 4);
-    ctx.strokeStyle = '#F0F0F0'; ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(W - padR, y); ctx.stroke();
-    ctx.fillStyle = '#9CA3AF'; ctx.font = '10px Inter,sans-serif'; ctx.textAlign = 'right';
-    const v = maxRev * i / 4;
-    ctx.fillText(v >= 1000 ? (v/1000).toFixed(0)+'k' : Math.round(v), padL-4, y+4);
+    const maxRev = Math.max(...revenue, 1);
+    const padL = 52, padR = 15, padT = 20, padB = 36;
+    const cW   = cssW - padL - padR;
+    const cH   = cssH - padT - padB;
+    const n    = labels.length;
+
+    for (let i = 0; i <= 4; i++) {
+      const y = padT + cH - (cH * i / 4);
+      ctx.strokeStyle = '#F0F0F0'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(cssW - padR, y); ctx.stroke();
+      ctx.fillStyle = '#9CA3AF'; ctx.font = '10px Inter,sans-serif'; ctx.textAlign = 'right';
+      const v = maxRev * i / 4;
+      ctx.fillText(v >= 1000 ? (v/1000).toFixed(0)+'k' : Math.round(v), padL-4, y+4);
+    }
+
+    const pts = revenue.map((r, i) => ({x: padL + i*(cW/(n-1||1)), y: padT + cH - (r/maxRev)*cH}));
+    ctx.beginPath();
+    pts.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
+    ctx.lineTo(pts[pts.length-1].x, padT+cH);
+    ctx.lineTo(pts[0].x, padT+cH);
+    ctx.closePath();
+    const grad = ctx.createLinearGradient(0, padT, 0, padT+cH);
+    grad.addColorStop(0, 'rgba(22,101,52,.25)');
+    grad.addColorStop(1, 'rgba(22,101,52,.02)');
+    ctx.fillStyle = grad; ctx.fill();
+
+    ctx.beginPath();
+    pts.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
+    ctx.strokeStyle = '#166534'; ctx.lineWidth = 2; ctx.stroke();
+
+    const step = n > 20 ? Math.ceil(n/10) : 1;
+    pts.forEach(function(p, i) {
+      ctx.beginPath(); ctx.arc(p.x, p.y, 3, 0, Math.PI*2);
+      ctx.fillStyle = '#166534'; ctx.fill();
+      if (i % step === 0) {
+        ctx.fillStyle = '#9CA3AF'; ctx.font = '9px Inter,sans-serif'; ctx.textAlign = 'center';
+        ctx.fillText(labels[i], p.x, cssH - padB + 14);
+      }
+    });
   }
 
-  // Area fill
-  const pts = revenue.map((r, i) => ({x: padL + i*(cW/(n-1||1)), y: padT + cH - (r/maxRev)*cH}));
-  ctx.beginPath();
-  pts.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
-  ctx.lineTo(pts[pts.length-1].x, padT+cH);
-  ctx.lineTo(pts[0].x, padT+cH);
-  ctx.closePath();
-  const grad = ctx.createLinearGradient(0, padT, 0, padT+cH);
-  grad.addColorStop(0, 'rgba(22,101,52,.25)');
-  grad.addColorStop(1, 'rgba(22,101,52,.02)');
-  ctx.fillStyle = grad; ctx.fill();
-
-  // Line
-  ctx.beginPath();
-  pts.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
-  ctx.strokeStyle = '#166534'; ctx.lineWidth = 2; ctx.stroke();
-
-  // Dots + x-labels — skip if too many
-  const step = n > 20 ? Math.ceil(n/10) : 1;
-  pts.forEach(function(p, i) {
-    ctx.beginPath(); ctx.arc(p.x, p.y, 3, 0, Math.PI*2);
-    ctx.fillStyle = '#166534'; ctx.fill();
-    if (i % step === 0) {
-      ctx.fillStyle = '#9CA3AF'; ctx.font = '9px Inter,sans-serif'; ctx.textAlign = 'center';
-      ctx.fillText(labels[i], p.x, H - padB + 14);
-    }
-  });
-
-  if (typeof lucide !== 'undefined') lucide.createIcons();
+  draw();
+  let t; window.addEventListener('resize', function() { clearTimeout(t); t = setTimeout(draw, 100); });
 });
 </script>
 

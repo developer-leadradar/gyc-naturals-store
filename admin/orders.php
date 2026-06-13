@@ -252,26 +252,43 @@ $payColors    = ['pending'=>'#F59E0B','paid'=>'#10B981','failed'=>'#EF4444','ref
 
 <?php else: ?>
 <!-- ── ORDERS LIST ── -->
-<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:.75rem;">
-  <span style="font-size:.85rem;color:#9CA3AF;"><?= $total ?> order<?= $total !== 1 ? 's' : '' ?></span>
-  <form method="GET" style="display:flex;gap:.5rem;flex-wrap:wrap;">
-    <input type="text" name="q" class="form-control" placeholder="Order # or name…" value="<?= htmlspecialchars($search) ?>" style="height:34px;padding:.35rem .7rem;width:180px;">
-    <select name="status" class="form-control" style="height:34px;padding:.35rem .7rem;">
-      <option value="">All Status</option>
-      <?php foreach (['pending','processing','shipped','delivered','cancelled','refunded'] as $s): ?>
-      <option value="<?= $s ?>" <?= $statusFilter === $s ? 'selected' : '' ?>><?= ucfirst($s) ?></option>
-      <?php endforeach; ?>
-    </select>
-    <select name="pay" class="form-control" style="height:34px;padding:.35rem .7rem;">
-      <option value="">All Payments</option>
-      <?php foreach (['pending','paid','failed','refunded'] as $s): ?>
-      <option value="<?= $s ?>" <?= $payFilter === $s ? 'selected' : '' ?>><?= ucfirst($s) ?></option>
-      <?php endforeach; ?>
-    </select>
-    <button type="submit" class="btn btn-outline-green btn-sm" style="height:34px;">Filter</button>
-    <?php if ($search || $statusFilter || $payFilter): ?>
-    <a href="<?= SITE_URL ?>/admin/orders.php" class="btn btn-sm" style="height:34px;background:#F3F4F6;color:#374151;">Clear</a>
+<div class="admin-filter-bar">
+  <div class="admin-filter-summary">
+    <i data-lucide="shopping-bag"></i>
+    <strong><?= $total ?></strong> order<?= $total !== 1 ? 's' : '' ?>
+    <?php if ($statusFilter || $payFilter || $search): ?>
+    <span class="admin-filter-active-chip">filtered</span>
     <?php endif; ?>
+  </div>
+  <form method="GET" class="admin-filter-form">
+    <div class="admin-filter-field admin-filter-field-search">
+      <i data-lucide="search"></i>
+      <input type="text" name="q" placeholder="Order # or customer name…" value="<?= htmlspecialchars($search) ?>">
+    </div>
+    <div class="admin-filter-field">
+      <i data-lucide="package"></i>
+      <select name="status">
+        <option value="">All statuses</option>
+        <?php foreach (['pending','processing','shipped','delivered','cancelled','refunded'] as $s): ?>
+        <option value="<?= $s ?>" <?= $statusFilter === $s ? 'selected' : '' ?>><?= ucfirst($s) ?></option>
+        <?php endforeach; ?>
+      </select>
+    </div>
+    <div class="admin-filter-field">
+      <i data-lucide="credit-card"></i>
+      <select name="pay">
+        <option value="">All payments</option>
+        <?php foreach (['pending','paid','failed','refunded'] as $s): ?>
+        <option value="<?= $s ?>" <?= $payFilter === $s ? 'selected' : '' ?>><?= ucfirst($s) ?></option>
+        <?php endforeach; ?>
+      </select>
+    </div>
+    <div class="admin-filter-actions">
+      <button type="submit" class="btn btn-green btn-sm">Apply</button>
+      <?php if ($search || $statusFilter || $payFilter): ?>
+      <a href="<?= SITE_URL ?>/admin/orders.php" class="admin-filter-clear">Clear</a>
+      <?php endif; ?>
+    </div>
   </form>
 </div>
 

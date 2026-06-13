@@ -120,7 +120,7 @@ $payColors    = ['pending'=>'#F59E0B','paid'=>'#10B981','failed'=>'#EF4444','ref
       <h2 style="font-size:.95rem;font-weight:700;color:#1C1F1A;">Revenue — Last 7 Days</h2>
       <a href="<?= SITE_URL ?>/admin/reports.php" style="font-size:.78rem;color:var(--gyc-green-600);">Full Report →</a>
     </div>
-    <canvas id="revenueChart" height="180"></canvas>
+    <canvas id="revenueChart" style="display:block;width:100%;height:200px;"></canvas>
   </div>
 
   <!-- Quick actions -->
@@ -132,8 +132,8 @@ $payColors    = ['pending'=>'#F59E0B','paid'=>'#10B981','failed'=>'#EF4444','ref
         [SITE_URL.'/admin/add-gallery.php',         'image',         'Add Gallery Style'],
         [SITE_URL.'/admin/orders.php?status=pending','package',      'Process Orders'],
         [SITE_URL.'/admin/appointments.php',        'calendar',      'View Appointments'],
+        [SITE_URL.'/admin/customers.php',           'users',         'View Customers'],
         [SITE_URL.'/admin/settings.php',            'settings',      'Settings'],
-        [SITE_URL.'/admin/blog.php',                'book-open',     'Write Blog Post'],
       ];
       foreach ($actions as $a): ?>
       <a href="<?= $a[0] ?>" style="display:flex;align-items:center;gap:.65rem;padding:.65rem .85rem;border:1px solid #E5E7EB;border-radius:8px;text-decoration:none;color:#1C1F1A;font-size:.83rem;font-weight:500;transition:background .15s;"
@@ -231,58 +231,58 @@ $payColors    = ['pending'=>'#F59E0B','paid'=>'#10B981','failed'=>'#EF4444','ref
 document.addEventListener('DOMContentLoaded', function() {
   const canvas = document.getElementById('revenueChart');
   if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-
   const days    = <?= json_encode($chartDays) ?>;
   const revenue = <?= json_encode($chartRevenue) ?>;
-  const maxRev  = Math.max(...revenue, 1);
-  const W = canvas.offsetWidth || 500;
-  const H = 180;
-  canvas.width  = W;
-  canvas.height = H;
 
-  const padL = 50, padR = 15, padT = 20, padB = 40;
-  const chartW = W - padL - padR;
-  const chartH = H - padT - padB;
-  const n = days.length;
-  const barW = Math.floor(chartW / n * .55);
-  const barGap = chartW / n;
+  function draw() {
+    const ctx     = canvas.getContext('2d');
+    const dpr     = window.devicePixelRatio || 1;
+    const cssW    = canvas.clientWidth || canvas.parentElement.clientWidth || 600;
+    const cssH    = canvas.clientHeight || 200;
+    canvas.width  = Math.round(cssW * dpr);
+    canvas.height = Math.round(cssH * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, cssW, cssH);
 
-  // Grid lines
-  ctx.strokeStyle = '#F0F0F0';
-  ctx.lineWidth = 1;
-  for (let i = 0; i <= 4; i++) {
-    const y = padT + chartH - (chartH * i / 4);
-    ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(W - padR, y); ctx.stroke();
-    ctx.fillStyle = '#9CA3AF';
-    ctx.font = '10px Inter, sans-serif';
-    ctx.textAlign = 'right';
-    const val = Math.round(maxRev * i / 4);
-    ctx.fillText(val >= 1000 ? (val/1000).toFixed(0) + 'k' : val, padL - 5, y + 4);
+    const maxRev = Math.max(...revenue, 1);
+    const padL = 50, padR = 15, padT = 20, padB = 40;
+    const chartW = cssW - padL - padR;
+    const chartH = cssH - padT - padB;
+    const n = days.length;
+    const barW   = Math.max(8, Math.floor(chartW / n * .55));
+    const barGap = chartW / n;
+
+    ctx.strokeStyle = '#F0F0F0';
+    ctx.lineWidth = 1;
+    for (let i = 0; i <= 4; i++) {
+      const y = padT + chartH - (chartH * i / 4);
+      ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(cssW - padR, y); ctx.stroke();
+      ctx.fillStyle = '#9CA3AF';
+      ctx.font = '10px Inter, sans-serif';
+      ctx.textAlign = 'right';
+      const val = Math.round(maxRev * i / 4);
+      ctx.fillText(val >= 1000 ? (val/1000).toFixed(0) + 'k' : val, padL - 5, y + 4);
+    }
+
+    days.forEach(function(day, i) {
+      const x    = padL + i * barGap + (barGap - barW) / 2;
+      const barH = (revenue[i] / maxRev) * chartH;
+      const y    = padT + chartH - barH;
+      const grad = ctx.createLinearGradient(0, y, 0, y + barH);
+      grad.addColorStop(0, '#166534');
+      grad.addColorStop(1, '#40916C');
+      ctx.fillStyle = grad;
+      if (ctx.roundRect) { ctx.beginPath(); ctx.roundRect(x, y, barW, barH, [4, 4, 0, 0]); ctx.fill(); }
+      else { ctx.fillRect(x, y, barW, barH); }
+      ctx.fillStyle = '#9CA3AF';
+      ctx.font = '11px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(day, x + barW / 2, cssH - padB + 18);
+    });
   }
 
-  // Bars
-  days.forEach(function(day, i) {
-    const x   = padL + i * barGap + (barGap - barW) / 2;
-    const barH = (revenue[i] / maxRev) * chartH;
-    const y   = padT + chartH - barH;
-
-    const grad = ctx.createLinearGradient(0, y, 0, y + barH);
-    grad.addColorStop(0, '#166534');
-    grad.addColorStop(1, '#40916C');
-    ctx.fillStyle = grad;
-    ctx.beginPath();
-    ctx.roundRect ? ctx.roundRect(x, y, barW, barH, [4, 4, 0, 0]) : ctx.rect(x, y, barW, barH);
-    ctx.fill();
-
-    // Day label
-    ctx.fillStyle = '#9CA3AF';
-    ctx.font = '11px Inter, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText(day, x + barW / 2, H - padB + 18);
-  });
-
-  if (typeof lucide !== 'undefined') lucide.createIcons();
+  draw();
+  let t; window.addEventListener('resize', function() { clearTimeout(t); t = setTimeout(draw, 100); });
 });
 </script>
 

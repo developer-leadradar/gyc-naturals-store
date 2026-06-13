@@ -186,21 +186,38 @@ $waPhone = getSetting('site_whatsapp') ?: SITE_WHATSAPP;
 
 <?php else: ?>
 <!-- ── LIST ── -->
-<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:.75rem;">
-  <span style="font-size:.85rem;color:#9CA3AF;"><?= $total ?> appointment<?= $total!==1?'s':'' ?></span>
-  <form method="GET" style="display:flex;gap:.5rem;flex-wrap:wrap;">
-    <input type="text" name="q" class="form-control" placeholder="Name, phone, ref…" value="<?= htmlspecialchars($search) ?>" style="height:34px;padding:.35rem .7rem;width:180px;">
-    <input type="date" name="date" class="form-control" value="<?= htmlspecialchars($dateFilter) ?>" style="height:34px;padding:.35rem .7rem;">
-    <select name="status" class="form-control" style="height:34px;padding:.35rem .7rem;">
-      <option value="">All Status</option>
-      <?php foreach (['pending','confirmed','completed','cancelled','no_show'] as $s): ?>
-      <option value="<?= $s ?>" <?= $statusFilter===$s?'selected':'' ?>><?= ucfirst(str_replace('_',' ',$s)) ?></option>
-      <?php endforeach; ?>
-    </select>
-    <button type="submit" class="btn btn-outline-green btn-sm" style="height:34px;">Filter</button>
-    <?php if ($search||$statusFilter||$dateFilter): ?>
-    <a href="<?= SITE_URL ?>/admin/appointments.php" class="btn btn-sm" style="height:34px;background:#F3F4F6;color:#374151;">Clear</a>
+<div class="admin-filter-bar">
+  <div class="admin-filter-summary">
+    <i data-lucide="calendar"></i>
+    <strong><?= $total ?></strong> appointment<?= $total!==1?'s':'' ?>
+    <?php if ($statusFilter || $dateFilter || $search): ?>
+    <span class="admin-filter-active-chip">filtered</span>
     <?php endif; ?>
+  </div>
+  <form method="GET" class="admin-filter-form">
+    <div class="admin-filter-field admin-filter-field-search">
+      <i data-lucide="search"></i>
+      <input type="text" name="q" placeholder="Name, phone, or reference…" value="<?= htmlspecialchars($search) ?>">
+    </div>
+    <div class="admin-filter-field">
+      <i data-lucide="calendar-days"></i>
+      <input type="date" name="date" value="<?= htmlspecialchars($dateFilter) ?>">
+    </div>
+    <div class="admin-filter-field">
+      <i data-lucide="filter"></i>
+      <select name="status">
+        <option value="">All statuses</option>
+        <?php foreach (['pending','confirmed','completed','cancelled','no_show'] as $s): ?>
+        <option value="<?= $s ?>" <?= $statusFilter===$s?'selected':'' ?>><?= ucfirst(str_replace('_',' ',$s)) ?></option>
+        <?php endforeach; ?>
+      </select>
+    </div>
+    <div class="admin-filter-actions">
+      <button type="submit" class="btn btn-green btn-sm">Apply</button>
+      <?php if ($search||$statusFilter||$dateFilter): ?>
+      <a href="<?= SITE_URL ?>/admin/appointments.php" class="admin-filter-clear">Clear</a>
+      <?php endif; ?>
+    </div>
   </form>
 </div>
 

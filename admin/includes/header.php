@@ -58,9 +58,8 @@ function adminNavLink($href, $label, $icon, $current, $badge = 0) {
 
     <!-- Appointments -->
     <div class="sidebar-section-label">Appointments</div>
-    <?= adminNavLink(SITE_URL.'/admin/appointments.php',     'All Appointments', 'calendar', $currentPath) ?>
-    <?= adminNavLink(SITE_URL.'/admin/booking-calendar.php', 'Booking Calendar', 'calendar-days', $currentPath) ?>
-    <?= adminNavLink(SITE_URL.'/admin/waitlist.php',         'Waiting List',     'clock', $currentPath) ?>
+    <?= adminNavLink(SITE_URL.'/admin/appointments.php', 'All Appointments', 'calendar', $currentPath) ?>
+    <?= adminNavLink(SITE_URL.'/admin/waitlist.php',     'Waiting List',     'clock', $currentPath) ?>
 
     <!-- Shop -->
     <div class="sidebar-section-label">Shop</div>
@@ -83,7 +82,6 @@ function adminNavLink($href, $label, $icon, $current, $badge = 0) {
 
     <!-- Content -->
     <div class="sidebar-section-label">Content</div>
-    <?= adminNavLink(SITE_URL.'/admin/blog.php',         'Blog Posts',  'book-open', $currentPath) ?>
     <?= adminNavLink(SITE_URL.'/admin/testimonials.php', 'Testimonials','star', $currentPath, $_pendingTestimonials) ?>
 
     <!-- Reports & Settings -->
@@ -107,7 +105,7 @@ function adminNavLink($href, $label, $icon, $current, $badge = 0) {
   <div class="admin-topbar">
     <div style="display:flex;align-items:center;gap:1rem;">
       <button onclick="document.getElementById('admin-sidebar').classList.toggle('open')"
-              style="background:none;border:none;cursor:pointer;display:none;" id="sidebar-toggle">
+              class="admin-mobile-toggle" id="sidebar-toggle" aria-label="Open menu">
         <i data-lucide="menu" style="width:22px;height:22px;"></i>
       </button>
       <span style="font-weight:600;font-size:1rem;"><?= htmlspecialchars($adminPageTitle) ?></span>

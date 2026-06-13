@@ -82,13 +82,11 @@ foreach ($cats as $c) {
             <td style="padding:.65rem 1.25rem;text-align:right;">
               <div style="display:flex;gap:.4rem;justify-content:flex-end;">
                 <a href="?edit=<?= $c['id'] ?>" style="padding:.3rem .55rem;border-radius:6px;background:#EFF6FF;color:#3B82F6;font-size:.72rem;text-decoration:none;">Edit</a>
-                <?php if ($c['img_count'] == 0): ?>
-                <form method="POST" onsubmit="return confirm('Delete?');" style="display:inline;">
+                <form method="POST" onsubmit="return confirm(<?= $c['img_count'] > 0 ? "'This category has " . $c['img_count'] . " image(s). They will become uncategorised. Delete category?'" : "'Delete this category?'" ?>);" style="display:inline;">
                   <input type="hidden" name="action" value="delete">
                   <input type="hidden" name="id" value="<?= $c['id'] ?>">
-                  <button type="submit" style="padding:.3rem .55rem;border-radius:6px;background:#FEF2F2;color:#EF4444;border:none;cursor:pointer;font-size:.72rem;">Del</button>
+                  <button type="submit" style="padding:.3rem .55rem;border-radius:6px;background:#FEF2F2;color:#EF4444;border:none;cursor:pointer;font-size:.72rem;font-weight:600;">Delete</button>
                 </form>
-                <?php endif; ?>
               </div>
             </td>
           </tr>

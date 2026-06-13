@@ -17,45 +17,61 @@ $categories = getAllCategories();
 $error      = '';
 $success    = '';
 
+function resizeToDataUrl($tmpFile, $mime, $maxDim = 1200, $quality = 82) {
+    if (!extension_loaded('gd') || !function_exists('imagecreatefromjpeg')) {
+        return 'data:' . $mime . ';base64,' . base64_encode(file_get_contents($tmpFile));
+    }
+    switch ($mime) {
+        case 'image/jpeg': case 'image/jpg': $src = @imagecreatefromjpeg($tmpFile); break;
+        case 'image/png':  $src = @imagecreatefrompng($tmpFile); break;
+        case 'image/webp': $src = function_exists('imagecreatefromwebp') ? @imagecreatefromwebp($tmpFile) : false; break;
+        default: $src = false;
+    }
+    if (!$src) return 'data:' . $mime . ';base64,' . base64_encode(file_get_contents($tmpFile));
+    $origW = imagesx($src); $origH = imagesy($src);
+    $ratio = min($maxDim / $origW, $maxDim / $origH, 1.0);
+    $newW = max(1,(int)round($origW*$ratio)); $newH = max(1,(int)round($origH*$ratio));
+    $dst = imagecreatetruecolor($newW, $newH);
+    $white = imagecolorallocate($dst,255,255,255); imagefill($dst,0,0,$white);
+    imagecopyresampled($dst,$src,0,0,0,0,$newW,$newH,$origW,$origH);
+    imagedestroy($src);
+    ob_start(); imagejpeg($dst, null, $quality); $data = ob_get_clean();
+    imagedestroy($dst);
+    return 'data:image/jpeg;base64,' . base64_encode($data);
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = [
-        'name'            => trim(sanitize($_POST['name']            ?? '')),
-        'slug'            => trim(sanitize($_POST['slug']            ?? '')),
-        'sku'             => trim(sanitize($_POST['sku']             ?? '')),
-        'description'     => trim($_POST['description']             ?? ''),
-        'short_desc'      => trim(sanitize($_POST['short_desc']      ?? '')),
-        'price'           => (float)($_POST['price']                ?? 0),
-        'compare_price'   => $_POST['compare_price'] ? (float)$_POST['compare_price'] : null,
-        'category_id'     => (int)($_POST['category_id']            ?? 0) ?: null,
-        'hair_type'       => trim(sanitize($_POST['hair_type']      ?? '')),
-        'concern'         => trim(sanitize($_POST['concern']        ?? '')),
-        'product_type'    => trim(sanitize($_POST['product_type']   ?? '')),
-        'key_ingredient'  => trim(sanitize($_POST['key_ingredient'] ?? '')),
-        'volume_ml'       => $_POST['volume_ml'] ? (int)$_POST['volume_ml'] : null,
-        'stock_quantity'  => (int)($_POST['stock_quantity']         ?? 0),
-        'low_stock_alert' => (int)($_POST['low_stock_alert']        ?? 5),
-        'is_active'       => isset($_POST['is_active']) ? 1 : 0,
-        'is_featured'     => isset($_POST['is_featured']) ? 1 : 0,
-        'meta_title'      => trim(sanitize($_POST['meta_title']     ?? '')),
-        'meta_description'=> trim(sanitize($_POST['meta_description'] ?? '')),
+        'name'           => trim(sanitize($_POST['name']           ?? '')),
+        'slug'           => trim(sanitize($_POST['slug']           ?? '')),
+        'sku'            => trim(sanitize($_POST['sku']            ?? '')),
+        'description'    => trim($_POST['description']             ?? ''),
+        'short_desc'     => trim(sanitize($_POST['short_desc']     ?? '')),
+        'price'          => (float)($_POST['price']                ?? 0),
+        'compare_price'  => $_POST['compare_price'] !== '' ? (float)$_POST['compare_price'] : null,
+        'category_id'    => (int)($_POST['category_id']            ?? 0) ?: null,
+        'hair_type'      => trim(sanitize($_POST['hair_type']      ?? '')),
+        'concern'        => trim(sanitize($_POST['concern']        ?? '')),
+        'product_type'   => trim(sanitize($_POST['product_type']   ?? '')),
+        'key_ingredient' => trim(sanitize($_POST['key_ingredient'] ?? '')),
+        'volume_ml'      => $_POST['volume_ml'] !== '' ? (int)$_POST['volume_ml'] : null,
+        'stock_quantity' => (int)($_POST['stock_quantity']         ?? 0),
+        'is_active'      => isset($_POST['is_active']) ? 1 : 0,
+        'is_featured'    => isset($_POST['is_featured']) ? 1 : 0,
     ];
 
-    // Generate slug from name if blank
     if (!$data['slug'] && $data['name']) {
         $data['slug'] = strtolower(preg_replace('/[^a-z0-9]+/i', '-', $data['name']));
         $data['slug'] = trim($data['slug'], '-');
     }
 
-    // Handle image upload (or URL)
+    // Handle image upload (resize + base64 — Vercel has no writable filesystem)
     $imageUrl = $prod['image'] ?? '';
-    if (!empty($_FILES['image']['name'])) {
-        $uploadDir = __DIR__ . '/../uploads/products/';
-        if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
-        $ext   = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
-        $fname = 'prod_' . time() . '_' . rand(100,999) . '.' . strtolower($ext);
-        if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadDir . $fname)) {
-            $imageUrl = SITE_URL . '/uploads/products/' . $fname;
-        }
+    if (!empty($_FILES['image']['name']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+        $mime     = mime_content_type($_FILES['image']['tmp_name']) ?: 'image/jpeg';
+        $imageUrl = resizeToDataUrl($_FILES['image']['tmp_name'], $mime);
+    } elseif (!empty($_FILES['image']['name']) && $_FILES['image']['error'] !== UPLOAD_ERR_OK) {
+        $error = 'Image upload failed (code ' . $_FILES['image']['error'] . '). Try a smaller file or paste a URL.';
     } elseif (!empty($_POST['image_url'])) {
         $imageUrl = trim($_POST['image_url']);
     }
@@ -259,15 +275,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php if (!empty($prod['image'])): ?>
         <img src="<?= htmlspecialchars($prod['image']) ?>" alt="" style="width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:8px;margin-bottom:.75rem;">
         <?php endif; ?>
+        <?php $prodImgIsData = strpos($prod['image'] ?? '', 'data:') === 0; ?>
         <div class="form-group">
           <label class="form-label">Upload Image</label>
-          <input type="file" name="image" class="form-control" accept="image/*">
+          <input type="file" name="image" id="prod-image-input" class="form-control" accept="image/*">
+          <div id="prod-image-status" style="font-size:.74rem;color:#6B7280;margin-top:.3rem;display:none;"></div>
         </div>
         <div class="form-group" style="margin-top:.5rem;">
           <label class="form-label">Or paste URL</label>
           <input type="url" name="image_url" class="form-control" placeholder="https://…"
-                 value="<?= htmlspecialchars($prod['image'] ?? '') ?>">
+                 value="<?= $prodImgIsData ? '' : htmlspecialchars($prod['image'] ?? '') ?>">
         </div>
+        <p style="font-size:.72rem;color:#9CA3AF;margin-top:.4rem;">Large photos auto-resize to 1200px before upload.</p>
       </div>
 
     </div>
@@ -284,6 +303,38 @@ function autoSlug(val) {
 document.getElementById('slug-input').addEventListener('input', function() {
   this.dataset.manual = 'true';
 });
+
+// Client-side image resize to keep under Vercel's 4.5MB body limit
+(function() {
+  var input = document.getElementById('prod-image-input');
+  if (!input) return;
+  input.addEventListener('change', function() {
+    var file = input.files[0];
+    if (!file || !file.type.startsWith('image/')) return;
+    var status = document.getElementById('prod-image-status');
+    if (status) { status.style.display = 'block'; status.textContent = 'Processing image…'; status.style.color = '#6B7280'; }
+    var reader = new FileReader();
+    reader.onload = function(ev) {
+      var img = new Image();
+      img.onload = function() {
+        var maxDim = 1200, w = img.width, h = img.height;
+        var ratio = Math.min(maxDim / w, maxDim / h, 1);
+        w = Math.round(w * ratio); h = Math.round(h * ratio);
+        var canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        canvas.toBlob(function(blob) {
+          if (!blob) { if (status) { status.textContent = 'Could not process image.'; status.style.color = '#DC2626'; } return; }
+          var resized = new File([blob], (file.name.replace(/\.[^.]+$/, '') || 'product') + '.jpg', { type: 'image/jpeg' });
+          var dt = new DataTransfer(); dt.items.add(resized); input.files = dt.files;
+          if (status) { status.textContent = 'Ready (' + w + '×' + h + ', ' + Math.round(blob.size/1024) + ' KB).'; status.style.color = '#16A34A'; }
+        }, 'image/jpeg', 0.82);
+      };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+})();
 </script>
 
 <?php require_once __DIR__ . '/includes/footer.php'; ?>
