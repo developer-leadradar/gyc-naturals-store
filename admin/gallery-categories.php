@@ -107,7 +107,7 @@ foreach ($cats as $c) {
       <div class="form-group">
         <label class="form-label">Service <span style="color:var(--gyc-terra);">*</span></label>
         <select name="service_type" class="form-control" required>
-          <?php foreach ($svcLabels as $svKey => $svLabel): ?>
+          <?php foreach ($svLabels as $svKey => $svLabel): ?>
           <option value="<?= $svKey ?>" <?= ($editCat['service_type'] ?? 'braiding') === $svKey ? 'selected' : '' ?>><?= htmlspecialchars($svLabel) ?></option>
           <?php endforeach; ?>
         </select>
