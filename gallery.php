@@ -72,7 +72,7 @@ require_once __DIR__ . '/includes/header.php';
       <a href="<?= SITE_URL ?>/gallery.php"
          class="chip <?= $activeCategory === 'all' ? 'chip--active' : '' ?>"
          role="tab" aria-selected="<?= $activeCategory === 'all' ? 'true' : 'false' ?>">
-        All Styles (<?= countGalleryImages() ?>)
+        All Styles (<?= countGalleryImages(['service_types_in' => $galleryServices]) ?>)
       </a>
       <?php foreach ($categories as $cat): ?>
       <a href="<?= SITE_URL ?>/gallery.php?category=<?= urlencode($cat['slug']) ?>"

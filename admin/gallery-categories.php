@@ -37,7 +37,7 @@ $cats   = $db->fetchAll("SELECT gc.*, COUNT(gi.id) as img_count FROM gallery_cat
 $editId = (int)($_GET['edit'] ?? 0);
 $editCat= $editId ? $db->fetchOne("SELECT * FROM gallery_categories WHERE id=?",[$editId]) : null;
 
-$svcLabels = [
+$svLabels = [
     'braiding'  => 'Braiding & Protective',
     'kids'      => "Kids' Hair",
     'natural'   => 'Natural Styles',

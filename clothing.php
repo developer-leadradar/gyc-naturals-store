@@ -20,7 +20,7 @@ require_once __DIR__ . '/includes/header.php';
 
 <!-- HERO -->
 <section style="position:relative;overflow:hidden;min-height:480px;display:flex;align-items:center;background:#1a1a2e;">
-  <div style="position:absolute;inset:0;background-image:url('https://images.pexels.com/photos/952630/pexels-photo-952630.jpeg?auto=compress&cs=tinysrgb&w=1400');background-size:cover;background-position:center;opacity:.42;"></div>
+  <div style="position:absolute;inset:0;background-image:url('https://images.pexels.com/photos/9222419/pexels-photo-9222419.jpeg?auto=compress&cs=tinysrgb&w=1400');background-size:cover;background-position:center;opacity:.42;"></div>
   <div style="position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,var(--gyc-gold),var(--gyc-terra),var(--gyc-green-600),var(--gyc-gold));"></div>
 
   <div class="container" style="position:relative;z-index:2;padding:5rem 0;">
@@ -92,7 +92,7 @@ require_once __DIR__ . '/includes/header.php';
         </div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-        <img src="https://images.pexels.com/photos/29736412/pexels-photo-29736412.jpeg?auto=compress&cs=tinysrgb&w=600"
+        <img src="https://images.pexels.com/photos/952630/pexels-photo-952630.jpeg?auto=compress&cs=tinysrgb&w=600"
              alt="Fashion boutique" style="width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:var(--gyc-radius-lg);" loading="lazy">
         <img src="https://images.pexels.com/photos/20082055/pexels-photo-20082055.jpeg?auto=compress&cs=tinysrgb&w=600"
              alt="Fashion boutique" style="width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:var(--gyc-radius-lg);margin-top:1.5rem;" loading="lazy">
