@@ -80,7 +80,7 @@ require_once __DIR__ . '/includes/header.php';
   </div>
 </section>
 
-<div class="container" style="padding:2.5rem 0 5rem;">
+<div class="container shop-grid-wrap" style="padding-top:2.5rem;padding-bottom:5rem;">
   <div style="display:grid;grid-template-columns:240px 1fr;gap:2.5rem;align-items:start;">
 
     <!-- Sidebar filters -->
