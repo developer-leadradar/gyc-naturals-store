@@ -47,6 +47,18 @@
   /* Default grid items to min-width:0 so long content doesn't blow out tracks */
   [class*="grid"] > *, .booking-stepper > * { min-width: 0; }
 
+  /* Header on mobile: give logo enough room to show wordmark, drop secondary icons */
+  .nav-inner { gap: 0.5rem !important; padding: 0 0.85rem !important; }
+  .nav-logo { flex: 0 0 auto !important; min-width: 160px; }
+  .nav-logo img { height: 38px !important; max-width: none !important; width: auto !important; }
+  .nav-actions { gap: 0.15rem !important; }
+  /* Hide search + account + logout icons on mobile — they live in the hamburger menu */
+  .nav-actions .nav-icon-btn[aria-label="Search"],
+  .nav-actions .nav-icon-btn[aria-label="Account"],
+  .nav-actions .nav-icon-btn[aria-label="Logout"] { display: none !important; }
+  .nav-actions .nav-icon-btn { width: 36px !important; height: 36px !important; }
+  .nav-hamburger { width: 36px !important; height: 36px !important; }
+
   /* Stack inline-styled 2-column page layouts (sidebar + main) on mobile.
      Covers shop, gallery, customer-dashboard, my-orders, my-wishlist,
      order-details, book-appointment, product, bundle, etc. */
@@ -69,17 +81,25 @@
     grid-template-columns: 1fr !important;
     gap: 1.5rem !important;
   }
-  /* Inline 4-col grids: stack to 2 on mobile (Quick Actions, etc) */
-  div[style*="grid-template-columns:repeat(4,1fr)"],
-  div[style*="grid-template-columns: repeat(4, 1fr)"],
-  div[style*="grid-template-columns:repeat(4, 1fr)"] {
+  /* Inline 4-col grids: stack to 2-col on mobile. The services grid wants 1-col
+     and uses .home-services-grid to override this further (higher than attribute
+     specificity via :where() in home-additions.css). */
+  div[style*="grid-template-columns:repeat(4,1fr)"]:not(.home-services-grid),
+  div[style*="grid-template-columns: repeat(4, 1fr)"]:not(.home-services-grid),
+  div[style*="grid-template-columns:repeat(4, 1fr)"]:not(.home-services-grid) {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 0.75rem !important;
   }
-  /* Inline 3-col grids: stack to 1 or 2 on mobile */
-  div[style*="grid-template-columns:repeat(3,1fr)"],
-  div[style*="grid-template-columns: repeat(3, 1fr)"] {
+  /* Inline 3-col grids: stack to 2 on mobile */
+  div[style*="grid-template-columns:repeat(3,1fr)"]:not(.home-services-grid),
+  div[style*="grid-template-columns: repeat(3, 1fr)"]:not(.home-services-grid) {
     grid-template-columns: repeat(2, 1fr) !important;
+  }
+  /* Services grid: full single column at <=767px (overrides above attribute rule
+     since this selector includes both element and class) */
+  div.home-services-grid[style] {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
   }
   aside { position: static !important; top: auto !important; }
   /* Booking service-type buttons: stack to 1 column under 480, keep 2-col 480-767 */
