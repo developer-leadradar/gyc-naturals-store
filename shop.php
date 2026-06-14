@@ -85,11 +85,24 @@ require_once __DIR__ . '/includes/header.php';
 
     <!-- Sidebar filters -->
     <aside>
-      <div style="background:#fff;border:1.5px solid var(--gyc-green-100);border-radius:var(--gyc-radius-lg);padding:1.5rem;position:sticky;top:calc(var(--gyc-nav-height)+1rem);">
-        <h3 style="font-size:.9rem;font-weight:700;color:var(--gyc-dark);margin-bottom:1.25rem;display:flex;align-items:center;gap:.5rem;">
+      <div class="shop-filter-card" style="background:#fff;border:1.5px solid var(--gyc-green-100);border-radius:var(--gyc-radius-lg);padding:1.5rem;position:sticky;top:calc(var(--gyc-nav-height)+1rem);">
+        <button type="button" id="shop-filter-toggle" class="shop-filter-toggle"
+                aria-expanded="false" aria-controls="shop-filter-body"
+                style="all:unset;display:none;align-items:center;justify-content:space-between;width:100%;font-family:inherit;cursor:pointer;font-size:.95rem;font-weight:700;color:var(--gyc-dark);padding:.5rem 0;">
+          <span style="display:flex;align-items:center;gap:.5rem;">
+            <i data-lucide="sliders-horizontal" style="width:18px;height:18px;color:var(--gyc-green-600);"></i>
+            Filter Products
+            <?php $activeFilterCount = (int)!!$activeCatSlug + (int)!!$activeConcern + (int)!!$activeHair + (int)!!$minPrice + (int)!!$maxPrice; if ($activeFilterCount > 0): ?>
+            <span style="background:var(--gyc-green-700);color:#fff;font-size:.7rem;font-weight:700;border-radius:99px;padding:.1rem .5rem;"><?= $activeFilterCount ?></span>
+            <?php endif; ?>
+          </span>
+          <i data-lucide="chevron-down" id="shop-filter-chevron" style="width:18px;height:18px;color:#888;transition:transform .2s;"></i>
+        </button>
+        <h3 class="shop-filter-heading" style="font-size:.9rem;font-weight:700;color:var(--gyc-dark);margin-bottom:1.25rem;display:flex;align-items:center;gap:.5rem;">
           <i data-lucide="sliders-horizontal" style="width:16px;height:16px;color:var(--gyc-green-600);"></i>
           Filter Products
         </h3>
+        <div id="shop-filter-body" class="shop-filter-body">
 
         <form id="filter-form" action="<?= SITE_URL ?>/shop.php" method="GET">
           <?php if ($searchQ): ?><input type="hidden" name="q" value="<?= htmlspecialchars($searchQ) ?>"><?php endif; ?>
@@ -167,6 +180,7 @@ require_once __DIR__ . '/includes/header.php';
             Take Hair Quiz
           </a>
         </div>
+        </div><!-- /.shop-filter-body -->
       </div>
     </aside>
 
@@ -334,6 +348,16 @@ require_once __DIR__ . '/includes/header.php';
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+  // Collapsible filter on mobile
+  var filterToggle = document.getElementById('shop-filter-toggle');
+  var filterCard   = document.querySelector('.shop-filter-card');
+  if (filterToggle && filterCard) {
+    filterToggle.addEventListener('click', function () {
+      var open = filterCard.classList.toggle('is-open');
+      filterToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+  }
+
   document.querySelectorAll('.add-to-cart-btn').forEach(function (btn) {
     btn.addEventListener('click', function () {
       addToCart(btn.dataset.productId, 1, btn);

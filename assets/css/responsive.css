@@ -115,6 +115,14 @@
   /* Booking style selector grid: 1 col under 480 */
   .style-selector-grid { grid-template-columns: 1fr !important; }
 
+  /* Shop filter: collapse to a toggle button + collapsible body on mobile */
+  .shop-filter-card { padding: 0.85rem 1rem !important; position: static !important; }
+  .shop-filter-toggle { display: flex !important; }
+  .shop-filter-heading { display: none !important; }
+  .shop-filter-body { display: none; padding-top: 1rem; border-top: 1px solid var(--gyc-green-100); margin-top: 0.5rem; }
+  .shop-filter-card.is-open .shop-filter-body { display: block; }
+  .shop-filter-card.is-open #shop-filter-chevron { transform: rotate(180deg); }
+
   .section    { padding: 2.5rem 0; }
   .section-lg { padding: 3rem 0; }
 
