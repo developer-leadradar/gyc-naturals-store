@@ -1,6 +1,10 @@
 <?php
 if (!defined('GYC_ACCESS')) { define('GYC_ACCESS', true); }
 
+// Local dev hits the DB via HTTPS proxy to Vercel — give PHP more runway than
+// the default 30s so a page with multiple cold-start queries can render.
+@ini_set('max_execution_time', 120);
+
 // Buffer all output so setcookie() / header() work even after HTML output starts
 if (!ob_get_level()) ob_start();
 

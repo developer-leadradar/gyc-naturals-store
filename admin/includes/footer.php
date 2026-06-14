@@ -2,7 +2,8 @@
 </div><!-- /.admin-main -->
 </div><!-- /.admin-layout -->
 
-<script src="<?= SITE_URL ?>/assets/js/admin.js" defer></script>
+<?php $_adminJs = __DIR__ . '/../../assets/js/admin.js'; $_adminV = file_exists($_adminJs) ? '?v=' . filemtime($_adminJs) : ''; ?>
+<script src="<?= SITE_URL ?>/assets/js/admin.js<?= $_adminV ?>" defer></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   if (typeof lucide !== 'undefined') lucide.createIcons();

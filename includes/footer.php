@@ -135,7 +135,8 @@ $waLink    = getWhatsAppFloat();
 
 <!-- Main JS -->
 <script>window.GYC_LOGGED_IN = <?= isLoggedIn() ? 'true' : 'false' ?>;</script>
-<script src="<?= SITE_URL ?>/assets/js/main.js" defer></script>
+<?php $_mainJs = __DIR__ . '/../assets/js/main.js'; $_mainV = file_exists($_mainJs) ? '?v=' . filemtime($_mainJs) : ''; ?>
+<script src="<?= SITE_URL ?>/assets/js/main.js<?= $_mainV ?>" defer></script>
 
 <script>
 // ── Init Lucide icons ──

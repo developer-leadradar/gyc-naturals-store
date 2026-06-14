@@ -47,11 +47,18 @@ csrfToken(); // ensure gyc_csrf cookie is set before HTML output begins
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
 
-  <!-- CSS -->
-  <link rel="stylesheet" href="<?= SITE_URL ?>/assets/css/style.css">
-  <link rel="stylesheet" href="<?= SITE_URL ?>/assets/css/home-additions.css">
-  <link rel="stylesheet" href="<?= SITE_URL ?>/assets/css/pages.css">
-  <link rel="stylesheet" href="<?= SITE_URL ?>/assets/css/responsive.css">
+  <!-- CSS — version param off filemtime busts the browser cache on every edit -->
+  <?php
+  $_cssBase = __DIR__ . '/../assets/css/';
+  $_cssV    = function ($f) use ($_cssBase) {
+      $p = $_cssBase . $f;
+      return file_exists($p) ? '?v=' . filemtime($p) : '';
+  };
+  ?>
+  <link rel="stylesheet" href="<?= SITE_URL ?>/assets/css/style.css<?= $_cssV('style.css') ?>">
+  <link rel="stylesheet" href="<?= SITE_URL ?>/assets/css/home-additions.css<?= $_cssV('home-additions.css') ?>">
+  <link rel="stylesheet" href="<?= SITE_URL ?>/assets/css/pages.css<?= $_cssV('pages.css') ?>">
+  <link rel="stylesheet" href="<?= SITE_URL ?>/assets/css/responsive.css<?= $_cssV('responsive.css') ?>">
 
   <!-- Paystack -->
   <script src="https://js.paystack.co/v1/inline.js" defer></script>

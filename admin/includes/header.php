@@ -29,8 +29,15 @@ function adminNavLink($href, $label, $icon, $current, $badge = 0) {
   <title><?= htmlspecialchars($adminPageTitle) ?> — GYC Admin</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="<?= SITE_URL ?>/assets/css/style.css">
-  <link rel="stylesheet" href="<?= SITE_URL ?>/assets/css/admin.css">
+  <?php
+  $_cssBase = __DIR__ . '/../../assets/css/';
+  $_cssV    = function ($f) use ($_cssBase) {
+      $p = $_cssBase . $f;
+      return file_exists($p) ? '?v=' . filemtime($p) : '';
+  };
+  ?>
+  <link rel="stylesheet" href="<?= SITE_URL ?>/assets/css/style.css<?= $_cssV('style.css') ?>">
+  <link rel="stylesheet" href="<?= SITE_URL ?>/assets/css/admin.css<?= $_cssV('admin.css') ?>">
   <link rel="icon" href="<?= SITE_URL ?>/assets/images/favicon.ico">
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
 </head>

@@ -1173,19 +1173,22 @@ function jsonResponse($data, $status = 200) {
     exit;
 }
 
-function pagination($total, $perPage, $currentPage, $url) {
-    $totalPages = max(1, ceil($total / $perPage));
+function pagination($currentPage, $totalPages, $baseUrl) {
+    $totalPages = max(1, (int)$totalPages);
     if ($totalPages <= 1) return '';
+    // Append &page= or ?page= to whatever baseUrl ends with
+    $sep  = (substr($baseUrl, -1) === '?' || substr($baseUrl, -1) === '&') ? '' : (strpos($baseUrl, '?') === false ? '?' : '&');
+    $link = function ($p) use ($baseUrl, $sep) { return $baseUrl . $sep . 'page=' . $p; };
     $html = '<ul class="pagination">';
     if ($currentPage > 1) {
-        $html .= '<li><a href="' . $url . '&page=' . ($currentPage - 1) . '">← Prev</a></li>';
+        $html .= '<li><a href="' . $link($currentPage - 1) . '">← Prev</a></li>';
     }
     for ($i = max(1, $currentPage - 2); $i <= min($totalPages, $currentPage + 2); $i++) {
         $active = $i == $currentPage ? ' class="active"' : '';
-        $html .= "<li$active><a href=\"$url&page=$i\">$i</a></li>";
+        $html .= "<li$active><a href=\"" . $link($i) . "\">$i</a></li>";
     }
     if ($currentPage < $totalPages) {
-        $html .= '<li><a href="' . $url . '&page=' . ($currentPage + 1) . '">Next →</a></li>';
+        $html .= '<li><a href="' . $link($currentPage + 1) . '">Next →</a></li>';
     }
     $html .= '</ul>';
     return $html;
