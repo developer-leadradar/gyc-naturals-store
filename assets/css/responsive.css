@@ -139,10 +139,16 @@
   .clothing-collection-head > div { text-align: center !important; }
   .clothing-collection-cta { align-self: center !important; }
 
-  /* Size guide table: stay full width but scroll horizontally inside its card */
-  .clothing-size-card { overflow: hidden; }
-  .clothing-size-table-wrap { overflow-x: auto; }
-  .clothing-size-table-wrap table { min-width: 380px; }
+  /* Size guide table: tighter cells so all 4 columns fit within 320px viewport
+     without horizontal scroll. Header labels are short ('Bust' not 'Bust (cm)')
+     and the section subtitle above the card already says all measurements are
+     in cm so no information is lost. */
+  .clothing-size-table .sz-th,
+  .clothing-size-table .sz-td { font-size: 0.78rem; }
+  .clothing-size-table .sz-th:first-child,
+  .clothing-size-table .sz-td:first-child { padding-left: 10px; padding-right: 6px; min-width: 44px; }
+  .clothing-size-table .sz-th:not(:first-child),
+  .clothing-size-table .sz-td:not(:first-child) { padding-left: 4px; padding-right: 4px; }
 
   .section    { padding: 2.5rem 0; }
   .section-lg { padding: 3rem 0; }

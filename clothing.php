@@ -73,7 +73,7 @@ require_once __DIR__ . '/includes/header.php';
     <div class="clothing-brand-strip" style="display:grid;grid-template-columns:1fr 1fr;gap:3.5rem;align-items:center;">
       <div class="clothing-brand-text">
         <p style="font-size:.72rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gyc-gold);margin-bottom:.75rem;">About the Boutique</p>
-        <h2 style="font-family:'Playfair Display',serif;font-size:clamp(1.5rem,2.5vw,2rem);margin-bottom:1.25rem;line-height:1.3;">Your Style,<br>Your Story.</h2>
+        <h2 style="font-family:'Playfair Display',serif;font-size:clamp(1.5rem,2.5vw,2rem);margin-bottom:1.25rem;line-height:1.3;color:#fff;">Your Style,<br>Your Story.</h2>
         <p style="opacity:.85;line-height:1.8;margin-bottom:1rem;">At GYC Naturals, we believe looking good goes hand in hand with feeling good. Our boutique stocks everyday fashion pieces — from casual daywear to polished office looks and elegant evening options.</p>
         <p style="opacity:.72;line-height:1.8;font-size:.9rem;">Every piece is handpicked for quality, fit, and wearability — clothes that work with your lifestyle, whether you're running errands in Calabar or stepping out for the evening.</p>
         <div class="clothing-brand-perks" style="display:flex;gap:2rem;margin-top:2rem;">
@@ -199,14 +199,13 @@ require_once __DIR__ . '/includes/header.php';
       <p style="color:#6B7280;font-size:.875rem;">All measurements in centimetres (cm). When between sizes, size up.</p>
     </div>
     <div class="clothing-size-card" style="background:#fff;border-radius:var(--gyc-radius-xl);overflow:hidden;box-shadow:0 2px 20px rgba(0,0,0,.06);">
-      <div class="clothing-size-table-wrap" style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
-      <table style="width:100%;border-collapse:collapse;font-size:.875rem;min-width:380px;">
+      <table class="clothing-size-table" style="width:100%;border-collapse:collapse;font-size:.875rem;">
         <thead>
           <tr style="background:var(--gyc-green-900);color:#fff;">
-            <th style="padding:11px 16px;text-align:left;">Size</th>
-            <th style="padding:11px 16px;text-align:center;">Bust (cm)</th>
-            <th style="padding:11px 16px;text-align:center;">Waist (cm)</th>
-            <th style="padding:11px 16px;text-align:center;">Hips (cm)</th>
+            <th class="sz-th" style="padding:11px 10px;text-align:left;">Size</th>
+            <th class="sz-th" style="padding:11px 6px;text-align:center;">Bust</th>
+            <th class="sz-th" style="padding:11px 6px;text-align:center;">Waist</th>
+            <th class="sz-th" style="padding:11px 6px;text-align:center;">Hips</th>
           </tr>
         </thead>
         <tbody>
@@ -215,16 +214,15 @@ require_once __DIR__ . '/includes/header.php';
                     ['L','94–102','76–84','102–110'],['XL','102–110','84–92','110–118'],['XXL','110–120','92–102','118–128']];
           foreach ($sizes as $i => $s):
           ?>
-          <tr style="background:<?= $i%2===0?'#fff':'#F8FAF9' ?>;">
-            <td style="padding:10px 16px;font-weight:700;color:var(--gyc-green-700);"><?= $s[0] ?></td>
-            <td style="padding:10px 16px;text-align:center;color:#374151;"><?= $s[1] ?></td>
-            <td style="padding:10px 16px;text-align:center;color:#374151;"><?= $s[2] ?></td>
-            <td style="padding:10px 16px;text-align:center;color:#374151;"><?= $s[3] ?></td>
+          <tr class="sz-row" style="background:<?= $i%2===0?'#fff':'#F8FAF9' ?>;">
+            <td class="sz-td" style="padding:10px;font-weight:700;color:var(--gyc-green-700);"><?= $s[0] ?></td>
+            <td class="sz-td" style="padding:10px 6px;text-align:center;color:#374151;"><?= $s[1] ?></td>
+            <td class="sz-td" style="padding:10px 6px;text-align:center;color:#374151;"><?= $s[2] ?></td>
+            <td class="sz-td" style="padding:10px 6px;text-align:center;color:#374151;"><?= $s[3] ?></td>
           </tr>
           <?php endforeach; ?>
         </tbody>
       </table>
-      </div><!-- /.clothing-size-table-wrap -->
     </div>
     <p style="font-size:.8rem;color:#9CA3AF;margin-top:1rem;text-align:center;">Need help? <a href="<?= SITE_URL ?>/contact.php" style="color:var(--gyc-green-600);">Contact us</a> or chat on WhatsApp — we're happy to advise before you order.</p>
   </div>
