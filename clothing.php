@@ -23,8 +23,8 @@ require_once __DIR__ . '/includes/header.php';
   <div style="position:absolute;inset:0;background-image:url('https://images.pexels.com/photos/9222419/pexels-photo-9222419.jpeg?auto=compress&cs=tinysrgb&w=1400');background-size:cover;background-position:center;opacity:.42;"></div>
   <div style="position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,var(--gyc-gold),var(--gyc-terra),var(--gyc-green-600),var(--gyc-gold));"></div>
 
-  <div class="container" style="position:relative;z-index:2;padding:5rem 0;">
-    <div style="max-width:580px;">
+  <div class="container clothing-hero-inner" style="position:relative;z-index:2;padding-top:5rem;padding-bottom:5rem;">
+    <div class="clothing-hero-text" style="max-width:580px;">
       <p style="font-size:.72rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--gyc-gold);margin-bottom:.75rem;">GYC Naturals — The Boutique</p>
       <h1 style="font-family:'Playfair Display',serif;font-size:clamp(2.2rem,5vw,3.5rem);color:#fff;line-height:1.2;margin-bottom:1.25rem;">
         Dress With<br><em style="color:var(--gyc-gold);">Confidence</em>
@@ -32,7 +32,7 @@ require_once __DIR__ . '/includes/header.php';
       <p style="font-size:1.05rem;color:rgba(255,255,255,.82);line-height:1.75;margin-bottom:2rem;max-width:480px;">
         Everyday fashion for the modern Nigerian woman — carefully selected pieces for every occasion.
       </p>
-      <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+      <div class="clothing-hero-ctas" style="display:flex;gap:1rem;flex-wrap:wrap;">
         <a href="#collection" class="btn btn-gold" style="padding:.9rem 2rem;">Shop the Collection</a>
         <a href="<?= SITE_URL ?>/shop.php?category=clothing" class="btn" style="padding:.9rem 2rem;background:rgba(255,255,255,.12);color:#fff;border:1.5px solid rgba(255,255,255,.35);">View All Clothing</a>
       </div>
@@ -70,13 +70,13 @@ require_once __DIR__ . '/includes/header.php';
 <!-- BRAND STRIP -->
 <section style="background:var(--gyc-green-900);color:#fff;padding:3.5rem 0;">
   <div class="container">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:3.5rem;align-items:center;">
-      <div>
+    <div class="clothing-brand-strip" style="display:grid;grid-template-columns:1fr 1fr;gap:3.5rem;align-items:center;">
+      <div class="clothing-brand-text">
         <p style="font-size:.72rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gyc-gold);margin-bottom:.75rem;">About the Boutique</p>
         <h2 style="font-family:'Playfair Display',serif;font-size:clamp(1.5rem,2.5vw,2rem);margin-bottom:1.25rem;line-height:1.3;">Your Style,<br>Your Story.</h2>
         <p style="opacity:.85;line-height:1.8;margin-bottom:1rem;">At GYC Naturals, we believe looking good goes hand in hand with feeling good. Our boutique stocks everyday fashion pieces — from casual daywear to polished office looks and elegant evening options.</p>
         <p style="opacity:.72;line-height:1.8;font-size:.9rem;">Every piece is handpicked for quality, fit, and wearability — clothes that work with your lifestyle, whether you're running errands in Calabar or stepping out for the evening.</p>
-        <div style="display:flex;gap:2rem;margin-top:2rem;">
+        <div class="clothing-brand-perks" style="display:flex;gap:2rem;margin-top:2rem;">
           <div>
             <div style="font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;color:var(--gyc-gold);">Fresh</div>
             <div style="font-size:.7rem;opacity:.65;text-transform:uppercase;letter-spacing:.08em;">New Arrivals Weekly</div>
@@ -105,7 +105,7 @@ require_once __DIR__ . '/includes/header.php';
 <section id="collection" style="padding:5rem 0;background:#FAFAF8;">
   <div class="container">
 
-    <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:2.5rem;flex-wrap:wrap;gap:1rem;">
+    <div class="clothing-collection-head" style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:2.5rem;flex-wrap:wrap;gap:1rem;">
       <div>
         <p style="font-size:.72rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gyc-terra);margin-bottom:.4rem;">The Collection</p>
         <h2 style="font-family:'Playfair Display',serif;font-size:clamp(1.5rem,2.5vw,2rem);margin:0;">
@@ -115,7 +115,7 @@ require_once __DIR__ . '/includes/header.php';
         <p style="color:#6B7280;font-size:.875rem;margin-top:.4rem;"><?= $total ?> pieces available</p>
         <?php endif; ?>
       </div>
-      <a href="<?= SITE_URL ?>/shop.php?category=clothing" class="btn btn-outline-green" style="font-size:.85rem;padding:.55rem 1.2rem;">View in Shop</a>
+      <a href="<?= SITE_URL ?>/shop.php?category=clothing" class="btn btn-outline-green clothing-collection-cta" style="font-size:.85rem;padding:.55rem 1.2rem;">View in Shop</a>
     </div>
 
     <?php if (empty($clothingItems)): ?>
@@ -198,8 +198,9 @@ require_once __DIR__ . '/includes/header.php';
       <h2 style="font-family:'Playfair Display',serif;font-size:1.5rem;margin-bottom:.5rem;">Size Guide</h2>
       <p style="color:#6B7280;font-size:.875rem;">All measurements in centimetres (cm). When between sizes, size up.</p>
     </div>
-    <div style="background:#fff;border-radius:var(--gyc-radius-xl);overflow:hidden;box-shadow:0 2px 20px rgba(0,0,0,.06);">
-      <table style="width:100%;border-collapse:collapse;font-size:.875rem;">
+    <div class="clothing-size-card" style="background:#fff;border-radius:var(--gyc-radius-xl);overflow:hidden;box-shadow:0 2px 20px rgba(0,0,0,.06);">
+      <div class="clothing-size-table-wrap" style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
+      <table style="width:100%;border-collapse:collapse;font-size:.875rem;min-width:380px;">
         <thead>
           <tr style="background:var(--gyc-green-900);color:#fff;">
             <th style="padding:11px 16px;text-align:left;">Size</th>
@@ -223,6 +224,7 @@ require_once __DIR__ . '/includes/header.php';
           <?php endforeach; ?>
         </tbody>
       </table>
+      </div><!-- /.clothing-size-table-wrap -->
     </div>
     <p style="font-size:.8rem;color:#9CA3AF;margin-top:1rem;text-align:center;">Need help? <a href="<?= SITE_URL ?>/contact.php" style="color:var(--gyc-green-600);">Contact us</a> or chat on WhatsApp — we're happy to advise before you order.</p>
   </div>

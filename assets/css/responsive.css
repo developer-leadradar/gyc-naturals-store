@@ -123,6 +123,27 @@
   .shop-filter-card.is-open .shop-filter-body { display: block; }
   .shop-filter-card.is-open #shop-filter-chevron { transform: rotate(180deg); }
 
+  /* Clothing.php: centralize hero, brand strip, collection header.
+     Table gets horizontal scroll inside its own card. */
+  .clothing-hero-text { max-width: none !important; text-align: center !important; margin: 0 auto; }
+  .clothing-hero-text p, .clothing-hero-text h1 { text-align: center !important; max-width: none !important; margin-left: auto !important; margin-right: auto !important; }
+  .clothing-hero-ctas { justify-content: center !important; }
+  .clothing-hero-ctas .btn { flex: 1 1 auto; min-width: 180px; }
+
+  .clothing-brand-strip { grid-template-columns: 1fr !important; gap: 2rem !important; }
+  .clothing-brand-text { text-align: center !important; }
+  .clothing-brand-text p, .clothing-brand-text h2 { text-align: center !important; }
+  .clothing-brand-perks { justify-content: center !important; flex-wrap: wrap !important; gap: 1.25rem !important; }
+
+  .clothing-collection-head { flex-direction: column !important; align-items: center !important; text-align: center !important; }
+  .clothing-collection-head > div { text-align: center !important; }
+  .clothing-collection-cta { align-self: center !important; }
+
+  /* Size guide table: stay full width but scroll horizontally inside its card */
+  .clothing-size-card { overflow: hidden; }
+  .clothing-size-table-wrap { overflow-x: auto; }
+  .clothing-size-table-wrap table { min-width: 380px; }
+
   .section    { padding: 2.5rem 0; }
   .section-lg { padding: 3rem 0; }
 
