@@ -957,6 +957,40 @@ blockquote.proverb-text {
   .section-header > a.btn { flex-shrink: 0; }
 }
 @media (max-width: 767px) {
+  /* Center section headers (eyebrow + title) and hide the right-side action button.
+     The side buttons (Book Appointment, Shop All Products etc) are redundant on
+     mobile because the section already has its own CTA below. */
+  .section-header { flex-direction: column !important; align-items: center !important; text-align: center !important; gap: 0.5rem !important; }
+  .section-header > a.btn, .section-header > a[class*="btn-"] { display: none !important; }
+  .section-eyebrow { text-align: center; display: block; width: 100%; }
+  .section-title { text-align: center !important; }
+  .section-subtitle { text-align: center !important; }
+  /* Center text content inside common section text wrappers */
+  .clothing-text-col, .book-cta-text, .about-strip-text, .quiz-cta-strip { text-align: center !important; }
+  .clothing-text-col p, .book-cta-text p, .about-strip-text p, .quiz-cta-strip p { text-align: center !important; }
+  /* Quiz CTA strip: stack everything centered */
+  .quiz-strip-inner { flex-direction: column !important; justify-content: center !important; align-items: center !important; text-align: center !important; gap: 1rem !important; padding: 1.75rem 0.5rem !important; }
+  .quiz-strip-text { flex-direction: column !important; align-items: center !important; gap: 0.5rem !important; text-align: center !important; }
+  .quiz-strip-text > div { text-align: center !important; }
+  .quiz-strip-text strong, .quiz-strip-text span { text-align: center !important; }
+  /* Center button rows inside CTA / text sections */
+  .clothing-text-col > div[style*="display:flex"],
+  .book-cta-text > div[style*="display:flex"],
+  .about-strip-text > div[style*="display:flex"],
+  .quiz-cta-strip > div[style*="display:flex"],
+  .book-cta-actions, .bundle-strip-cta, .section-book-cta-buttons {
+    justify-content: center !important;
+    align-items: center !important;
+  }
+  /* About strip points list looks better centered too */
+  .about-strip-points { align-items: center; text-align: left; }
+  /* Footer columns center their headings + content on mobile */
+  .footer-grid { text-align: center; }
+  .footer-brand p, .footer-links { text-align: center; }
+  .footer-social { justify-content: center; }
+  .footer-heading { text-align: center; }
+  .footer-bottom { text-align: center; }
+
   .services-grid { grid-template-columns: 1fr; }
   .home-services-grid { grid-template-columns: 1fr !important; }
   .products-grid { grid-template-columns: 1fr 1fr; gap: 1rem; }

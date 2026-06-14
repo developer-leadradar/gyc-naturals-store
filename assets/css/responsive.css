@@ -48,16 +48,24 @@
   [class*="grid"] > *, .booking-stepper > * { min-width: 0; }
 
   /* Header on mobile: give logo enough room to show wordmark, drop secondary icons */
-  .nav-inner { gap: 0.5rem !important; padding: 0 0.85rem !important; }
-  .nav-logo { flex: 0 0 auto !important; min-width: 160px; }
-  .nav-logo img { height: 38px !important; max-width: none !important; width: auto !important; }
-  .nav-actions { gap: 0.15rem !important; }
+  .nav-inner { gap: 0.4rem !important; padding: 0 0.6rem !important; }
+  .nav-logo { flex: 0 0 auto !important; min-width: 0; }
+  .nav-logo img { height: 32px !important; max-width: none !important; width: auto !important; }
+  .nav-actions { gap: 0.25rem !important; flex-shrink: 0; }
   /* Hide search + account + logout icons on mobile — they live in the hamburger menu */
   .nav-actions .nav-icon-btn[aria-label="Search"],
   .nav-actions .nav-icon-btn[aria-label="Account"],
   .nav-actions .nav-icon-btn[aria-label="Logout"] { display: none !important; }
-  .nav-actions .nav-icon-btn { width: 36px !important; height: 36px !important; }
-  .nav-hamburger { width: 36px !important; height: 36px !important; }
+  .nav-actions .nav-icon-btn { width: 32px !important; height: 32px !important; }
+  /* Compact Login button so the hamburger fits within the viewport */
+  .nav-actions a.btn,
+  .nav-actions a.btn-green {
+    padding: 0.4rem 0.7rem !important;
+    font-size: 0.78rem !important;
+    height: 32px !important;
+    line-height: 1 !important;
+  }
+  .nav-hamburger { width: 32px !important; height: 32px !important; flex-shrink: 0; padding: 0 !important; }
 
   /* Stack inline-styled 2-column page layouts (sidebar + main) on mobile.
      Covers shop, gallery, customer-dashboard, my-orders, my-wishlist,
