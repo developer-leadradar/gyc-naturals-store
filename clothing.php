@@ -199,7 +199,13 @@ require_once __DIR__ . '/includes/header.php';
       <p style="color:#6B7280;font-size:.875rem;">All measurements in centimetres (cm). When between sizes, size up.</p>
     </div>
     <div class="clothing-size-card" style="background:#fff;border-radius:var(--gyc-radius-xl);overflow:hidden;box-shadow:0 2px 20px rgba(0,0,0,.06);">
-      <table class="clothing-size-table" style="width:100%;border-collapse:collapse;font-size:.875rem;">
+      <table class="clothing-size-table" style="width:100%;border-collapse:collapse;font-size:.875rem;table-layout:fixed;">
+        <colgroup>
+          <col style="width:22%">
+          <col style="width:26%">
+          <col style="width:26%">
+          <col style="width:26%">
+        </colgroup>
         <thead>
           <tr style="background:var(--gyc-green-900);color:#fff;">
             <th class="sz-th" style="padding:11px 10px;text-align:left;">Size</th>
