@@ -47,6 +47,46 @@
   /* Default grid items to min-width:0 so long content doesn't blow out tracks */
   [class*="grid"] > *, .booking-stepper > * { min-width: 0; }
 
+  /* Stack inline-styled 2-column page layouts (sidebar + main) on mobile.
+     Covers shop, gallery, customer-dashboard, my-orders, my-wishlist,
+     order-details, book-appointment, product, bundle, etc. */
+  div[style*="grid-template-columns:240px"],
+  div[style*="grid-template-columns: 240px"],
+  div[style*="grid-template-columns:280px"],
+  div[style*="grid-template-columns: 280px"],
+  div[style*="grid-template-columns:300px"],
+  div[style*="grid-template-columns: 300px"],
+  div[style*="grid-template-columns:320px"],
+  div[style*="grid-template-columns:340px"],
+  div[style*="grid-template-columns:380px"],
+  div[style*="grid-template-columns:2fr 1fr"],
+  div[style*="grid-template-columns: 2fr 1fr"],
+  div[style*="grid-template-columns:1fr 2fr"],
+  div[style*="grid-template-columns:1.4fr 1fr"],
+  div[style*="grid-template-columns:1fr 320px"],
+  div[style*="grid-template-columns:1fr 300px"],
+  div[style*="grid-template-columns:1fr 280px"] {
+    grid-template-columns: 1fr !important;
+    gap: 1.5rem !important;
+  }
+  /* Inline 4-col grids: stack to 2 on mobile (Quick Actions, etc) */
+  div[style*="grid-template-columns:repeat(4,1fr)"],
+  div[style*="grid-template-columns: repeat(4, 1fr)"],
+  div[style*="grid-template-columns:repeat(4, 1fr)"] {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.75rem !important;
+  }
+  /* Inline 3-col grids: stack to 1 or 2 on mobile */
+  div[style*="grid-template-columns:repeat(3,1fr)"],
+  div[style*="grid-template-columns: repeat(3, 1fr)"] {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  aside { position: static !important; top: auto !important; }
+  /* Booking service-type buttons: stack to 1 column under 480, keep 2-col 480-767 */
+  .svc-type-grid { grid-template-columns: 1fr !important; }
+  /* Booking style selector grid: 1 col under 480 */
+  .style-selector-grid { grid-template-columns: 1fr !important; }
+
   .section    { padding: 2.5rem 0; }
   .section-lg { padding: 3rem 0; }
 

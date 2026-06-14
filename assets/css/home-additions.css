@@ -943,6 +943,7 @@ blockquote.proverb-text {
   .hero-stats { justify-content: center; flex-wrap: wrap; gap: 1rem; }
   .hero-stat-divider { display: none; }
   .services-grid { grid-template-columns: repeat(2, 1fr); }
+  .home-services-grid { grid-template-columns: repeat(2, 1fr) !important; }
   .products-grid { grid-template-columns: repeat(2, 1fr); }
   .testimonials-grid { grid-template-columns: repeat(2, 1fr); }
   .blog-grid { grid-template-columns: 1fr 1fr; }
@@ -952,9 +953,12 @@ blockquote.proverb-text {
   .section-clothing-inner { grid-template-columns: 1fr; }
   .clothing-text-col { padding: 3rem 2rem; }
   .social-grid { grid-template-columns: repeat(4, 1fr); }
+  .section-header { flex-wrap: wrap !important; gap: 0.75rem !important; }
+  .section-header > a.btn { flex-shrink: 0; }
 }
 @media (max-width: 767px) {
   .services-grid { grid-template-columns: 1fr; }
+  .home-services-grid { grid-template-columns: 1fr !important; }
   .products-grid { grid-template-columns: 1fr 1fr; gap: 1rem; }
   .testimonials-grid { grid-template-columns: 1fr; }
   .blog-grid { grid-template-columns: 1fr; }

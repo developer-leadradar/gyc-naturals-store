@@ -90,7 +90,7 @@ require_once __DIR__ . '/includes/header.php';
               ['id'=>'treatment',  'icon'=>'droplets',   'label'=>'Scalp & Treatments',      'desc'=>'Deep conditioning, scalp detox & hair spa'],
             ];
             ?>
-            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem;margin-bottom:1.5rem;" id="service-type-grid">
+            <div class="svc-type-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem;margin-bottom:1.5rem;" id="service-type-grid">
               <?php foreach ($serviceTypes as $svc): ?>
               <button type="button" class="svc-type-btn <?= $svc['id'] === $defaultSvc ? 'svc-type-btn--active' : '' ?>"
                       data-svc="<?= $svc['id'] ?>"

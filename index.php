@@ -254,7 +254,7 @@ require_once __DIR__ . '/includes/header.php';
       <a href="<?= SITE_URL ?>/book-appointment.php" class="btn btn-outline-green">Book Appointment</a>
     </div>
 
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;">
+    <div class="home-services-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;">
 
       <article style="background:#fff;border:1.5px solid var(--gyc-green-100);border-radius:var(--gyc-radius-lg);overflow:hidden;display:flex;flex-direction:column;">
         <div style="height:190px;overflow:hidden;flex-shrink:0;">

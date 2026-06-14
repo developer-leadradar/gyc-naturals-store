@@ -150,36 +150,49 @@ if ('serviceWorker' in navigator) {
 }
 
 // ── Lazy image fade-in ──
+// Reveal helper: idempotent — always also wires load/error so late-loading images
+// can never get stranded at opacity:0 (the previous code had a race where complete
+// images skipped both the observer and the load listener, leaving them invisible).
 (function() {
-  if (!('IntersectionObserver' in window)) {
-    // Fallback: just show all images
-    document.querySelectorAll('img[loading="lazy"]').forEach(function(img) {
-      img.classList.add('loaded');
-    });
-    return;
-  }
-  var io = new IntersectionObserver(function(entries) {
-    entries.forEach(function(entry) {
-      if (entry.isIntersecting) {
-        var img = entry.target;
-        if (img.complete) {
-          img.classList.add('instantly-visible');
-        } else {
-          img.addEventListener('load', function() { img.classList.add('loaded'); }, { once: true });
-          img.addEventListener('error', function() { img.classList.add('loaded'); }, { once: true });
-        }
-        io.unobserve(img);
-      }
-    });
-  }, { rootMargin: '200px 0px' });  // preload 200px before entering viewport
-
-  document.querySelectorAll('img[loading="lazy"]').forEach(function(img) {
+  function reveal(img) {
+    if (img.classList.contains('loaded') || img.classList.contains('instantly-visible')) return;
     if (img.complete && img.naturalWidth > 0) {
       img.classList.add('instantly-visible');
     } else {
-      io.observe(img);
+      img.addEventListener('load',  function() { img.classList.add('loaded'); }, { once: true });
+      img.addEventListener('error', function() { img.classList.add('loaded'); }, { once: true });
+      // Safety net: if neither load nor error fires (cached 304, decode race, etc.),
+      // poll once after 1.5s to mark as visible anyway.
+      setTimeout(function() {
+        if (!img.classList.contains('loaded') && !img.classList.contains('instantly-visible')) {
+          img.classList.add('loaded');
+        }
+      }, 1500);
     }
-  });
+  }
+
+  function observeAll() {
+    document.querySelectorAll('img[loading="lazy"]').forEach(function(img) {
+      if (img.dataset._gycLazyBound) return;
+      img.dataset._gycLazyBound = '1';
+      if (!('IntersectionObserver' in window)) { reveal(img); return; }
+      io.observe(img);
+      // Reveal immediately if already in viewport on first pass
+      var r = img.getBoundingClientRect();
+      if (r.top < window.innerHeight + 200 && r.bottom > -200) reveal(img);
+    });
+  }
+
+  var io = ('IntersectionObserver' in window) ? new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) { reveal(entry.target); io.unobserve(entry.target); }
+    });
+  }, { rootMargin: '300px 0px' }) : null;
+
+  observeAll();
+  // Re-scan when JS adds new lazy images (moodboard grid, filtered gallery)
+  var mo = new MutationObserver(observeAll);
+  mo.observe(document.body, { childList: true, subtree: true });
 })();
 
 // ── Cookie banner ──
