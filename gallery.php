@@ -83,18 +83,12 @@ require_once __DIR__ . '/includes/header.php';
       <?php endforeach; ?>
     </div>
 
-    <!-- Gallery heading + sort -->
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;gap:1rem;flex-wrap:wrap;">
-      <div>
-        <h2 id="gallery-heading" style="font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--gyc-dark);margin:0;">
-          <?= $activeCatObj ? htmlspecialchars($activeCatObj['name']) : 'All Styles' ?>
-        </h2>
-        <span style="font-size:0.82rem;color:#888;"><?= $total ?> styles available</span>
-      </div>
-      <a href="<?= SITE_URL ?>/moodboard.php" class="btn btn-outline-green btn-sm">
-        <i data-lucide="heart" style="width:14px;height:14px;"></i>
-        View Moodboard
-      </a>
+    <!-- Gallery heading -->
+    <div style="text-align:center;margin-bottom:1.5rem;">
+      <h2 id="gallery-heading" style="font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--gyc-dark);margin:0;">
+        <?= $activeCatObj ? htmlspecialchars($activeCatObj['name']) : 'All Styles' ?>
+      </h2>
+      <span style="font-size:0.82rem;color:#888;"><?= $total ?> styles available</span>
     </div>
 
     <!-- Gallery grid -->

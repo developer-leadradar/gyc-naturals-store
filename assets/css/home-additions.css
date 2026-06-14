@@ -986,6 +986,8 @@ blockquote.proverb-text {
   .about-strip-points { align-items: center; text-align: left; }
   /* Footer columns center their headings + content on mobile */
   .footer-grid { text-align: center; }
+  .footer-brand { text-align: center; }
+  .footer-brand img { display: block; margin: 0 auto; }
   .footer-brand p, .footer-links { text-align: center; }
   .footer-social { justify-content: center; }
   .footer-heading { text-align: center; }
