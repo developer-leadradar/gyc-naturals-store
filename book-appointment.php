@@ -48,7 +48,7 @@ require_once __DIR__ . '/includes/header.php';
 <!-- Booking form -->
 <section style="padding:2.5rem 0 5rem;background:#F8FAF9;">
   <div class="container">
-    <div style="display:grid;grid-template-columns:2fr 1fr;gap:2.5rem;align-items:start;max-width:1000px;margin:0 auto;">
+    <div class="booking-page-grid" style="display:grid;grid-template-columns:2fr 1fr;gap:2.5rem;align-items:start;max-width:1000px;margin:0 auto;">
 
       <!-- 3-step form -->
       <div>

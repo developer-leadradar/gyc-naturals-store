@@ -89,6 +89,32 @@
     grid-template-columns: 1fr !important;
     gap: 1.5rem !important;
   }
+  /* Booking page 2fr 1fr grid: stack form + summary on mobile */
+  .booking-page-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1.5rem !important;
+  }
+  .booking-page-grid > * { min-width: 0; }
+  /* Booking stepper: stack number above label vertically per step,
+     short connecting lines, all 3 steps visible within viewport */
+  .booking-stepper {
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    gap: 0 !important;
+    padding: 0 0.25rem;
+    margin-bottom: 1.5rem !important;
+  }
+  .booking-step-item {
+    flex: 0 0 auto;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    min-width: 0;
+  }
+  .booking-step-item > div { display: flex; flex-direction: column; align-items: center; gap: 4px !important; }
+  .booking-step-line { flex: 1 1 auto; min-width: 0 !important; height: 1px !important; align-self: center; margin-bottom: 20px; }
+  .booking-step-label { font-size: 0.65rem !important; line-height: 1.2; white-space: nowrap; }
+  .booking-step-num { width: 24px !important; height: 24px !important; font-size: 0.72rem !important; flex-shrink: 0; }
   /* Inline 4-col grids: stack to 2-col on mobile. The services grid wants 1-col
      and uses .home-services-grid to override this further (higher than attribute
      specificity via :where() in home-additions.css). */
