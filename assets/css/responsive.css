@@ -143,15 +143,35 @@
      without horizontal scroll. Header labels are short ('Bust' not 'Bust (cm)')
      and the section subtitle above the card already says all measurements are
      in cm so no information is lost. */
-  /* Size guide table: equal column widths so the table fills the card.
-     border-collapse:separate + table-layout:fixed lets us pin each cell
-     to 25% reliably. Inline padding stays from clothing.php. */
+  /* Size guide table: rebuild as a CSS grid on each row so the four
+     columns truly distribute equally across the card width. The
+     <table>/<thead>/<tbody>/<tr> still parse semantically, we just
+     swap their display modes. */
+  .clothing-size-table,
+  .clothing-size-table thead,
+  .clothing-size-table tbody { display: block !important; width: 100%; }
+  .clothing-size-table tr {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    width: 100%;
+  }
   .clothing-size-table th,
-  .clothing-size-table td { width: 25% !important; font-size: 0.78rem; }
-  .clothing-size-table th { padding: 11px 6px !important; }
-  .clothing-size-table td { padding: 10px 6px !important; }
+  .clothing-size-table td {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    padding: 11px 6px !important;
+    font-size: 0.78rem;
+    box-sizing: border-box !important;
+    width: auto !important;
+    text-align: center;
+  }
   .clothing-size-table thead th:first-child,
-  .clothing-size-table tbody td:first-child { padding-left: 14px !important; text-align: left; }
+  .clothing-size-table tbody td:first-child {
+    justify-content: flex-start;
+    padding-left: 14px !important;
+    text-align: left;
+  }
   .clothing-size-table thead th:last-child,
   .clothing-size-table tbody td:last-child { padding-right: 14px !important; }
 
