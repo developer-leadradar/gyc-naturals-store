@@ -119,8 +119,8 @@ require_once __DIR__ . '/includes/header.php';
             <input type="password" name="confirm" class="form-control" required placeholder="Repeat your password">
           </div>
 
-          <label style="display:flex;align-items:center;justify-content:center;gap:.5rem;font-size:.82rem;color:#555;margin-bottom:1.5rem;cursor:pointer;line-height:1.5;text-align:center;flex-wrap:wrap;">
-            <input type="checkbox" name="agree" required style="width:15px;height:15px;flex-shrink:0;">
+          <label style="display:flex;align-items:flex-start;gap:.6rem;font-size:.82rem;color:#555;margin-bottom:1.5rem;cursor:pointer;line-height:1.5;">
+            <input type="checkbox" name="agree" required style="width:15px;height:15px;margin-top:3px;flex-shrink:0;">
             <span>I agree to GYC Naturals <a href="<?= SITE_URL ?>/terms.php" target="_blank">Terms of Service</a> and <a href="<?= SITE_URL ?>/privacy.php" target="_blank">Privacy Policy</a></span>
           </label>
 
