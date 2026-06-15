@@ -112,6 +112,10 @@
   section[style*="background:linear-gradient(135deg, var(--gyc-green-900)"] > .container { text-align: center; }
   section[style*="background:linear-gradient"] > .container > div[style*="flex-wrap:wrap"] { justify-content: center; }
 
+  /* About origin story: center text on mobile (image stacks below) */
+  .about-origin-text { text-align: center !important; }
+  .about-origin-text p, .about-origin-text h2 { text-align: center !important; }
+
   /* Booking stepper: stack number above label vertically per step,
      short connecting lines, all 3 steps visible within viewport */
   .booking-stepper {

@@ -22,7 +22,7 @@ $waClean    = preg_replace('/[^0-9]/', '', $waPhone);
 
   <div class="container" style="max-width:820px;position:relative;z-index:1;">
     <p style="font-size:.8rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gyc-gold);margin-bottom:.75rem;">Our Story</p>
-    <h1 style="font-family:'Playfair Display',serif;font-size:clamp(2.2rem,5vw,3.5rem);line-height:1.2;margin-bottom:1.5rem;">
+    <h1 style="font-family:'Playfair Display',serif;font-size:clamp(2.2rem,5vw,3.5rem);line-height:1.2;margin-bottom:1.5rem;color:var(--gyc-gold);">
       Where African<br>Beauty Lives
     </h1>
     <p style="font-size:1.05rem;opacity:.85;line-height:1.8;max-width:580px;margin-bottom:2rem;">
@@ -52,8 +52,8 @@ $waClean    = preg_replace('/[^0-9]/', '', $waPhone);
 <!-- ORIGIN STORY -->
 <section style="padding:6rem 0;background:#fff;">
   <div class="container">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;">
-      <div>
+    <div class="about-origin-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;">
+      <div class="about-origin-text">
         <p style="font-size:.8rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--gyc-green-500);margin-bottom:.75rem;">The Beginning</p>
         <h2 style="font-family:'Playfair Display',serif;font-size:2rem;line-height:1.25;margin-bottom:1.5rem;">Braids, Botanicals &amp; Bold African Fashion</h2>
         <p style="font-size:.95rem;color:#374151;line-height:1.85;margin-bottom:1.25rem;">
@@ -146,7 +146,7 @@ $waClean    = preg_replace('/[^0-9]/', '', $waPhone);
   <div class="container" style="max-width:820px;">
     <div style="text-align:center;margin-bottom:3rem;">
       <p style="font-size:.8rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--gyc-gold);margin-bottom:.5rem;">Our Journey</p>
-      <h2 style="font-family:'Playfair Display',serif;font-size:2rem;">Milestones</h2>
+      <h2 style="font-family:'Playfair Display',serif;font-size:2rem;color:var(--gyc-gold);">Milestones</h2>
     </div>
     <?php $milestones = [
       ['2024', 'Founded',         'Juliet Arah opens GYC Naturals at Big Qua Mall, Ediba Road, Calabar — bringing professional African braiding to Cross River State.'],
