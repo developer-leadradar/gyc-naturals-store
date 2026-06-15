@@ -106,7 +106,6 @@ $services = [
 $categories = array_unique(array_column($services, 'category'));
 ?>
 
-<div style="min-height:72px;"></div>
 
 <!-- HERO -->
 <section style="background:linear-gradient(135deg,var(--gyc-green-900) 0%,var(--gyc-green-700) 60%,var(--gyc-gold) 100%);padding:6rem 0 5rem;color:#fff;">

@@ -76,7 +76,6 @@ $pageDescription = 'Your appointment request has been received at GYC Naturals C
 require_once __DIR__ . '/includes/header.php';
 ?>
 
-<div style="min-height:72px;"></div>
 
 <!-- Confirmation Hero -->
 <section style="background:linear-gradient(135deg,var(--gyc-green-900),var(--gyc-green-700));padding:4.5rem 0 3rem;text-align:center;color:#fff;">

@@ -99,7 +99,6 @@ $faqs = [
 ];
 ?>
 
-<div style="min-height:72px;"></div>
 
 <!-- HERO -->
 <section style="background:linear-gradient(135deg,var(--gyc-green-900),var(--gyc-green-700));padding:5rem 0 4rem;color:#fff;text-align:center;">

@@ -16,7 +16,6 @@ $pageDescription = 'Shop GYC Naturals boutique fashion — carefully selected ev
 require_once __DIR__ . '/includes/header.php';
 ?>
 
-<div style="min-height:72px;"></div>
 
 <!-- HERO -->
 <section style="position:relative;overflow:hidden;min-height:480px;display:flex;align-items:center;background:#1a1a2e;">

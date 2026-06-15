@@ -63,8 +63,8 @@ require_once __DIR__ . '/includes/header.php';
     <div style="max-width:480px;margin:0 auto;">
 
       <div style="text-align:center;margin-bottom:2rem;">
-        <a href="<?= SITE_URL ?>">
-          <img src="<?= SITE_URL ?>/assets/images/gyc-logo-horizontal.svg" alt="GYC Naturals" style="height:48px;">
+        <a href="<?= SITE_URL ?>" style="display:inline-block;">
+          <img src="<?= SITE_URL ?>/assets/images/gyc-logo-horizontal.svg" alt="GYC Naturals" style="height:48px;display:block;margin:0 auto;">
         </a>
       </div>
 
@@ -119,9 +119,9 @@ require_once __DIR__ . '/includes/header.php';
             <input type="password" name="confirm" class="form-control" required placeholder="Repeat your password">
           </div>
 
-          <label style="display:flex;align-items:flex-start;gap:.5rem;font-size:.82rem;color:#555;margin-bottom:1.5rem;cursor:pointer;line-height:1.5;">
-            <input type="checkbox" name="agree" required style="width:15px;height:15px;margin-top:2px;flex-shrink:0;">
-            I agree to GYC Naturals <a href="<?= SITE_URL ?>/terms.php" target="_blank">Terms of Service</a> and <a href="<?= SITE_URL ?>/privacy.php" target="_blank">Privacy Policy</a>
+          <label style="display:flex;align-items:center;justify-content:center;gap:.5rem;font-size:.82rem;color:#555;margin-bottom:1.5rem;cursor:pointer;line-height:1.5;text-align:center;flex-wrap:wrap;">
+            <input type="checkbox" name="agree" required style="width:15px;height:15px;flex-shrink:0;">
+            <span>I agree to GYC Naturals <a href="<?= SITE_URL ?>/terms.php" target="_blank">Terms of Service</a> and <a href="<?= SITE_URL ?>/privacy.php" target="_blank">Privacy Policy</a></span>
           </label>
 
           <button type="submit" class="btn btn-green btn-lg" style="width:100%;justify-content:center;">

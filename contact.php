@@ -90,7 +90,6 @@ $emailAddr = getSetting('contact_email')   ?: 'hello@gycnaturals.com';
 $openHours = getSetting('opening_hours')   ?: 'Mon–Sat: 8:00 AM – 7:00 PM | Sun: 10:00 AM – 5:00 PM';
 ?>
 
-<div style="min-height:72px;"></div>
 
 <!-- HERO -->
 <section style="background:linear-gradient(135deg,var(--gyc-green-900),var(--gyc-green-700));padding:5rem 0 4rem;color:#fff;text-align:center;">
@@ -242,13 +241,13 @@ $openHours = getSetting('opening_hours')   ?: 'Mon–Sat: 8:00 AM – 7:00 PM | 
         </a>
 
         <!-- FAQ hint -->
-        <div style="background:var(--gyc-green-100);border-radius:var(--gyc-radius-lg);padding:1.25rem;">
-          <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.5rem;">
+        <div style="background:var(--gyc-green-100);border-radius:var(--gyc-radius-lg);padding:1.25rem;text-align:center;">
+          <div style="display:flex;align-items:center;justify-content:center;gap:.75rem;margin-bottom:.5rem;">
             <i data-lucide="help-circle" style="width:18px;height:18px;color:var(--gyc-green-600);"></i>
             <span style="font-weight:700;font-size:.9rem;color:var(--gyc-dark);">Got a common question?</span>
           </div>
           <p style="font-size:.82rem;color:#374151;margin-bottom:.75rem;">Check our FAQ page — you might get an instant answer.</p>
-          <a href="<?= SITE_URL ?>/faq.php" class="btn btn-outline-green btn-sm">View FAQs</a>
+          <a href="<?= SITE_URL ?>/faq.php" class="btn btn-outline-green btn-sm" style="display:inline-flex;">View FAQs</a>
         </div>
 
       </div>

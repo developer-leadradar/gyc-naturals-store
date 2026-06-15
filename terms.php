@@ -12,7 +12,6 @@ $lastUpdated = 'January 1, 2025';
 $siteEmail   = getSetting('contact_email') ?: 'hello@gycnaturals.com';
 ?>
 
-<div style="min-height:72px;"></div>
 
 <!-- HERO -->
 <section style="background:linear-gradient(135deg,var(--gyc-green-900),var(--gyc-green-700));padding:4rem 0 3rem;color:#fff;text-align:center;">

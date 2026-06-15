@@ -49,7 +49,6 @@ $catNames = [
 $catLabel = fn($c) => $catNames[$c] ?? ucwords(str_replace(['-','_'], ' ', $c));
 ?>
 
-<div style="min-height:72px;"></div>
 
 <!-- ── HERO ── -->
 <section style="background:linear-gradient(135deg,var(--gyc-green-900) 0%,var(--gyc-green-700) 100%);padding:5rem 0 4rem;color:#fff;">

@@ -48,7 +48,6 @@ $pageDescription = 'Read what our clients say about GYC Naturals hair braiding s
 require_once __DIR__ . '/includes/header.php';
 ?>
 
-<div style="min-height:72px;"></div>
 
 <!-- ── HERO ── -->
 <section style="background:linear-gradient(135deg,var(--gyc-green-900) 0%,var(--gyc-green-700) 100%);color:#fff;padding:5rem 0 4rem;text-align:center;">

@@ -39,7 +39,6 @@ $pageTitle = $q ? 'Search: ' . htmlspecialchars($q) . ' — GYC Naturals' : 'Sea
 require_once __DIR__ . '/includes/header.php';
 ?>
 
-<div style="min-height:72px;"></div>
 
 <!-- Search Hero -->
 <section style="background:var(--gyc-green-900);padding:3rem 0 2.5rem;">

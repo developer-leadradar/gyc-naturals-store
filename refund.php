@@ -13,7 +13,6 @@ $siteEmail   = getSetting('contact_email') ?: 'hello@gycnaturals.com';
 $waPhone     = preg_replace('/[^0-9]/', '', getSetting('site_whatsapp') ?: SITE_WHATSAPP);
 ?>
 
-<div style="min-height:72px;"></div>
 
 <!-- HERO -->
 <section style="background:linear-gradient(135deg,var(--gyc-green-900),var(--gyc-green-700));padding:4rem 0 3rem;color:#fff;text-align:center;">

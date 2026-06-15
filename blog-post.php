@@ -12,7 +12,6 @@ if (!$post) {
     http_response_code(404);
     $pageTitle = '404 — Post Not Found';
     require_once __DIR__ . '/includes/header.php';
-    echo '<div style="min-height:72px;"></div><div class="container" style="text-align:center;padding:6rem 1rem;">
         <h1 style="font-family:\'Playfair Display\',serif;font-size:2.5rem;margin-bottom:1rem;">Post Not Found</h1>
         <p style="color:#6B7280;margin-bottom:2rem;">This article may have been moved or deleted.</p>
         <a href="' . SITE_URL . '/blog.php" class="btn btn-green">← Back to Blog</a>
@@ -91,7 +90,6 @@ require_once __DIR__ . '/includes/header.php';
 ?>
 <script type="application/ld+json"><?= $articleJsonLd ?></script>
 
-<div style="min-height:72px;"></div>
 
 <!-- ── HERO / FEATURED IMAGE ── -->
 <?php if ($post['featured_image']): ?>

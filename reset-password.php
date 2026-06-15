@@ -46,7 +46,6 @@ $pageTitle = 'Reset Password — GYC Naturals';
 require_once __DIR__ . '/includes/header.php';
 ?>
 
-<div style="min-height:72px;"></div>
 
 <section style="padding:4rem 0 6rem;background:#F8FAF9;">
   <div class="container">

@@ -14,7 +14,6 @@ $siteEmail   = getSetting('contact_email') ?: 'hello@gycnaturals.com';
 $siteAddress = getSetting('site_address') ?: 'Big Qua Mall, Ediba Road, Calabar, Cross River State, Nigeria';
 ?>
 
-<div style="min-height:72px;"></div>
 
 <!-- ── HERO ── -->
 <section style="background:linear-gradient(135deg,var(--gyc-green-900),var(--gyc-green-700));padding:4rem 0 3rem;color:#fff;text-align:center;">

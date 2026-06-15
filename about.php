@@ -12,7 +12,6 @@ $waPhone    = getSetting('site_whatsapp') ?: SITE_WHATSAPP;
 $waClean    = preg_replace('/[^0-9]/', '', $waPhone);
 ?>
 
-<div style="min-height:72px;"></div>
 
 <!-- HERO -->
 <section style="position:relative;overflow:hidden;min-height:500px;background:linear-gradient(135deg,var(--gyc-green-900) 0%,var(--gyc-green-700) 60%,#1a3622 100%);color:#fff;display:flex;align-items:center;padding:5rem 0;">

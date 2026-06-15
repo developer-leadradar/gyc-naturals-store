@@ -20,7 +20,6 @@ $pageTitle = 'Checkout — GYC Naturals Calabar';
 require_once __DIR__ . '/includes/header.php';
 ?>
 
-<div style="min-height:72px;"></div>
 
 <section style="padding:2.5rem 0 5rem;">
   <div class="container">

@@ -32,7 +32,6 @@ $pageDescription = 'Book your professional hair braiding appointment online at G
 require_once __DIR__ . '/includes/header.php';
 ?>
 
-<div style="min-height:72px;"></div>
 
 <!-- Hero -->
 <div style="background:linear-gradient(135deg,var(--gyc-green-900),var(--gyc-green-700));padding:3.5rem 0 2rem;text-align:center;color:#fff;">

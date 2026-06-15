@@ -53,7 +53,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $pageTitle = 'My Profile — GYC Naturals';
 require_once __DIR__ . '/includes/header.php';
 ?>
-<div style="min-height:72px;"></div>
 <section style="padding:2.5rem 0 5rem;background:#F8FAF9;">
   <div class="container">
     <div style="max-width:960px;margin:0 auto;">
