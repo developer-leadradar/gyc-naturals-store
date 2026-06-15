@@ -70,7 +70,7 @@ require_once __DIR__ . '/includes/header.php';
             </label>
           </div>
         </div>
-        <div class="quiz-nav">
+        <div class="quiz-nav quiz-nav--single" style="display:flex;justify-content:center;">
           <button type="button" class="btn btn-green btn-lg" id="quiz-next-0" data-quiz-next="0">
             Next <i data-lucide="arrow-right" style="width:18px;height:18px;"></i>
           </button>
