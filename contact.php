@@ -104,7 +104,7 @@ $openHours = getSetting('opening_hours')   ?: 'Mon–Sat: 8:00 AM – 7:00 PM | 
 <!-- QUICK CONTACT CARDS -->
 <section style="background:#fff;padding:2.5rem 0;border-bottom:1px solid var(--gyc-green-100);">
   <div class="container">
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;">
+    <div class="contact-methods" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1.25rem;">
       <?php $contacts = [
         ['message-circle','WhatsApp','Fastest response','btn-whatsapp','https://wa.me/'.$waClean],
         ['phone','Call Us',$phoneNum,'btn-outline-green','tel:'.$phoneNum],
@@ -127,7 +127,7 @@ $openHours = getSetting('opening_hours')   ?: 'Mon–Sat: 8:00 AM – 7:00 PM | 
 <!-- MAIN CONTENT -->
 <section style="padding:4rem 0 6rem;background:#F8FAF9;">
   <div class="container">
-    <div style="display:grid;grid-template-columns:1fr 420px;gap:3rem;align-items:start;">
+    <div class="contact-grid" style="display:grid;grid-template-columns:1fr 420px;gap:3rem;align-items:start;">
 
       <!-- CONTACT FORM -->
       <div style="background:#fff;border:1.5px solid var(--gyc-green-100);border-radius:var(--gyc-radius-xl);padding:2.5rem;">
