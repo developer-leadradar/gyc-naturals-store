@@ -15,7 +15,7 @@ $waClean    = preg_replace('/[^0-9]/', '', $waPhone);
 <div style="min-height:72px;"></div>
 
 <!-- HERO -->
-<section style="position:relative;min-height:500px;background:linear-gradient(135deg,var(--gyc-green-900) 0%,var(--gyc-green-700) 60%,#1a3622 100%);color:#fff;display:flex;align-items:center;padding:5rem 0;">
+<section style="position:relative;overflow:hidden;min-height:500px;background:linear-gradient(135deg,var(--gyc-green-900) 0%,var(--gyc-green-700) 60%,#1a3622 100%);color:#fff;display:flex;align-items:center;padding:5rem 0;">
   <!-- Decorative geometric shapes -->
   <div style="position:absolute;right:8%;top:15%;width:280px;height:280px;border-radius:50%;background:rgba(200,161,82,.12);pointer-events:none;"></div>
   <div style="position:absolute;right:18%;bottom:10%;width:140px;height:140px;border-radius:50%;background:rgba(200,161,82,.08);pointer-events:none;"></div>

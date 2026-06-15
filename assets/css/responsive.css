@@ -95,6 +95,23 @@
     gap: 1.5rem !important;
   }
   .booking-page-grid > * { min-width: 0; }
+
+  /* Inline 2-col 1fr 1fr grids: stack to single column on mobile.
+     Used by about.php (origin story text+image), clothing brand strip,
+     and other places that put two columns side-by-side. */
+  section > .container > div[style*="grid-template-columns:1fr 1fr"],
+  section > .container > div[style*="grid-template-columns: 1fr 1fr"] {
+    grid-template-columns: 1fr !important;
+    gap: 2rem !important;
+  }
+  section > .container > div[style*="grid-template-columns:1fr 1fr"] > *,
+  section > .container > div[style*="grid-template-columns: 1fr 1fr"] > * { min-width: 0; }
+
+  /* About hero: center text + stats */
+  section[style*="background:linear-gradient(135deg,var(--gyc-green-900)"] > .container,
+  section[style*="background:linear-gradient(135deg, var(--gyc-green-900)"] > .container { text-align: center; }
+  section[style*="background:linear-gradient"] > .container > div[style*="flex-wrap:wrap"] { justify-content: center; }
+
   /* Booking stepper: stack number above label vertically per step,
      short connecting lines, all 3 steps visible within viewport */
   .booking-stepper {
@@ -348,6 +365,12 @@
 @media (max-width: 479px) {
   .clothing-cat-strip    { grid-template-columns: repeat(2, 1fr) !important; }
   .clothing-perks        { grid-template-columns: 1fr !important; }
+  /* About page values grid + any inline repeat(3,1fr): single column on
+     small mobile so cards don't overflow */
+  div[style*="grid-template-columns:repeat(3,1fr)"]:not(.home-services-grid),
+  div[style*="grid-template-columns: repeat(3, 1fr)"]:not(.home-services-grid) {
+    grid-template-columns: 1fr !important;
+  }
 }
 
 /* ═══════════════════════════════════════════════════
