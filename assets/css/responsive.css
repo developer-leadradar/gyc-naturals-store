@@ -143,12 +143,17 @@
      without horizontal scroll. Header labels are short ('Bust' not 'Bust (cm)')
      and the section subtitle above the card already says all measurements are
      in cm so no information is lost. */
-  .clothing-size-table .sz-th,
-  .clothing-size-table .sz-td { font-size: 0.78rem; }
-  .clothing-size-table .sz-th:first-child,
-  .clothing-size-table .sz-td:first-child { padding-left: 10px; padding-right: 6px; min-width: 44px; }
-  .clothing-size-table .sz-th:not(:first-child),
-  .clothing-size-table .sz-td:not(:first-child) { padding-left: 4px; padding-right: 4px; }
+  /* Size guide table: equal column widths so the table fills the card.
+     border-collapse:separate + table-layout:fixed lets us pin each cell
+     to 25% reliably. Inline padding stays from clothing.php. */
+  .clothing-size-table th,
+  .clothing-size-table td { width: 25% !important; font-size: 0.78rem; }
+  .clothing-size-table th { padding: 11px 6px !important; }
+  .clothing-size-table td { padding: 10px 6px !important; }
+  .clothing-size-table thead th:first-child,
+  .clothing-size-table tbody td:first-child { padding-left: 14px !important; text-align: left; }
+  .clothing-size-table thead th:last-child,
+  .clothing-size-table tbody td:last-child { padding-right: 14px !important; }
 
   .section    { padding: 2.5rem 0; }
   .section-lg { padding: 3rem 0; }
